@@ -237,6 +237,13 @@
             fill: #d81b60; /* İkonun kendi rengi pembe oldu */
             transition: background-color 0.25s ease, fill 0.25s ease;
         }
+
+        /* Henüz gerçek görseli girilmemiş (data-image linki olmayan)
+           ürünlerde göz ikonu otomatik olarak gizlenir. Görsel eklenip
+           sayfa yeniden yüklendiğinde JS bunu otomatik açığa çıkarır. */
+        .eye-icon.gorsel-yok {
+            display: none;
+        }
         
         .eye-icon:hover {
             background: #d81b60; /* Müşteri ikonun üstüne tıklarken arka plan tam pembe olacak */
@@ -1455,6 +1462,18 @@
         const modalImg = document.getElementById("modalImage");
         const eyeIcons = document.querySelectorAll(".eye-icon");
         const closeBtn = document.querySelector(".close-btn");
+
+        // --- Görseli henüz eklenmemiş ürünlerin göz ikonunu gizle ---
+        // data-image alanı "http://" veya "https://" ile başlamıyorsa
+        // (örn. hâlâ "RESİM_LİNKİ" placeholder'ı ise) ikon otomatik gizlenir.
+        // Sen gerçek linki girip sayfayı kaydettiğinde, ikon otomatik görünür olur.
+        eyeIcons.forEach(icon => {
+            const url = icon.getAttribute("data-image");
+            const gecerliLink = url && (url.startsWith("http://") || url.startsWith("https://"));
+            if (!gecerliLink) {
+                icon.classList.add("gorsel-yok");
+            }
+        });
 
         // --- Görselleri arka planda sessizce önceden yükleme (preload) ---
         // Amaç: kullanıcı göz ikonuna ilk kez tıkladığında resmin zaten
