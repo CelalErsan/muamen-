@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUÀ Gelatieri d'Italia - Hoşgeldiniz</title>
+    <!-- İlk arkaplan resmi sayfa daha yüklenirken indirilmeye başlasın diye önceliklendiriyoruz -->
+    <link rel="preload" as="image" href="img/kapak1.jpg" fetchpriority="high">
     <style>
         @font-face {
             font-family: 'SmithCorona';
@@ -139,7 +141,7 @@
 
     <!-- Arka plan animasyonu: gerçek <img> etiketleri kullanılıyor -->
     <div class="slayt-arkaplan" id="slaytKutusu">
-        <img class="slayt" src="img/kapak1.jpg" alt="">
+        <img class="slayt" src="img/kapak1.jpg" alt="" fetchpriority="high">
         <img class="slayt" src="img/kapak2.jpg" alt="">
         <img class="slayt" src="img/kapak3.jpg" alt="">
     </div>
@@ -161,17 +163,40 @@
         const slaytlar = document.querySelectorAll('.slayt');
         let index = 0;
 
-        // Her resmin gerçekten yüklenip yüklenmediğini konsola yazar
-        slaytlar.forEach(function (img) {
+        // Her resmin tam olarak ne zaman yüklendiğini takip ediyoruz.
+        // Resim tamamen inmeden "aktif" sınıfı verilmeyecek, böylece
+        // yarım/parça parça yüklenen görüntü hiç gösterilmeyecek.
+        const yuklendiMi = new Array(slaytlar.length).fill(false);
+
+        slaytlar.forEach(function (img, i) {
             img.addEventListener('error', function () {
                 console.error('❌ Resim bulunamadı: ' + img.getAttribute('src'));
             });
-            img.addEventListener('load', function () {
-                console.log('✅ Resim yüklendi: ' + img.getAttribute('src'));
-            });
+
+            function tamamlandi() {
+                yuklendiMi[i] = true;
+                console.log('✅ Resim tamamen yüklendi: ' + img.getAttribute('src'));
+                // İlk resim buysa ve henüz hiçbir slayt gösterilmediyse, hemen göster
+                if (i === 0 && !document.querySelector('.slayt.aktif')) {
+                    img.classList.add('aktif');
+                }
+            }
+
+            if (img.complete && img.naturalWidth > 0) {
+                // Resim zaten tarayıcı önbelleğinden anında geldiyse
+                tamamlandi();
+            } else {
+                img.addEventListener('load', tamamlandi);
+            }
         });
 
         function slaytDegistir() {
+            // Sırası gelen resim henüz tam yüklenmediyse bu turu atla,
+            // yarım görüntü göstermek yerine bir sonraki denemeyi bekle.
+            if (!yuklendiMi[index]) {
+                index = (index + 1) % slaytlar.length;
+                return;
+            }
             slaytlar.forEach(function (img) {
                 img.classList.remove('aktif');
             });
@@ -180,7 +205,6 @@
         }
 
         if (slaytlar.length > 0) {
-            slaytDegistir(); // ilk resmi hemen göster
             setInterval(slaytDegistir, 5000); // her 5 saniyede bir değiştir
         }
     </script>
