@@ -3,93 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUÀ Gelatieri d'Italia</title>
-    
+    <title>MUÀ Gelatieri d'Italia - Hoşgeldiniz</title>
     <style>
-        /* FONTU SİSTEME TANITIYORUZ */
         @font-face {
             font-family: 'SmithCorona';
             src: url('smith.otf') format('opentype');
         }
 
-        body {
-            font-family: 'SmithCorona', monospace;
-            background-color: #ffffff; 
+        body, html {
+            height: 100%;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            position: relative; 
-            z-index: 1;
+            font-family: 'SmithCorona', monospace;
+            background-color: #1c140f; 
+            overflow: hidden; 
         }
-        
-        /* MUA Logolu Hayalet Katman */
-        body::before {
-            content: "";
-            position: fixed; 
+
+        /* Arka planda dönecek fotoğrafların ana kutusu */
+        .slayt-arkaplan {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-image: url('https://mua.com.tr/wp-content/uploads/2017/12/logo.png');
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: 50%; 
-            opacity: 0.08; 
             z-index: -1; 
         }
 
-        /* Ana Logo */
-        .brand-logo {
-            width: 180px;
-            margin-bottom: 50px;
+        /* Fotoğrafların ortak özellikleri */
+        .slayt {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            animation: slaytGecisi 15s infinite; 
         }
-        
-        /* Butonların olduğu kutu */
+
+        /* Fotoğrafların üstüne binen karanlık filtre (butonlar parlasın diye) */
+        .slayt::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65); 
+        }
+
+        /* 1., 2. ve 3. fotoğrafları sıraya sokuyoruz */
+        .slayt:nth-child(1) { background-image: url('img/kapak1.jpg'); animation-delay: 0s; }
+        .slayt:nth-child(2) { background-image: url('img/kapak2.jpg'); animation-delay: 5s; }
+        .slayt:nth-child(3) { background-image: url('img/kapak3.jpg'); animation-delay: 10s; }
+
+        /* Yağ gibi geçişi sağlayan animasyon matematiği */
+        @keyframes slaytGecisi {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            33% { opacity: 1; }
+            43% { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* Ekranın ortasındaki logo ve buton bölümü */
+        .icerik {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            z-index: 1; 
+        }
+
+        .logo {
+            width: 170px;
+            margin-bottom: 20px;
+            filter: brightness(0) invert(1); /* Logoyu beyaza çevirir */
+        }
+
+        .baslik {
+            color: #ffffff;
+            font-size: 18px;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Butonların hizalandığı ana kutu */
         .button-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             width: 85%;
-            max-width: 350px;
+            max-width: 300px;
         }
-        
-        /* Yönlendirme Butonları */
-        .nav-btn {
-            display: block;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 12px;
-            font-size: 22px;
-            font-weight: 600;
-            color: #d81b60; /* MUA Pembesi */
+
+        /* Ana Menü Butonu (Dikkat Çeken) */
+        .btn-menu {
             text-decoration: none;
-            border: 2px solid #d81b60;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: all 0.2s;
-        }
-        
-        .nav-btn:active {
-            transform: scale(0.95);
-            background-color: #d81b60;
             color: #ffffff;
+            background-color: #d81b60; 
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            border: 2px solid #d81b60;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(216, 27, 96, 0.5); 
+        }
+
+        .btn-menu:active {
+            background-color: transparent;
+            color: #d81b60;
+            transform: scale(0.95);
+        }
+
+        /* Alerjen Butonu (Daha sade, şık ve cam efekti) */
+        .btn-alerjen {
+            text-decoration: none;
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1); 
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px); /* Arka planı hafif buzlu cam yapar */
+        }
+
+        .btn-alerjen:active {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
         }
     </style>
 </head>
 <body>
 
-    <!-- Üstteki Net Görünür Logo -->
-    <img src="https://mua.com.tr/wp-content/uploads/2017/12/logo.png" alt="MUA Logo" class="brand-logo">
+    <!-- Arka plan animasyonu -->
+    <div class="slayt-arkaplan">
+        <div class="slayt"></div>
+        <div class="slayt"></div>
+        <div class="slayt"></div>
+    </div>
 
-    <div class="button-container">
-        <!-- Menüye Giden Buton -->
-        <a href="menu.html" class="nav-btn">Menü</a>
+    <!-- Ortadaki Yazılar ve Butonlar -->
+    <div class="icerik">
+        <img src="https://mua.com.tr/wp-content/uploads/2017/12/logo.png" alt="MUA Logo" class="logo"> 
+        <div class="baslik">İtalyan Dondurması & Kahve</div>
         
-        <!-- Alerjen Bilgilerine Giden Buton -->
-        <a href="https://files.qrcodeg.com/pdfs/33f7a7c8-cb1e-422a-babe-a4f20c13a902.pdf" class="nav-btn">Alerjen Bilgileri</a>
+        <div class="button-container">
+            <a href="menu.html" class="btn-menu">Menüyü İncele</a>
+            <!-- Senin eklediğin PDF linki[cite: 2] -->
+            <a href="https://files.qrcodeg.com/pdfs/33f7a7c8-cb1e-422a-babe-a4f20c13a902.pdf" class="btn-alerjen" target="_blank">Alerjen Bilgileri</a>
+        </div>
     </div>
 
 </body>
