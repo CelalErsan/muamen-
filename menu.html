@@ -274,6 +274,12 @@
             height: auto;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-content img.yuklendi {
+            opacity: 1;
         }
         
         .close-btn {
@@ -1450,10 +1456,68 @@
         const eyeIcons = document.querySelectorAll(".eye-icon");
         const closeBtn = document.querySelector(".close-btn");
 
+        // --- Görselleri arka planda sessizce önceden yükleme (preload) ---
+        // Amaç: kullanıcı göz ikonuna ilk kez tıkladığında resmin zaten
+        // tarayıcı önbelleğinde olması, böylece yarım/bulanık açılma sorunu yaşanmaması.
+        function menuGorselleriniOnYukle() {
+            const urlSeti = new Set();
+            eyeIcons.forEach(icon => {
+                const url = icon.getAttribute("data-image");
+                // Henüz linki girilmemiş (RESİM_LİNKİ placeholder'ı gibi) olanları atla
+                if (url && (url.startsWith("http://") || url.startsWith("https://"))) {
+                    urlSeti.add(url);
+                }
+            });
+
+            const urlListesi = Array.from(urlSeti);
+            let sira = 0;
+
+            function sirdakiniYukle() {
+                if (sira >= urlListesi.length) return;
+                const gizliResim = new Image();
+                gizliResim.onload = gizliResim.onerror = function () {
+                    sira++;
+                    // Tarayıcı boştayken devam et ki sayfa performansı etkilenmesin
+                    if ("requestIdleCallback" in window) {
+                        requestIdleCallback(sirdakiniYukle);
+                    } else {
+                        setTimeout(sirdakiniYukle, 60);
+                    }
+                };
+                gizliResim.src = urlListesi[sira];
+            }
+
+            sirdakiniYukle();
+        }
+
+        // Sayfa tam yüklendikten kısa bir süre sonra, kullanıcı menüyü
+        // incelemeye başlarken, ön yüklemeyi arka planda başlat
+        if ("requestIdleCallback" in window) {
+            requestIdleCallback(menuGorselleriniOnYukle);
+        } else {
+            window.addEventListener("load", function () {
+                setTimeout(menuGorselleriniOnYukle, 500);
+            });
+        }
+
         eyeIcons.forEach(icon => {
             icon.addEventListener("click", function() {
-                modalImg.src = this.getAttribute("data-image");
-                modal.style.display = "flex"; 
+                const url = this.getAttribute("data-image");
+                modalImg.classList.remove("yuklendi");
+                modal.style.display = "flex";
+
+                // Ön yükleme sayesinde resim genelde önbellekte olduğu için
+                // bu neredeyse anında tetiklenir; değilse yumuşakça belirir.
+                modalImg.onload = function () {
+                    modalImg.classList.add("yuklendi");
+                };
+                modalImg.src = url;
+
+                // Eğer resim zaten önbellekten anında geldiyse (tarayıcı bazen
+                // onload'ı tetiklemeden complete=true döner) manuel kontrol
+                if (modalImg.complete) {
+                    modalImg.classList.add("yuklendi");
+                }
             });
         });
 
