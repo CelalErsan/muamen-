@@ -1500,33 +1500,62 @@
             });
         }
 
+        // --- Modal açma/kapama + geri tuşu yönetimi ---
+        // Amaç: modal açıkken telefonun geri tuşuna basıldığında sayfadan
+        // çıkılmasın, sadece resim kapansın.
+        let modalGecmisteAcik = false;
+
+        function modaliAc(url) {
+            modalImg.classList.remove("yuklendi");
+            modal.style.display = "flex";
+
+            modalImg.onload = function () {
+                modalImg.classList.add("yuklendi");
+            };
+            modalImg.src = url;
+
+            if (modalImg.complete) {
+                modalImg.classList.add("yuklendi");
+            }
+
+            // Geçmişe sahte bir "modal açık" durağı ekliyoruz.
+            // Geri tuşuna basılınca tarayıcı buraya döner, sayfa değişmez.
+            history.pushState({ modal: true }, "");
+            modalGecmisteAcik = true;
+        }
+
+        function modaliKapat(geriGitmeliMi) {
+            modal.style.display = "none";
+            // Eğer geçmişte hâlâ bizim eklediğimiz sahte durak varsa
+            // (kullanıcı X'e veya dışarıya tıklayarak kapattıysa) onu temizle,
+            // yoksa "geri" tuşuna 2 kere basma ihtiyacı doğar.
+            if (geriGitmeliMi && modalGecmisteAcik) {
+                modalGecmisteAcik = false;
+                history.back();
+            }
+        }
+
         eyeIcons.forEach(icon => {
             icon.addEventListener("click", function() {
-                const url = this.getAttribute("data-image");
-                modalImg.classList.remove("yuklendi");
-                modal.style.display = "flex";
-
-                // Ön yükleme sayesinde resim genelde önbellekte olduğu için
-                // bu neredeyse anında tetiklenir; değilse yumuşakça belirir.
-                modalImg.onload = function () {
-                    modalImg.classList.add("yuklendi");
-                };
-                modalImg.src = url;
-
-                // Eğer resim zaten önbellekten anında geldiyse (tarayıcı bazen
-                // onload'ı tetiklemeden complete=true döner) manuel kontrol
-                if (modalImg.complete) {
-                    modalImg.classList.add("yuklendi");
-                }
+                modaliAc(this.getAttribute("data-image"));
             });
         });
 
         closeBtn.addEventListener("click", function() {
-            modal.style.display = "none";
+            modaliKapat(true);
         });
 
         modal.addEventListener("click", function(event) {
             if (event.target === modal) {
+                modaliKapat(true);
+            }
+        });
+
+        // Telefonun/tarayıcının geri tuşuna basılınca buraya düşer.
+        // Modal açıksa: sayfadan çıkma, sadece modalı kapat.
+        window.addEventListener("popstate", function() {
+            if (modalGecmisteAcik) {
+                modalGecmisteAcik = false;
                 modal.style.display = "none";
             }
         });
