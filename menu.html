@@ -1464,12 +1464,13 @@
         const closeBtn = document.querySelector(".close-btn");
 
         // --- Görseli henüz eklenmemiş ürünlerin göz ikonunu gizle ---
-        // data-image alanı "http://" veya "https://" ile başlamıyorsa
-        // (örn. hâlâ "RESİM_LİNKİ" placeholder'ı ise) ikon otomatik gizlenir.
-        // Sen gerçek linki girip sayfayı kaydettiğinde, ikon otomatik görünür olur.
+        // data-image alanı boşsa veya hâlâ "RESİM_LİNKİ" placeholder'ı ise
+        // ikon otomatik gizlenir. Hem "https://..." hem de "img/..." gibi
+        // göreceli linkler geçerli sayılır. Sen gerçek linki girip sayfayı
+        // kaydettiğinde, ikon otomatik görünür olur.
         eyeIcons.forEach(icon => {
-            const url = icon.getAttribute("data-image");
-            const gecerliLink = url && (url.startsWith("http://") || url.startsWith("https://"));
+            const url = (icon.getAttribute("data-image") || "").trim();
+            const gecerliLink = url !== "" && url !== "RESİM_LİNKİ";
             if (!gecerliLink) {
                 icon.classList.add("gorsel-yok");
             }
@@ -1481,9 +1482,9 @@
         function menuGorselleriniOnYukle() {
             const urlSeti = new Set();
             eyeIcons.forEach(icon => {
-                const url = icon.getAttribute("data-image");
-                // Henüz linki girilmemiş (RESİM_LİNKİ placeholder'ı gibi) olanları atla
-                if (url && (url.startsWith("http://") || url.startsWith("https://"))) {
+                const url = (icon.getAttribute("data-image") || "").trim();
+                // Henüz linki girilmemiş (RESİM_LİNKİ placeholder'ı veya boş) olanları atla
+                if (url !== "" && url !== "RESİM_LİNKİ") {
                     urlSeti.add(url);
                 }
             });
