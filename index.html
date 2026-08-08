@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUÀ Gelatieri d'Italia - Hoşgeldiniz</title>
-    <!-- İlk arkaplan resmi sayfa daha yüklenirken indirilmeye başlasın diye önceliklendiriyoruz -->
-    <link rel="preload" as="image" href="img/kapak1.jpg" fetchpriority="high">
     <style>
         @font-face {
             font-family: 'SmithCorona';
@@ -86,10 +84,53 @@
         .baslik {
             color: #ffffff;
             font-size: 18px;
-            margin-bottom: 40px;
+            margin-bottom: 25px; /* Kutuya yer açmak için biraz kıstım */
             letter-spacing: 2px;
             text-transform: uppercase;
         }
+
+        /* YENİ EKLENEN KAMPANYA KUTUSU STİLLERİ */
+        .kampanya-kutusu {
+            background: rgba(255, 255, 255, 0.05); /* Şeffaf cam efekti */
+            border: 1px solid rgba(216, 27, 96, 0.4); 
+            border-radius: 16px;
+            padding: 16px 24px;
+            margin-bottom: 35px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: glow 3s infinite alternate;
+        }
+
+        .kampanya-saat {
+            display: block;
+            color: #f4c9d8;
+            font-size: 12px;
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .kampanya-metin {
+            display: block;
+            color: #ffffff;
+            font-size: 17px;
+            line-height: 1.5;
+            letter-spacing: 0.5px;
+        }
+
+        .kampanya-vurgu {
+            color: #d81b60;
+            font-weight: bold;
+            font-size: 19px;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px rgba(216, 27, 96, 0.1); }
+            100% { box-shadow: 0 0 25px rgba(216, 27, 96, 0.5); }
+        }
+        /* YENİ STİLLER BİTİŞ */
 
         .button-container {
             display: flex;
@@ -141,7 +182,7 @@
 
     <!-- Arka plan animasyonu: gerçek <img> etiketleri kullanılıyor -->
     <div class="slayt-arkaplan" id="slaytKutusu">
-        <img class="slayt" src="img/kapak1.jpg" alt="" fetchpriority="high">
+        <img class="slayt" src="img/kapak1.jpg" alt="">
         <img class="slayt" src="img/kapak2.jpg" alt="">
         <img class="slayt" src="img/kapak3.jpg" alt="">
     </div>
@@ -153,6 +194,15 @@
         <img src="https://mua.com.tr/wp-content/uploads/2017/12/logo.png" alt="MUA Logo" class="logo">
         <div class="baslik">İtalyan Dondurması & Kahve</div>
 
+        <!-- YENİ EKLENEN KAMPANYA KUTUSU -->
+        <div class="kampanya-kutusu">
+            <span class="kampanya-saat">🕒 10:00 - 19:00 Arası</span>
+            <span class="kampanya-metin">
+                <span class="kampanya-vurgu">2 Top</span> Dondurma Alana<br>
+                Limonata veya Kahve İkram!
+            </span>
+        </div>
+
         <div class="button-container">
             <a href="menu.html" class="btn-menu">Menüyü İncele</a>
             <a href="https://files.qrcodeg.com/pdfs/33f7a7c8-cb1e-422a-babe-a4f20c13a902.pdf" class="btn-alerjen" target="_blank">Alerjen Bilgileri</a>
@@ -163,40 +213,17 @@
         const slaytlar = document.querySelectorAll('.slayt');
         let index = 0;
 
-        // Her resmin tam olarak ne zaman yüklendiğini takip ediyoruz.
-        // Resim tamamen inmeden "aktif" sınıfı verilmeyecek, böylece
-        // yarım/parça parça yüklenen görüntü hiç gösterilmeyecek.
-        const yuklendiMi = new Array(slaytlar.length).fill(false);
-
-        slaytlar.forEach(function (img, i) {
+        // Her resmin gerçekten yüklenip yüklenmediğini konsola yazar
+        slaytlar.forEach(function (img) {
             img.addEventListener('error', function () {
                 console.error('❌ Resim bulunamadı: ' + img.getAttribute('src'));
             });
-
-            function tamamlandi() {
-                yuklendiMi[i] = true;
-                console.log('✅ Resim tamamen yüklendi: ' + img.getAttribute('src'));
-                // İlk resim buysa ve henüz hiçbir slayt gösterilmediyse, hemen göster
-                if (i === 0 && !document.querySelector('.slayt.aktif')) {
-                    img.classList.add('aktif');
-                }
-            }
-
-            if (img.complete && img.naturalWidth > 0) {
-                // Resim zaten tarayıcı önbelleğinden anında geldiyse
-                tamamlandi();
-            } else {
-                img.addEventListener('load', tamamlandi);
-            }
+            img.addEventListener('load', function () {
+                console.log('✅ Resim yüklendi: ' + img.getAttribute('src'));
+            });
         });
 
         function slaytDegistir() {
-            // Sırası gelen resim henüz tam yüklenmediyse bu turu atla,
-            // yarım görüntü göstermek yerine bir sonraki denemeyi bekle.
-            if (!yuklendiMi[index]) {
-                index = (index + 1) % slaytlar.length;
-                return;
-            }
             slaytlar.forEach(function (img) {
                 img.classList.remove('aktif');
             });
@@ -205,6 +232,7 @@
         }
 
         if (slaytlar.length > 0) {
+            slaytDegistir(); // ilk resmi hemen göster
             setInterval(slaytDegistir, 5000); // her 5 saniyede bir değiştir
         }
     </script>
