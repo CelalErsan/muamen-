@@ -84,22 +84,21 @@
         .baslik {
             color: #ffffff;
             font-size: 18px;
-            margin-bottom: 25px; /* Kutuya yer açmak için biraz kıstım */
+            margin-bottom: 25px; 
             letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        /* YENİ EKLENEN KAMPANYA KUTUSU STİLLERİ */
+        /* KAMPANYA KUTUSU - STATİK VE ZARİF CAM EFEKTİ */
         .kampanya-kutusu {
-            background: rgba(255, 255, 255, 0.05); /* Şeffaf cam efekti */
-            border: 1px solid rgba(216, 27, 96, 0.4); 
+            background: rgba(255, 255, 255, 0.03); /* Arka planı daha az boğması için iyice şeffaflaştırıldı */
+            border: 1px solid rgba(216, 27, 96, 0.3); /* Çerçeve parlaması kısıldı */
             border-radius: 16px;
             padding: 16px 24px;
             margin-bottom: 35px;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            animation: glow 3s infinite alternate;
+            backdrop-filter: blur(4px); /* Arka plan fotoğrafları netleşsin diye blur düşürüldü */
+            -webkit-backdrop-filter: blur(4px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Abartılı gölge temizlendi */
         }
 
         .kampanya-saat {
@@ -125,12 +124,6 @@
             font-weight: bold;
             font-size: 19px;
         }
-
-        @keyframes glow {
-            0% { box-shadow: 0 0 10px rgba(216, 27, 96, 0.1); }
-            100% { box-shadow: 0 0 25px rgba(216, 27, 96, 0.5); }
-        }
-        /* YENİ STİLLER BİTİŞ */
 
         .button-container {
             display: flex;
@@ -194,7 +187,7 @@
         <img src="https://mua.com.tr/wp-content/uploads/2017/12/logo.png" alt="MUA Logo" class="logo">
         <div class="baslik">İtalyan Dondurması & Kahve</div>
 
-        <!-- YENİ EKLENEN KAMPANYA KUTUSU -->
+        <!-- STATİK VE ZARİF KAMPANYA KUTUSU -->
         <div class="kampanya-kutusu">
             <span class="kampanya-saat">🕒 10:00 - 19:00 Arası</span>
             <span class="kampanya-metin">
