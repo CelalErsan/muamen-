@@ -84,14 +84,38 @@
         .baslik {
             color: #ffffff;
             font-size: 18px;
-            margin-bottom: 25px; 
+            margin-bottom: 30px; 
             letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        /* KUTUSUZ KAMPANYA ALANI */
-        .kampanya-alani {
-            margin-bottom: 40px; 
+        /* İNCE ÇİZGİLİ, SADE KAMPANYA KUTUSU */
+        .kampanya-kutusu {
+            position: relative;
+            border: 1px solid #d81b60; /* Sadece ince pembe çizgi */
+            border-radius: 12px;
+            padding: 22px 24px 16px 24px;
+            margin-bottom: 35px;
+            background-color: transparent; /* Cam efekti veya dolgu yok */
+        }
+
+        /* KUTUNUN ÜSTÜNDEKİ ROZET */
+        .kutu-rozet {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #d81b60;
+            color: #ffffff;
+            font-family: sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            padding: 4px 16px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
         .kampanya-saat {
@@ -126,9 +150,8 @@
             max-width: 300px;
         }
 
-        /* MENÜ BUTONU VE ROZET AYARLARI */
+        /* MENÜ BUTONU (Sade ve Temiz Haline Döndü) */
         .btn-menu {
-            position: relative; /* Rozetin butona yapışması için gerekli */
             text-decoration: none;
             color: #ffffff;
             background-color: #d81b60;
@@ -139,33 +162,12 @@
             border: 2px solid #d81b60;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(216, 27, 96, 0.5);
-            display: inline-block;
         }
 
         .btn-menu:active {
             background-color: transparent;
             color: #d81b60;
             transform: scale(0.95);
-        }
-
-        /* BUTONUN ÜSTÜNDEKİ İKRAM ROZETİ */
-        .rozet-ikram {
-            position: absolute;
-            top: -14px;
-            right: -10px;
-            background-color: #ffffff;
-            color: #d81b60;
-            font-family: sans-serif;
-            font-size: 11px;
-            font-weight: 900;
-            padding: 4px 12px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-            border: 2px solid #d81b60;
-            transform: rotate(4deg);
-            pointer-events: none; /* Rozete tıklanmasını engeller, butona tıklanır */
         }
 
         .btn-alerjen {
@@ -203,8 +205,9 @@
         <img src="https://mua.com.tr/wp-content/uploads/2017/12/logo.png" alt="MUA Logo" class="logo">
         <div class="baslik">İtalyan Dondurması & Kahve</div>
 
-        <!-- Kampanya Yazısı -->
-        <div class="kampanya-alani">
+        <!-- İNCE ÇİZGİLİ KAMPANYA KUTUSU -->
+        <div class="kampanya-kutusu">
+            <div class="kutu-rozet">🎁 Fırsat</div>
             <span class="kampanya-saat">🕒 10:00 - 19:00 Arası</span>
             <span class="kampanya-metin">
                 <span class="kampanya-vurgu">2 Top</span> Dondurma Alana<br>
@@ -213,10 +216,7 @@
         </div>
 
         <div class="button-container">
-            <a href="menu.html" class="btn-menu">
-                Menüyü İncele
-                <span class="rozet-ikram">🎁 Fırsat</span>
-            </a>
+            <a href="menu.html" class="btn-menu">Menüyü İncele</a>
             <a href="https://files.qrcodeg.com/pdfs/33f7a7c8-cb1e-422a-babe-a4f20c13a902.pdf" class="btn-alerjen" target="_blank">Alerjen Bilgileri</a>
         </div>
     </div>
