@@ -89,22 +89,15 @@
             text-transform: uppercase;
         }
 
-        /* KAMPANYA KUTUSU - STATİK VE ZARİF CAM EFEKTİ */
-        .kampanya-kutusu {
-            background: rgba(255, 255, 255, 0.03); /* Arka planı daha az boğması için iyice şeffaflaştırıldı */
-            border: 1px solid rgba(216, 27, 96, 0.3); /* Çerçeve parlaması kısıldı */
-            border-radius: 16px;
-            padding: 16px 24px;
-            margin-bottom: 35px;
-            backdrop-filter: blur(4px); /* Arka plan fotoğrafları netleşsin diye blur düşürüldü */
-            -webkit-backdrop-filter: blur(4px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Abartılı gölge temizlendi */
+        /* KUTUSUZ, SADECE YAZI OLAN KAMPANYA ALANI */
+        .kampanya-alani {
+            margin-bottom: 40px; /* Butonlarla arasına biraz boşluk bıraktım */
         }
 
         .kampanya-saat {
             display: block;
             color: #f4c9d8;
-            font-size: 12px;
+            font-size: 13px;
             margin-bottom: 8px;
             letter-spacing: 1.5px;
             text-transform: uppercase;
@@ -187,8 +180,8 @@
         <img src="https://mua.com.tr/wp-content/uploads/2017/12/logo.png" alt="MUA Logo" class="logo">
         <div class="baslik">İtalyan Dondurması & Kahve</div>
 
-        <!-- STATİK VE ZARİF KAMPANYA KUTUSU -->
-        <div class="kampanya-kutusu">
+        <!-- YENİ KUTUSUZ KAMPANYA ALANI -->
+        <div class="kampanya-alani">
             <span class="kampanya-saat">🕒 10:00 - 19:00 Arası</span>
             <span class="kampanya-metin">
                 <span class="kampanya-vurgu">2 Top</span> Dondurma Alana<br>
@@ -206,7 +199,6 @@
         const slaytlar = document.querySelectorAll('.slayt');
         let index = 0;
 
-        // Her resmin gerçekten yüklenip yüklenmediğini konsola yazar
         slaytlar.forEach(function (img) {
             img.addEventListener('error', function () {
                 console.error('❌ Resim bulunamadı: ' + img.getAttribute('src'));
@@ -225,8 +217,8 @@
         }
 
         if (slaytlar.length > 0) {
-            slaytDegistir(); // ilk resmi hemen göster
-            setInterval(slaytDegistir, 5000); // her 5 saniyede bir değiştir
+            slaytDegistir(); 
+            setInterval(slaytDegistir, 5000); 
         }
     </script>
 
