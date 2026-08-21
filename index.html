@@ -187,13 +187,32 @@
             background-color: rgba(255, 255, 255, 0.3);
             transform: scale(0.95);
         }
+
+        /* GOOGLE YORUM BUTONU */
+        .btn-google {
+            text-decoration: none;
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-google:active {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
 
     <!-- Arka plan animasyonu -->
     <div class="slayt-arkaplan" id="slaytKutusu">
-        <img class="slayt" src="img/kapak4.jpg" alt="">
+        <img class="slayt" src="img/kapak1.jpg" alt="">
         <img class="slayt" src="img/kapak2.jpg" alt="">
         <img class="slayt" src="img/kapak3.jpg" alt="">
     </div>
@@ -218,6 +237,8 @@
         <div class="button-container">
             <a href="menu.html" class="btn-menu">Menüyü İncele</a>
             <a href="https://files.qrcodeg.com/pdfs/33f7a7c8-cb1e-422a-babe-a4f20c13a902.pdf" class="btn-alerjen" target="_blank">Alerjen Bilgileri</a>
+            <!-- BURADAKİ HREF KISMINA GOOGLE YORUM LİNKİNİ YAPIŞTIR -->
+            <a href="https://maps.app.goo.gl/4FReX32oHHrcBzXw6?g_st=ipc" class="btn-google" target="_blank">⭐ Bizi Değerlendirin</a>
         </div>
     </div>
 
