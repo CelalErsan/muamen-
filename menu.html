@@ -36,6 +36,8 @@
             max-width: 150px;
             width: 55%;
             height: auto;
+            /* Beyaz logoyu açık arka planda göstermek için siyaha çevirir */
+            filter: brightness(0);
         }
 
         .site-header-rule {
@@ -112,12 +114,15 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-image: url('https://mua.com.tr/wp-content/uploads/2017/12/logo.png');
+            /* Yerel beyaz logo eklendi */
+            background-image: url('img/logo_white.png');
             background-position: center;
             background-repeat: no-repeat;
             background-size: 50%; 
             opacity: 0.08; 
             z-index: -1; 
+            /* Beyaz logoyu transparan siyaha çevirmek için eklendi */
+            filter: brightness(0);
         }
         
         .menu-container {
@@ -320,7 +325,7 @@
 <body>
 
     <header class="site-header">
-        <img class="site-header-logo" src="https://mua.com.tr/wp-content/uploads/2017/12/logo.png" alt="MUÀ Gelatieri d'Italia">
+        <img class="site-header-logo" src="img/logo_white.png" alt="MUÀ Gelatieri d'Italia">
         <div class="site-header-rule"></div>
     </header>
 
