@@ -127,7 +127,7 @@
     </nav>
 
     <div class="menu-container" id="menuContainer">
-        <p style="text-align: center; color: #a8907c; margin-top: 60px; font-style: italic;">Menü hazırlanıyor...</p>
+        <p id="loadingMsg" style="text-align: center; color: #a8907c; margin-top: 60px; font-style: italic;">Menü hazırlanıyor...</p>
     </div>
 
     <footer class="site-footer">
@@ -143,218 +143,15 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    <script>
+        const DB_URL = "https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app/menuData.json";
+        const EYE_SVG_PATH = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
-            authDomain: "mua-qr-menu.firebaseapp.com",
-            databaseURL: "https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "mua-qr-menu",
-            storageBucket: "mua-qr-menu.firebasestorage.app",
-            messagingSenderId: "813387212404",
-            appId: "1:813387212404:web:e91c88891cabfb70de5321"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        const EYE_SVG_PATH = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
-
-        function urunKartiOlustur(item, isPopularSection = false) {
-            const featured = isPopularSection ? (item.popularFeatured ?? item.featured) : item.featured;
+        function urunKartiOlustur(item, isPopularSection) {
+            const featured = isPopularSection ? (item.popularFeatured !== undefined ? item.popularFeatured : item.featured) : item.featured;
             const badge = isPopularSection ? (item.popularBadge || item.badge) : item.badge;
             const gorselVar = item.image && item.image.trim() !== "" && item.image !== "RESİM_LİNKİ";
-
-            return `
-                <div class="menu-item ${featured ? 'menu-item--featured' : ''}">
-                    <div class="item-info">
-                        ${badge ? `<span class="chef-badge">${badge}</span>` : ''}
-                        <span class="item-name">${item.name}</span>${item.desc ? `<span class="item-desc">${item.desc}</span>` : ''}
-                        <span class="item-price">${item.price},00 ₺</span>
-                    </div>
-                    <svg class="eye-icon ${gorselVar ? '' : 'gorsel-yok'}" data-image="${gorselVar ? item.image : ''}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">${EYE_SVG_PATH}</svg>Kanka şimdi taşlar yerine oturdu! Gönderdiğin dosyalara baktım, senin sistemin çok net:
-
-* **`index.html`:** Senin karşılama (Hoşgeldiniz) sayfan. Arka planda slayt dönüyor, kampanya kutusu ve *"Menüyü İncele"* butonu var. **Bu sayfaya hiç dokunmana gerek yok** (hatta istersen kampanya kutusunu da admin panelinden yönetilebilir yaptım, aşağıda ikisini de anlatıyorum).
-* **`menu.html`:** Müşteri *"Menüyü İncele"* butonuna bastığında açılan asıl ürün listesi sayfan[cite: 3, 4]. Senin az önce bana attığın `menu.html` dosyasının içinde **hala eski sabit (statik) kodlar duruyor**[cite: 4]! O yüzden adminden yaptığın hiçbir değişiklik siteye yansımıyordu.
-
-Kafan hiç karışmasın diye senin kendi dosyalarını birebir düzenledim. Hatta hazır elimiz değmişken, `index.html` içindeki o **"🎁 Fırsat / Kampanya Kutusunu"** da admin paneline bağladım ki kampanya bittiğinde veya değiştiğinde yine kodla uğraşma, telefondan tek tıkla kapatıp açabil!
-
-Sırasıyla şu 3 dosyayı GitHub'daki kendi dosyalarının içine yapıştırıp kaydediyorsun:
-
----
-
-### 1. `menu.html` Dosyasının İçine Yazılacak Kod (Zorunlu)
-GitHub'daki **`menu.html`** dosyanı aç, içindeki eski 900 satırlık kodu **tamamen sil** ve yerine bu yeni dinamik kodu yapıştırıp kaydet[cite: 4]:
-
-```html
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUÀ Gelatieri d'Italia - QR Menü</title>
-    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-    <link href="[https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap](https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap)" rel="stylesheet">
-    
-    <style>
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Fraunces', serif;
-            background-color: #F5F5F7; 
-            margin: 0;
-            padding: 0 15px 20px 15px;
-            color: #4a3b32;
-            position: relative; 
-            min-height: 100vh;
-            z-index: 1;
-        }
-        .site-header { text-align: center; padding: 32px 15px 20px 15px; }
-        .site-header-logo {
-            display: inline-block; max-width: 150px; width: 55%; height: auto; filter: brightness(0);
-        }
-        .site-header-rule { width: 46px; height: 1px; background: #d81b60; margin: 16px auto 0 auto; }
-        .category-nav {
-            position: sticky; top: 0; z-index: 500;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            margin: 0 -15px; padding: 14px 0 12px 0;
-            border-bottom: 1px solid #f0e2d8;
-            box-shadow: 0 4px 12px rgba(44, 30, 22, 0.04);
-        }
-        .category-nav-scroll {
-            display: flex; gap: 18px; overflow-x: auto; padding: 0 15px;
-            scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none;
-        }
-        .category-nav-scroll::-webkit-scrollbar { display: none; }
-        .category-nav-btn {
-            flex: 0 0 auto; font-family: 'Fraunces', serif; font-size: 11.5px; font-weight: 600;
-            letter-spacing: 0.8px; text-transform: uppercase; color: #a8907c;
-            background: transparent; border: none; border-bottom: 2px solid transparent;
-            padding: 6px 4px 10px 4px; cursor: pointer; white-space: nowrap;
-            transition: color 0.25s ease, border-color 0.25s ease;
-        }
-        .category-nav-btn:active { opacity: 0.7; }
-        .category-nav-btn.active { color: #2c1e16; border-bottom-color: #d81b60; }
-        h2 {
-            scroll-margin-top: 78px; font-family: 'Fraunces', serif; font-weight: 600;
-            font-style: italic; text-align: center; font-size: 27px; letter-spacing: 0.5px;
-            color: #2c1e16; margin-top: 52px; margin-bottom: 28px; padding-bottom: 12px;
-            border-bottom: 1px solid #e6d6ca;
-        }
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: url('img/logo_white.png'); background-position: center;
-            background-repeat: no-repeat; background-size: 50%; opacity: 0.08; z-index: -1; filter: brightness(0);
-        }
-        .menu-container { max-width: 500px; margin: 0 auto; }
-        .menu-item {
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255, 255, 255, 0.9); padding: 18px 20px; border-radius: 10px;
-            margin-bottom: 12px; box-shadow: 0 3px 12px rgba(44, 30, 22, 0.05);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .item-desc { font-size: 12.5px; color: #a8907c; margin-top: 1px; font-style: italic; line-height: 1.4; }        
-        .menu-item:active { transform: scale(0.985); box-shadow: 0 2px 6px rgba(44, 30, 22, 0.06); }
-        .item-info { display: flex; flex-direction: column; gap: 5px; }
-        .item-name { font-size: 16.5px; font-weight: 600; letter-spacing: 0.1px; color: #2c1e16; }
-        .sub-category-label {
-            font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
-            color: #c48ba0; margin: 22px 4px 12px 4px;
-        }
-        .sub-category-label--first { margin-top: 4px; }
-        .chef-badge {
-            display: inline-flex; align-items: center; gap: 4px; width: fit-content;
-            font-size: 10.5px; font-weight: 600; letter-spacing: 0.3px; color: #ffffff;
-            background: linear-gradient(135deg, #d81b60, #f06292); padding: 3px 9px;
-            border-radius: 10px; margin-bottom: 2px;
-        }
-        .menu-item--featured {
-            border: 1px solid #f4c9d8;
-            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(252,240,244,0.9));
-        }
-        .item-price { font-size: 14.5px; font-weight: 700; letter-spacing: 0.2px; color: #d81b60; }
-        .eye-icon {
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; box-sizing: content-box; width: 24px; height: 24px; padding: 10px;
-            background: #fcf0f4; border-radius: 50%; fill: #d81b60;
-            transition: background-color 0.25s ease, fill 0.25s ease;
-        }
-        .eye-icon.gorsel-yok { visibility: hidden; }
-        .eye-icon:hover { background: #d81b60; fill: white; }
-        .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(28, 20, 15, 0.9); justify-content: center; align-items: center;
-        }
-        .modal-content { position: relative; max-width: 90%; max-height: 80%; animation: zoomIn 0.3s ease; }
-        @keyframes zoomIn { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
-        .modal-content img {
-            width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            opacity: 0; transition: opacity 0.25s ease;
-        }
-        .modal-content img.yuklendi { opacity: 1; }
-        .close-btn { position: absolute; top: -40px; right: 0; color: white; font-size: 32px; cursor: pointer; }
-        .site-footer {
-            max-width: 500px; margin: 50px auto 10px auto; text-align: center;
-            padding-top: 24px; border-top: 1px solid #e6d6ca;
-        }
-        .site-footer-brand { font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: #2c1e16; margin-bottom: 8px; }
-        .site-footer-note { font-size: 11px; letter-spacing: 0.3px; color: #a8907c; margin: 4px 0; }
-    </style>
-</head>
-<body>
-
-    <header class="site-header">
-        <img class="site-header-logo" src="img/logo_white.png" alt="MUÀ Gelatieri d'Italia">
-        <div class="site-header-rule"></div>
-    </header>
-
-    <nav class="category-nav">
-        <div class="category-nav-scroll" id="navScroll"></div>
-    </nav>
-
-    <div class="menu-container" id="menuContainer">
-        <p style="text-align: center; color: #a8907c; margin-top: 60px; font-style: italic;">Menü hazırlanıyor...</p>
-    </div>
-
-    <footer class="site-footer">
-        <div class="site-footer-brand">MUÀ</div>
-        <p class="site-footer-note">Tüm fiyatlarımıza KDV dahildir.</p>
-        <p class="site-footer-note" id="lastUpdatedText">Fiyat değişiklik tarihi: 09.11.2026</p>
-    </footer>
-
-    <div id="imageModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <img id="modalImage" src="" alt="Ürün Görseli">
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "[https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js](https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js)";
-        import { getDatabase, ref, onValue } from "[https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js](https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js)";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
-            authDomain: "mua-qr-menu.firebaseapp.com",
-            databaseURL: "[https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app](https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app)",
-            projectId: "mua-qr-menu",
-            storageBucket: "mua-qr-menu.firebasestorage.app",
-            messagingSenderId: "813387212404",
-            appId: "1:813387212404:web:e91c88891cabfb70de5321"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        const EYE_SVG_PATH = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
-
-        function urunKartiOlustur(item, isPopularSection = false) {
-            const featured = isPopularSection ? (item.popularFeatured ?? item.featured) : item.featured;
-            const badge = isPopularSection ? (item.popularBadge || item.badge) : item.badge;
-            const gorselVar = item.image && item.image.trim() !== "" && item.image !== "RESİM_LİNKİ";
+            const fiyati = String(item.price || "").includes(",") ? item.price : (item.price + ",00");
 
             return `
                 <div class="menu-item ${featured ? 'menu-item--featured' : ''}">
@@ -362,17 +159,19 @@ GitHub'daki **`menu.html`** dosyanı aç, içindeki eski 900 satırlık kodu **t
                         ${badge ? `<span class="chef-badge">${badge}</span>` : ''}
                         <span class="item-name">${item.name}</span>
                         ${item.desc ? `<span class="item-desc">${item.desc}</span>` : ''}
-                        <span class="item-price">${item.price},00 ₺</span>
+                        <span class="item-price">${fiyati} ₺</span>
                     </div>
-                    <svg class="eye-icon ${gorselVar ? '' : 'gorsel-yok'}" data-image="${gorselVar ? item.image : ''}" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="24" height="24" viewBox="0 0 24 24">${EYE_SVG_PATH}</svg>
+                    <svg class="eye-icon ${gorselVar ? '' : 'gorsel-yok'}" data-image="${gorselVar ? item.image : ''}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">${EYE_SVG_PATH}</svg>
                 </div>
             `;
         }
 
-        onValue(ref(db, 'menuData'), (snapshot) => {
-            const data = snapshot.val();
-            if (!data) {
-                document.getElementById("menuContainer").innerHTML = `<p style="text-align:center; padding:40px; color:#d81b60;">Henüz ürünler veritabanına aktarılmamış. Lütfen admin.html sayfasına girip 'Mevcut Menüyü Veritabanına Aktar' butonuna bas.</p>`;
+        function ekranaCiz(data) {
+            const menuContainer = document.getElementById("menuContainer");
+            const navScroll = document.getElementById("navScroll");
+
+            if (!data || !data.items) {
+                menuContainer.innerHTML = '<p style="text-align:center; padding:40px; color:#d81b60;">Veritabanında ürün bulunamadı. Lütfen admin.html sayfasından menüyü aktarın.</p>';
                 return;
             }
 
@@ -380,14 +179,14 @@ GitHub'daki **`menu.html`** dosyanı aç, içindeki eski 900 satırlık kodu **t
                 document.getElementById("lastUpdatedText").textContent = "Fiyat değişiklik tarihi: " + data.lastUpdated;
             }
 
-            const navScroll = document.getElementById("navScroll");
-            const menuContainer = document.getElementById("menuContainer");
             navScroll.innerHTML = "";
             menuContainer.innerHTML = "";
 
-            const aktifUrunler = (data.items || []).filter(i => i && i.active !== false);
+            const itemsArray = Array.isArray(data.items) ? data.items : Object.values(data.items);
+            const categoriesArray = Array.isArray(data.categories) ? data.categories : Object.values(data.categories || {});
+            const aktifUrunler = itemsArray.filter(i => i && i.active !== false);
 
-            data.categories.forEach(cat => {
+            categoriesArray.forEach(cat => {
                 let catUrunleri = [];
                 if (cat.id === "cat-en-cok-tercih-edilenler") {
                     catUrunleri = aktifUrunler.filter(i => i.popular).sort((a, b) => (a.popularOrder || 99) - (b.popularOrder || 99));
@@ -402,7 +201,8 @@ GitHub'daki **`menu.html`** dosyanı aç, içindeki eski 900 satırlık kodu **t
                 btn.setAttribute("data-target", "#" + cat.id);
                 btn.textContent = cat.title;
                 btn.addEventListener("click", () => {
-                    document.getElementById(cat.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    const el = document.getElementById(cat.id);
+                    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                 });
                 navScroll.appendChild(btn);
 
@@ -429,8 +229,20 @@ GitHub'daki **`menu.html`** dosyanı aç, içindeki eski 900 satırlık kodu **t
 
             etkilesimleriBagla();
             menuGorselleriniOnYukle();
-        });
+        }
 
+        // Firebase kütüphanesine bile gerek kalmadan direkt JSON olarak ışık hızında çeker:
+        fetch(DB_URL + "?t=" + Date.now())
+            .then(res => {
+                if (!res.ok) throw new Error("Veritabanı erişim hatası (Kod: " + res.status + " - Rules kısmında .read: true olduğundan emin ol)");
+                return res.json();
+            })
+            .then(data => ekranaCiz(data))
+            .catch(err => {
+                document.getElementById("menuContainer").innerHTML = '<p style="text-align:center; padding:30px; color:#d81b60;">Hata oluştu: ' + err.message + '</p>';
+            });
+
+        // Modal ve Scroll Etkileşimleri
         const modal = document.getElementById("imageModal");
         const modalImg = document.getElementById("modalImage");
         let modalGecmisteAcik = false;
@@ -482,30 +294,4 @@ GitHub'daki **`menu.html`** dosyanı aç, içindeki eski 900 satırlık kodu **t
 
         function etkilesimleriBagla() {
             document.querySelectorAll(".eye-icon:not(.gorsel-yok)").forEach(icon => {
-                icon.addEventListener("click", function() { modaliAc(this.getAttribute("data-image")); });
-            });
-
-            const navButtons = document.querySelectorAll(".category-nav-btn");
-            const sectionHeaders = document.querySelectorAll(".menu-container h2[id]");
-
-            if (navButtons.length) navButtons[0].classList.add("active");
-
-            if ("IntersectionObserver" in window) {
-                const spyObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            navButtons.forEach(btn => {
-                                const isActive = btn.getAttribute("data-target") === "#" + entry.target.id;
-                                btn.classList.toggle("active", isActive);
-                                if (isActive) btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-                            });
-                        }
-                    });
-                }, { rootMargin: "-90px 0px -75% 0px", threshold: 0 });
-
-                sectionHeaders.forEach(header => spyObserver.observe(header));
-            }
-        }
-    </script>
-</body>
-</html>
+                icon.addEventListener("
