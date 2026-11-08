@@ -127,7 +127,7 @@
     </nav>
 
     <div class="menu-container" id="menuContainer">
-        <p id="loadingMsg" style="text-align: center; color: #a8907c; margin-top: 60px; font-style: italic;">Menü hazırlanıyor...</p>
+        <p id="loadingMsg" style="text-align: center; color: #d81b60; margin-top: 60px; font-weight: 600;">Veritabanına bağlanılıyor (v2)...</p>
     </div>
 
     <footer class="site-footer">
@@ -144,34 +144,37 @@
     </div>
 
     <script>
-        const DB_URL = "https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app/menuData.json";
-        const EYE_SVG_PATH = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
+        window.onerror = function(msg, url, line) {
+            var el = document.getElementById("menuContainer");
+            if (el) el.innerHTML = '<p style="text-align:center; padding:30px; color:red;">Kod Hatası: ' + msg + ' (Satır: ' + line + ')</p>';
+        };
+
+        var DB_URL = "https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app/menuData.json";
+        var EYE_SVG_PATH = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
 
         function urunKartiOlustur(item, isPopularSection) {
-            const featured = isPopularSection ? (item.popularFeatured !== undefined ? item.popularFeatured : item.featured) : item.featured;
-            const badge = isPopularSection ? (item.popularBadge || item.badge) : item.badge;
-            const gorselVar = item.image && item.image.trim() !== "" && item.image !== "RESİM_LİNKİ";
-            const fiyati = String(item.price || "").includes(",") ? item.price : (item.price + ",00");
+            var featured = isPopularSection ? (item.popularFeatured !== undefined ? item.popularFeatured : item.featured) : item.featured;
+            var badge = isPopularSection ? (item.popularBadge || item.badge) : item.badge;
+            var gorselVar = item.image && String(item.image).trim() !== "" && item.image !== "RESİM_LİNKİ";
+            var fiyati = String(item.price || "").indexOf(",") !== -1 ? item.price : (item.price + ",00");
 
-            return `
-                <div class="menu-item ${featured ? 'menu-item--featured' : ''}">
-                    <div class="item-info">
-                        ${badge ? `<span class="chef-badge">${badge}</span>` : ''}
-                        <span class="item-name">${item.name}</span>
-                        ${item.desc ? `<span class="item-desc">${item.desc}</span>` : ''}
-                        <span class="item-price">${fiyati} ₺</span>
-                    </div>
-                    <svg class="eye-icon ${gorselVar ? '' : 'gorsel-yok'}" data-image="${gorselVar ? item.image : ''}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">${EYE_SVG_PATH}</svg>
-                </div>
-            `;
+            return '<div class="menu-item ' + (featured ? 'menu-item--featured' : '') + '">' +
+                '<div class="item-info">' +
+                    (badge ? '<span class="chef-badge">' + badge + '</span>' : '') +
+                    '<span class="item-name">' + (item.name || '') + '</span>' +
+                    (item.desc ? '<span class="item-desc">' + item.desc + '</span>' : '') +
+                    '<span class="item-price">' + fiyati + ' ₺</span>' +
+                '</div>' +
+                '<svg class="eye-icon ' + (gorselVar ? '' : 'gorsel-yok') + '" data-image="' + (gorselVar ? item.image : '') + '" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">' + EYE_SVG_PATH + '</svg>' +
+            '</div>';
         }
 
         function ekranaCiz(data) {
-            const menuContainer = document.getElementById("menuContainer");
-            const navScroll = document.getElementById("navScroll");
+            var menuContainer = document.getElementById("menuContainer");
+            var navScroll = document.getElementById("navScroll");
 
             if (!data || !data.items) {
-                menuContainer.innerHTML = '<p style="text-align:center; padding:40px; color:#d81b60;">Veritabanında ürün bulunamadı. Lütfen admin.html sayfasından menüyü aktarın.</p>';
+                menuContainer.innerHTML = '<p style="text-align:center; padding:40px; color:#d81b60;">Veritabanı boş görünüyor. Lütfen admin.html sayfasına girip menüyü aktarın.</p>';
                 return;
             }
 
@@ -182,41 +185,42 @@
             navScroll.innerHTML = "";
             menuContainer.innerHTML = "";
 
-            const itemsArray = Array.isArray(data.items) ? data.items : Object.values(data.items);
-            const categoriesArray = Array.isArray(data.categories) ? data.categories : Object.values(data.categories || {});
-            const aktifUrunler = itemsArray.filter(i => i && i.active !== false);
+            var itemsArray = Array.isArray(data.items) ? data.items : Object.values(data.items);
+            var categoriesArray = Array.isArray(data.categories) ? data.categories : Object.values(data.categories || {});
+            var aktifUrunler = itemsArray.filter(function(i) { return i && i.active !== false; });
 
-            categoriesArray.forEach(cat => {
-                let catUrunleri = [];
+            categoriesArray.forEach(function(cat) {
+                if (!cat) return;
+                var catUrunleri = [];
                 if (cat.id === "cat-en-cok-tercih-edilenler") {
-                    catUrunleri = aktifUrunler.filter(i => i.popular).sort((a, b) => (a.popularOrder || 99) - (b.popularOrder || 99));
+                    catUrunleri = aktifUrunler.filter(function(i) { return i.popular; }).sort(function(a, b) { return (a.popularOrder || 99) - (b.popularOrder || 99); });
                 } else {
-                    catUrunleri = aktifUrunler.filter(i => i.cat === cat.id);
+                    catUrunleri = aktifUrunler.filter(function(i) { return i.cat === cat.id; });
                 }
 
                 if (catUrunleri.length === 0) return;
 
-                const btn = document.createElement("button");
+                var btn = document.createElement("button");
                 btn.className = "category-nav-btn";
                 btn.setAttribute("data-target", "#" + cat.id);
                 btn.textContent = cat.title;
-                btn.addEventListener("click", () => {
-                    const el = document.getElementById(cat.id);
+                btn.addEventListener("click", function() {
+                    var el = document.getElementById(cat.id);
                     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                 });
                 navScroll.appendChild(btn);
 
-                const h2 = document.createElement("h2");
+                var h2 = document.createElement("h2");
                 h2.id = cat.id;
                 h2.textContent = cat.title;
                 menuContainer.appendChild(h2);
 
-                let sonAltKategori = null;
-                let ilkAltKategoriMi = true;
+                var sonAltKategori = null;
+                var ilkAltKategoriMi = true;
 
-                catUrunleri.forEach(item => {
+                catUrunleri.forEach(function(item) {
                     if (cat.id !== "cat-en-cok-tercih-edilenler" && item.subCat && item.subCat !== sonAltKategori) {
-                        const subDiv = document.createElement("div");
+                        var subDiv = document.createElement("div");
                         subDiv.className = "sub-category-label" + (ilkAltKategoriMi ? " sub-category-label--first" : "");
                         subDiv.textContent = item.subCat;
                         menuContainer.appendChild(subDiv);
@@ -228,30 +232,29 @@
             });
 
             etkilesimleriBagla();
-            menuGorselleriniOnYukle();
         }
 
-        // Firebase kütüphanesine bile gerek kalmadan direkt JSON olarak ışık hızında çeker:
-        fetch(DB_URL + "?t=" + Date.now())
-            .then(res => {
-                if (!res.ok) throw new Error("Veritabanı erişim hatası (Kod: " + res.status + " - Rules kısmında .read: true olduğundan emin ol)");
+        fetch(DB_URL + "?t=" + new Date().getTime())
+            .then(function(res) {
+                if (!res.ok) throw new Error("HTTP " + res.status + " (Rules izni kapalı olabilir)");
                 return res.json();
             })
-            .then(data => ekranaCiz(data))
-            .catch(err => {
-                document.getElementById("menuContainer").innerHTML = '<p style="text-align:center; padding:30px; color:#d81b60;">Hata oluştu: ' + err.message + '</p>';
+            .then(function(data) {
+                ekranaCiz(data);
+            })
+            .catch(function(err) {
+                document.getElementById("menuContainer").innerHTML = '<p style="text-align:center; padding:30px; color:#d81b60; font-weight:bold;">Bağlantı Hatası: ' + err.message + '</p>';
             });
 
-        // Modal ve Scroll Etkileşimleri
-        const modal = document.getElementById("imageModal");
-        const modalImg = document.getElementById("modalImage");
-        let modalGecmisteAcik = false;
+        var modal = document.getElementById("imageModal");
+        var modalImg = document.getElementById("modalImage");
+        var modalGecmisteAcik = false;
 
         function modaliAc(url) {
             if (!url) return;
             modalImg.classList.remove("yuklendi");
             modal.style.display = "flex";
-            modalImg.onload = () => modalImg.classList.add("yuklendi");
+            modalImg.onload = function() { modalImg.classList.add("yuklendi"); };
             modalImg.src = url;
             if (modalImg.complete) modalImg.classList.add("yuklendi");
             history.pushState({ modal: true }, "");
@@ -266,32 +269,38 @@
             }
         }
 
-        document.querySelector(".close-btn").addEventListener("click", () => modaliKapat(true));
-        modal.addEventListener("click", (e) => { if (e.target === modal) modaliKapat(true); });
-        window.addEventListener("popstate", () => {
+        document.querySelector(".close-btn").addEventListener("click", function() { modaliKapat(true); });
+        modal.addEventListener("click", function(e) { if (e.target === modal) modaliKapat(true); });
+        window.addEventListener("popstate", function() {
             if (modalGecmisteAcik) { modalGecmisteAcik = false; modal.style.display = "none"; }
         });
 
-        function menuGorselleriniOnYukle() {
-            const urlSeti = new Set();
-            document.querySelectorAll(".eye-icon:not(.gorsel-yok)").forEach(icon => {
-                const url = (icon.getAttribute("data-image") || "").trim();
-                if (url) urlSeti.add(url);
-            });
-            const urlListesi = Array.from(urlSeti);
-            let sira = 0;
-            function sirdakiniYukle() {
-                if (sira >= urlListesi.length) return;
-                const gizliResim = new Image();
-                gizliResim.onload = gizliResim.onerror = () => {
-                    sira++;
-                    setTimeout(sirdakiniYukle, 60);
-                };
-                gizliResim.src = urlListesi[sira];
-            }
-            sirdakiniYukle();
-        }
-
         function etkilesimleriBagla() {
-            document.querySelectorAll(".eye-icon:not(.gorsel-yok)").forEach(icon => {
-                icon.addEventListener("
+            document.querySelectorAll(".eye-icon:not(.gorsel-yok)").forEach(function(icon) {
+                icon.addEventListener("click", function() { modaliAc(this.getAttribute("data-image")); });
+            });
+
+            var navButtons = document.querySelectorAll(".category-nav-btn");
+            var sectionHeaders = document.querySelectorAll(".menu-container h2[id]");
+
+            if (navButtons.length) navButtons[0].classList.add("active");
+
+            if ("IntersectionObserver" in window) {
+                var spyObserver = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            navButtons.forEach(function(btn) {
+                                var isActive = btn.getAttribute("data-target") === "#" + entry.target.id;
+                                btn.classList.toggle("active", isActive);
+                                if (isActive) btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                            });
+                        }
+                    });
+                }, { rootMargin: "-90px 0px -75% 0px", threshold: 0 });
+
+                sectionHeaders.forEach(function(header) { spyObserver.observe(header); });
+            }
+        }
+    </script>
+</body>
+</html>
