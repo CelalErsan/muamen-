@@ -7,58 +7,79 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f4f4f6; margin: 0; padding: 15px; color: #2c1e16; }
+        body { background: #f4f4f6; margin: 0; padding: 15px 15px 60px 15px; color: #2c1e16; }
         .container { max-width: 600px; margin: 0 auto; }
         
-        /* Giriş Ekranı */
         .card { background: white; padding: 24px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin-bottom: 20px; }
         h1 { font-size: 20px; margin: 0 0 15px 0; color: #d81b60; text-align: center; }
-        input[type="email"], input[type="password"], input[type="search"], input[type="text"] {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px; font-size: 14px;
+        
+        input[type="email"], input[type="password"], input[type="search"], input[type="text"], input[type="number"], select, textarea {
+            width: 100%; padding: 11px 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px; font-size: 14px; background: #fff;
         }
+        label.form-label { display: block; font-size: 12px; font-weight: 600; color: #666; margin-bottom: 4px; }
+        
         .btn {
             width: 100%; padding: 12px; background: #d81b60; color: white; border: none;
-            border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer;
+            border-radius: 8px; font-size: 14.5px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
         }
         .btn:active { opacity: 0.85; }
-        .btn-outline { background: transparent; border: 1px solid #d81b60; color: #d81b60; margin-top: 8px; }
+        .btn-secondary { background: #e0e0e0; color: #333; }
+        .btn-danger { background: #e53935; color: white; }
 
         /* Üst Bar */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .action-bar { display: flex; gap: 10px; margin-bottom: 15px; }
         .date-box { display: flex; gap: 8px; align-items: center; background: #fff; padding: 10px 14px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .date-box input { margin: 0; padding: 8px; width: 130px; text-align: center; font-weight: 600; }
+        .date-box input { margin: 0; padding: 8px; width: 120px; text-align: center; font-weight: 600; }
 
         /* Ürün Kartları */
         .cat-title { font-size: 16px; font-weight: 700; color: #d81b60; margin: 24px 0 10px 4px; padding-bottom: 6px; border-bottom: 2px solid #f0e2d8; }
         .item-row {
             display: flex; justify-content: space-between; align-items: center;
-            background: white; padding: 14px; border-radius: 10px; margin-bottom: 8px;
+            background: white; padding: 12px 14px; border-radius: 10px; margin-bottom: 8px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.03); transition: opacity 0.2s;
         }
         .item-row.pasif { opacity: 0.5; background: #fafafa; }
         .item-left { flex: 1; padding-right: 10px; }
-        .item-name { font-weight: 600; font-size: 14.5px; display: block; margin-bottom: 3px; }
-        .item-sub { font-size: 11px; color: #888; }
+        .item-name { font-weight: 600; font-size: 14.5px; display: block; margin-bottom: 2px; }
+        .item-sub { font-size: 11px; color: #888; display: block; }
         
-        .item-right { display: flex; align-items: center; gap: 10px; }
+        .item-right { display: flex; align-items: center; gap: 8px; }
         .price-input {
-            width: 75px !important; padding: 8px !important; margin: 0 !important;
+            width: 70px !important; padding: 7px !important; margin: 0 !important;
             text-align: right; font-weight: 700; color: #d81b60; border: 1px solid #e0e0e0 !important;
         }
+        .icon-btn {
+            background: #f5f5f7; border: none; border-radius: 6px; width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px;
+        }
+        .icon-btn:hover { background: #e8e8ed; }
 
         /* Toggle Switch */
-        .switch { position: relative; display: inline-block; width: 46px; height: 26px; flex-shrink: 0; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; transition: .25s; border-radius: 26px;
+            background-color: #ccc; transition: .25s; border-radius: 24px;
         }
         .slider:before {
-            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
             background-color: white; transition: .25s; border-radius: 50%;
         }
         input:checked + .slider { background-color: #2e7d32; }
         input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Ürün Ekle/Düzenle Modalı */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 900; justify-content: center; align-items: center; padding: 15px;
+        }
+        .modal-card {
+            background: white; width: 100%; max-width: 460px; border-radius: 14px; padding: 20px;
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 13.5px; cursor: pointer; }
+        .checkbox-group input { width: 18px; height: 18px; margin: 0; }
 
         .toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -92,14 +113,81 @@
         </div>
 
         <div class="date-box">
-            <span style="font-size: 13px; font-weight: 500; flex: 1;">Son Fiyat Güncelleme Tarihi:</span>
+            <span style="font-size: 13px; font-weight: 500; flex: 1;">Fiyat Tarihi:</span>
             <input type="text" id="updateDateInput" placeholder="08.11.2026">
             <button class="btn" style="width: auto; padding: 8px 14px; font-size: 13px;" onclick="tarihGuncelle()">Kaydet</button>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn" onclick="urunModaliniAc()">+ Yeni Ürün Ekle</button>
         </div>
 
         <input type="search" id="searchInput" placeholder="🔍 Ürün ara (örn: San Sebastian, Latte...)" oninput="urunleriFiltrele()">
 
         <div id="itemsContainer"></div>
+    </div>
+</div>
+
+<!-- ÜRÜN EKLEME / DÜZENLEME MODALI -->
+<div id="itemModal" class="modal-overlay">
+    <div class="modal-card">
+        <h2 id="modalTitle" style="margin: 0 0 15px 0; font-size: 18px; color: #d81b60;">Yeni Ürün Ekle</h2>
+        
+        <label class="form-label">Kategori</label>
+        <select id="formCat" onchange="altKategorileriKontrolEt()">
+            <option value="cat-soguk-icecekler">Soğuk İçecekler</option>
+            <option value="cat-spesiyal">Spesiyal</option>
+            <option value="cat-caylar">Çaylar</option>
+            <option value="cat-sicak-icecekler">Sıcak İçecekler</option>
+            <option value="cat-suruplar-sutler">Şuruplar & Sütler</option>
+            <option value="cat-matcha-ekstralar">Matcha & Ekstralar</option>
+            <option value="cat-dondurmalar">Dondurmalar</option>
+            <option value="cat-dondurmali-pasta">Dondurmalı Pasta</option>
+            <option value="cat-cikolatalar">Çikolatalar</option>
+            <option value="cat-ekstra-servis">Ekstra Servis</option>
+        </select>
+
+        <div id="subCatWrapper">
+            <label class="form-label">Alt Kategori (Sadece Soğuk İçecekler için)</label>
+            <select id="formSubCat">
+                <option value="">Yok</option>
+                <option value="Soğuk Kahveler">Soğuk Kahveler</option>
+                <option value="Mua Özel Soğuk İçecekler">Mua Özel Soğuk İçecekler</option>
+                <option value="Limonatalar">Limonatalar</option>
+                <option value="Sular">Sular</option>
+            </select>
+        </div>
+
+        <label class="form-label">Ürün Adı *</label>
+        <input type="text" id="formName" placeholder="Örn: Lotus Cheesecake">
+
+        <label class="form-label">Açıklama (İsteğe bağlı)</label>
+        <input type="text" id="formDesc" placeholder="Örn: Karamelize bisküvi ve krema dolgulu">
+
+        <label class="form-label">Fiyat (Sadece sayı, ₺ otomatik eklenir) *</label>
+        <input type="text" id="formPrice" placeholder="Örn: 350">
+
+        <label class="form-label">Görsel Yolu veya Linki (İsteğe bağlı)</label>
+        <input type="text" id="formImage" placeholder="Örn: img/lotus.jpg veya https://...">
+
+        <label class="form-label">Üst Rozet Yazısı (İsteğe bağlı)</label>
+        <input type="text" id="formBadge" placeholder="Örn: ★ Şefin Tavsiyesi veya ★ Yeni">
+
+        <label class="checkbox-group">
+            <input type="checkbox" id="formFeatured">
+            <span>Pembe Çerçeveli (Öne Çıkan) Kutu Yap</span>
+        </label>
+
+        <label class="checkbox-group">
+            <input type="checkbox" id="formPopular">
+            <span>"En Çok Tercih Edilenler" Kategorisinde de Göster</span>
+        </label>
+
+        <div style="display: flex; gap: 8px; margin-top: 18px;">
+            <button class="btn btn-secondary" onclick="urunModaliniKapat()">İptal</button>
+            <button class="btn" onclick="urunuKaydet()">Kaydet</button>
+        </div>
+        <button id="deleteItemBtn" class="btn btn-danger" style="margin-top: 10px; display: none;" onclick="urunuSil()">🗑️ Bu Ürünü Tamamen Sil</button>
     </div>
 </div>
 
@@ -112,20 +200,19 @@
 
     // --- BURAYA KENDİ FIREBASE CONFIG BİLGİLERİNİ YAPIŞTIR ---
     const firebaseConfig = {
-        apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
-        authDomain: "mua-qr-menu.firebaseapp.com",
-        databaseURL: "https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "mua-qr-menu",
-        storageBucket: "mua-qr-menu.firebasestorage.app",
-        messagingSenderId: "813387212404",
-        appId: "1:813387212404:web:e91c88891cabfb70de5321"
+        apiKey: "BURAYA_API_KEY",
+        authDomain: "BURAYA_PROJE_ADI.firebaseapp.com",
+        databaseURL: "https://BURAYA_PROJE_ADI-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "BURAYA_PROJE_ADI",
+        storageBucket: "BURAYA_PROJE_ADI.appspot.com",
+        messagingSenderId: "BURAYA_ID",
+        appId: "BURAYA_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // Senin mevcut menündeki tüm ürünlerin hazır listesi
     const VARSAYILAN_MENU = {
         lastUpdated: "08.11.2026",
         categories: [
@@ -142,7 +229,6 @@
             { id: "cat-ekstra-servis", title: "Ekstra Servis" }
         ],
         items: [
-            // SOĞUK KAHVELER
             { id: "cold-brew", cat: "cat-soguk-icecekler", subCat: "Soğuk Kahveler", name: "Cold Brew", desc: "Soğuk suyla uzun sürede demlenmiş yumuşak içimli kahve", price: "250", image: "", active: true },
             { id: "ice-americano", cat: "cat-soguk-icecekler", subCat: "Soğuk Kahveler", name: "Ice Americano", desc: "Espresso ve buzlu su", price: "190", image: "", active: true },
             { id: "ice-latte", cat: "cat-soguk-icecekler", subCat: "Soğuk Kahveler", name: "Ice Latte", desc: "Espresso, soğuk süt ve buz", price: "210", image: "", active: true },
@@ -152,7 +238,6 @@
             { id: "ice-mocha", cat: "cat-soguk-icecekler", subCat: "Soğuk Kahveler", name: "Ice Mocha", desc: "Espresso, soğuk süt, çikolata ve buz", price: "260", image: "", active: true },
             { id: "ice-white-mocha", cat: "cat-soguk-icecekler", subCat: "Soğuk Kahveler", name: "Ice White Mocha", desc: "Espresso, soğuk süt, beyaz çikolata ve buz", price: "260", image: "", active: true },
             { id: "ice-filtre-kahve", cat: "cat-soguk-icecekler", subCat: "Soğuk Kahveler", name: "Ice Filtre Kahve", desc: "Demlenmiş ve soğutulmuş filtre kahve", price: "180", image: "", active: true },
-            // MUA ÖZEL SOĞUK İÇECEKLER
             { id: "mua-dragon-fruit", cat: "cat-soguk-icecekler", subCat: "Mua Özel Soğuk İçecekler", name: "Mua Dragon Fruit", desc: "Ejder meyvesi, mango ve portakal", price: "270", image: "img/mango-dragon.jpg", badge: "★ Favori", featured: true, popular: true, popularOrder: 2, active: true },
             { id: "mua-latte", cat: "cat-soguk-icecekler", subCat: "Mua Özel Soğuk İçecekler", name: "Mua Latte", desc: "Seçeceğiniz bir top dondurma ile hazırlanan soğuk kahve", price: "300", image: "", active: true },
             { id: "mua-italyan-soda", cat: "cat-soguk-icecekler", subCat: "Mua Özel Soğuk İçecekler", name: "Mua İtalyan Soda", desc: "Meyve özü ve maden suyu", price: "270", image: "img/italyansoda.jpg", active: true },
@@ -165,13 +250,11 @@
             { id: "mua-hibiscus-tea", cat: "cat-soguk-icecekler", subCat: "Mua Özel Soğuk İçecekler", name: "Mua Hibiscus Tea", desc: "Hibiskus ve nar", price: "270", image: "img/hibiscustea.jpg", active: true },
             { id: "mua-white-jasmine-tea", cat: "cat-soguk-icecekler", subCat: "Mua Özel Soğuk İçecekler", name: "Mua White Jasmine Tea", desc: "", price: "220", image: "img/jasmine.jpg", active: true },
             { id: "mua-blue-butterfly-tea", cat: "cat-soguk-icecekler", subCat: "Mua Özel Soğuk İçecekler", name: "Mua Blue Butterfly Tea", desc: "", price: "220", image: "img/blue-butterfly.jpg", active: true },
-            // LİMONATALAR & SULAR
             { id: "limonata", cat: "cat-soguk-icecekler", subCat: "Limonatalar", name: "Limonata", desc: "", price: "220", image: "", active: true },
             { id: "cilekli-limonata", cat: "cat-soguk-icecekler", subCat: "Limonatalar", name: "Çilekli Limonata", desc: "Taze çilek ile harmanlanmış ev yapımı doğal limonata", price: "250", image: "", active: true },
             { id: "uludag-su", cat: "cat-soguk-icecekler", subCat: "Sular", name: "Uludağ Su", desc: "", price: "40", image: "", active: true },
             { id: "uludag-premium-maden-suyu", cat: "cat-soguk-icecekler", subCat: "Sular", name: "Uludağ Premium Maden Suyu", desc: "", price: "60", image: "", active: true },
             { id: "uludag-maden-suyu-yesil", cat: "cat-soguk-icecekler", subCat: "Sular", name: "Uludağ Maden Suyu Yeşil", desc: "", price: "50", image: "", active: true },
-            // SPESİYAL
             { id: "madagascar", cat: "cat-spesiyal", name: "Madagascar", desc: "Özel krep arası muz, çilek, bol Belçika çikolatası ve çıtır krep kırığı", price: "350", image: "img/madagascar.jpg", badge: "★ Şefin Tavsiyesi", featured: true, popular: true, popularOrder: 1, popularBadge: "★ Şefin Tavsiyesi", popularFeatured: true, active: true },
             { id: "san-sebastian", cat: "cat-spesiyal", name: "San Sebastian", desc: "İçi akışkan Bask cheesecake", price: "330", image: "", active: true },
             { id: "magnolia", cat: "cat-spesiyal", name: "Magnolia", desc: "Hafif krema, taze çilek ve bisküvi", price: "350", image: "", active: true },
@@ -183,7 +266,6 @@
             { id: "limon-cheesecake", cat: "cat-spesiyal", name: "Limon Cheesecake", desc: "Limon soslu fırın cheesecake", price: "330", image: "img/limonlu-cheesecake.jpg", active: true },
             { id: "muffin", cat: "cat-spesiyal", name: "Muffin", desc: "", price: "200", image: "", active: true },
             { id: "frambuaz-cheesecake", cat: "cat-spesiyal", name: "Frambuaz Cheesecake", desc: "", price: "330", image: "img/frambuazlı-cheesecake.jpg", active: true },
-            // ÇAYLAR
             { id: "demleme-cay", cat: "cat-caylar", name: "Demleme Çay", desc: "", price: "70", image: "", active: true },
             { id: "fincan-cay", cat: "cat-caylar", name: "Fincan Çay", desc: "", price: "80", image: "", active: true },
             { id: "bitki-caylari", cat: "cat-caylar", name: "Bitki Çayları", desc: "", price: "220", image: "", active: true },
@@ -191,7 +273,6 @@
             { id: "white-early-gray-tea", cat: "cat-caylar", name: "White Early Gray Tea", desc: "", price: "230", image: "", active: true },
             { id: "berry-punch-tea", cat: "cat-caylar", name: "Berry Punch Tea", desc: "", price: "230", image: "", active: true },
             { id: "jasmine-green-tea", cat: "cat-caylar", name: "Jasmine Green Tea", desc: "", price: "230", image: "", active: true },
-            // SICAK İÇECEKLER
             { id: "americano", cat: "cat-sicak-icecekler", name: "Americano", desc: "Sıcak su ve espresso", price: "180", image: "https://www.escobarista.com/idea/li/11/myassets/blogs/blog-12.jpg?revision=1674215336", active: true },
             { id: "latte", cat: "cat-sicak-icecekler", name: "Latte", desc: "Espresso ve buharda ısıtılmış sıcak süt", price: "210", image: "", active: true },
             { id: "espresso", cat: "cat-sicak-icecekler", name: "Espresso", desc: "Yoğun ve sert içimli tek shot kahve", price: "160", image: "", active: true },
@@ -211,182 +292,4 @@
             { id: "white-mocha", cat: "cat-sicak-icecekler", name: "White Mocha", desc: "Espresso, sıcak süt ve beyaz çikolata", price: "260", image: "", active: true },
             { id: "caramel-latte", cat: "cat-sicak-icecekler", name: "Caramel Latte", desc: "Espresso, sıcak süt ve karamel", price: "240", image: "", active: true },
             { id: "vanilya-latte", cat: "cat-sicak-icecekler", name: "Vanilya Latte", desc: "Espresso, sıcak süt ve vanilya", price: "240", image: "", active: true },
-            // ŞURUPLAR & SÜTLER
-            { id: "mango-surup", cat: "cat-suruplar-sutler", name: "Mango Şurup", desc: "", price: "80", image: "", active: true },
-            { id: "yaban-mersini-surup", cat: "cat-suruplar-sutler", name: "Yaban Mersini Şurup", desc: "", price: "40", image: "", active: true },
-            { id: "erik-surup", cat: "cat-suruplar-sutler", name: "Erik Şurup", desc: "", price: "30", image: "", active: true },
-            { id: "cilek-surup", cat: "cat-suruplar-sutler", name: "Çilek Şurup", desc: "", price: "80", image: "", active: true },
-            { id: "yulaf-sutu", cat: "cat-suruplar-sutler", name: "Yulaf Sütü", desc: "", price: "50", image: "", active: true },
-            { id: "badem-sutu", cat: "cat-suruplar-sutler", name: "Badem Sütü", desc: "", price: "50", image: "", active: true },
-            { id: "vanilya-badem-sutu", cat: "cat-suruplar-sutler", name: "Vanilya Badem Sütü", desc: "", price: "30", image: "", active: true },
-            { id: "hindistan-cevizi-sutu", cat: "cat-suruplar-sutler", name: "Hindistan Cevizi Sütü", desc: "", price: "50", image: "", active: true },
-            // MATCHA & EKSTRALAR
-            { id: "matcha-latte", cat: "cat-matcha-ekstralar", name: "Matcha Latte", desc: "", price: "320", image: "", active: true },
-            { id: "ice-matcha-latte", cat: "cat-matcha-ekstralar", name: "Ice Matcha Latte", desc: "", price: "320", image: "", active: true },
-            { id: "ice-strawberry-matcha", cat: "cat-matcha-ekstralar", name: "Ice Strawberry Matcha Latte + Collagen", desc: "Taze çilek püresi, süt ve matcha", price: "270", image: "", active: true },
-            { id: "collagen", cat: "cat-matcha-ekstralar", name: "Collagen", desc: "", price: "80", image: "", active: true },
-            { id: "protein", cat: "cat-matcha-ekstralar", name: "Protein", desc: "", price: "80", image: "", active: true },
-            { id: "ekstra-surup", cat: "cat-matcha-ekstralar", name: "Ekstra Şurup", desc: "", price: "50", image: "", active: true },
-            { id: "dirty-matcha", cat: "cat-matcha-ekstralar", name: "Dirty Matcha", desc: "Espresso ve matcha latte", price: "330", image: "", active: true },
-            // DONDURMALAR
-            { id: "dondurma-1-top", cat: "cat-dondurmalar", name: "Dondurma 1 Top", desc: "", price: "160", image: "", active: true },
-            { id: "dondurma-cocuk-top", cat: "cat-dondurmalar", name: "Dondurma Çocuk Top", desc: "", price: "130", image: "", active: true },
-            { id: "dondurma-2-top", cat: "cat-dondurmalar", name: "Dondurma 2 Top", desc: "", price: "320", image: "", active: true },
-            { id: "dondurma-3-top", cat: "cat-dondurmalar", name: "Dondurma 3 Top", desc: "", price: "400", image: "", active: true },
-            { id: "dondurma-500-gr", cat: "cat-dondurmalar", name: "Dondurma 500 GR", desc: "", price: "900", image: "", active: true },
-            { id: "dondurma-750-gr", cat: "cat-dondurmalar", name: "Dondurma 750 GR", desc: "", price: "1.350", image: "", active: true },
-            { id: "dondurma-1-kg", cat: "cat-dondurmalar", name: "Dondurma 1 KG", desc: "", price: "1.800", image: "", active: true },
-            { id: "dondurma-1-5-kg", cat: "cat-dondurmalar", name: "Dondurma 1,5 KG", desc: "", price: "2.400", image: "", active: true },
-            { id: "affogato", cat: "cat-dondurmalar", name: "Affogato", desc: "Gelato üzerine dökülen taze çekilmiş sıcak espresso. Gerçek bir İtalyan klasiği.", price: "290", image: "", popular: true, popularOrder: 3, popularBadge: "★ En Çok Satılan", popularFeatured: true, active: true },
-            // DONDURMALI PASTA
-            { id: "mono-antep-pasta", cat: "cat-dondurmali-pasta", name: "Mono Antep Pasta", desc: "Antep fıstıklı dondurma dolgulu porsiyon pasta", price: "410", image: "img/dondurmali-pasta-fistikli.jpg", active: true },
-            { id: "mono-bruksel-pasta", cat: "cat-dondurmali-pasta", name: "Mono Brüksel Pasta", desc: "Belçika çikolatalı dondurma dolgulu porsiyon pasta", price: "410", image: "img/dondurmali-pasta-brüksel.jpg", active: true },
-            { id: "mono-frambuaz-pasta", cat: "cat-dondurmali-pasta", name: "Mono Frambuaz Pasta", desc: "Frambuaz dondurması dolgulu porsiyon pasta", price: "410", image: "img/dondurmali-pasta-frambuaz.jpg", active: true },
-            // ÇİKOLATALAR
-            { id: "dubai-cikolatasi", cat: "cat-cikolatalar", name: "Dubai Çikolatası", desc: "Çıtır kadayıf ve Antep fıstığı ezmeli sütlü çikolata", price: "560", image: "", active: true },
-            { id: "bar-antep", cat: "cat-cikolatalar", name: "Bar Antep", desc: "", price: "240", image: "", active: true },
-            { id: "bar-bruksel", cat: "cat-cikolatalar", name: "Bar Brüksel", desc: "", price: "240", image: "", active: true },
-            { id: "bar-cocostar", cat: "cat-cikolatalar", name: "Bar Cocostar", desc: "", price: "240", image: "", active: true },
-            { id: "bar-snickers", cat: "cat-cikolatalar", name: "Bar Snickers", desc: "", price: "240", image: "", active: true },
-            { id: "fit-bar", cat: "cat-cikolatalar", name: "Fit Bar", desc: "", price: "270", image: "", active: true },
-            { id: "truf-findik", cat: "cat-cikolatalar", name: "Trüf Fındık", desc: "", price: "370", image: "", active: true },
-            { id: "truf-hindistan-cevizli", cat: "cat-cikolatalar", name: "Trüf Hindistan Cevizli", desc: "", price: "370", image: "", active: true },
-            { id: "tablet-antep", cat: "cat-cikolatalar", name: "Tablet Antep", desc: "", price: "300", image: "", active: true },
-            { id: "tablet-bitter", cat: "cat-cikolatalar", name: "Tablet Bitter", desc: "", price: "300", image: "", active: true },
-            { id: "tablet-bruksel", cat: "cat-cikolatalar", name: "Tablet Brüksel", desc: "", price: "300", image: "", active: true },
-            { id: "rocher-bitter-antep", cat: "cat-cikolatalar", name: "Rocher Bitter Antep", desc: "", price: "350", image: "", active: true },
-            { id: "rocher-sutlu-antep", cat: "cat-cikolatalar", name: "Rocher Sütlü Antep", desc: "", price: "350", image: "", active: true },
-            { id: "bitter-hurma-badem", cat: "cat-cikolatalar", name: "Bitter Hurma Badem", desc: "", price: "270", image: "", active: true },
-            { id: "chocolate-sticks", cat: "cat-cikolatalar", name: "Chocolate Sticks", desc: "", price: "340", image: "", active: true },
-            { id: "cornflakes", cat: "cat-cikolatalar", name: "Cornflakes", desc: "", price: "340", image: "", active: true },
-            { id: "popcorn", cat: "cat-cikolatalar", name: "Popcorn", desc: "", price: "290", image: "", active: true },
-            { id: "findik-cips", cat: "cat-cikolatalar", name: "Fındık Cips", desc: "", price: "290", image: "", active: true },
-            // EKSTRA SERVİS
-            { id: "l-strafor", cat: "cat-ekstra-servis", name: "L Strafor", desc: "", price: "20", image: "", active: true },
-            { id: "xl-strafor", cat: "cat-ekstra-servis", name: "XL Strafor", desc: "", price: "30", image: "", active: true },
-            { id: "eritilmis-belcika-cikolatasi", cat: "cat-ekstra-servis", name: "Eritilmiş Belçika Çikolatası", desc: "", price: "80", image: "", active: true },
-            { id: "kavanozda", cat: "cat-ekstra-servis", name: "Kavanozda", desc: "", price: "90", image: "", active: true },
-            { id: "imza-kornet", cat: "cat-ekstra-servis", name: "İmza Kornet", desc: "", price: "70", image: "", active: true },
-            { id: "sade-kornet", cat: "cat-ekstra-servis", name: "Sade Kornet", desc: "", price: "5", image: "", active: true }
-        ]
-    };
-
-    let globalMenuData = null;
-
-    // Giriş Kontrolü
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            document.getElementById("loginSection").style.display = "none";
-            document.getElementById("adminSection").style.display = "block";
-            verileriDinle();
-        } else {
-            document.getElementById("loginSection").style.display = "block";
-            document.getElementById("adminSection").style.display = "none";
-        }
-    });
-
-    document.getElementById("loginBtn").addEventListener("click", () => {
-        const email = document.getElementById("email").value;
-        const pass = document.getElementById("password").value;
-        signInWithEmailAndPassword(auth, email, pass).catch(err => {
-            const errEl = document.getElementById("loginError");
-            errEl.textContent = "Giriş başarısız kanka, e-posta veya şifreyi kontrol et.";
-            errEl.style.display = "block";
-        });
-    });
-
-    window.cikisYap = () => signOut(auth);
-
-    function verileriDinle() {
-        const menuRef = ref(db, 'menuData');
-        onValue(menuRef, (snapshot) => {
-            const data = snapshot.val();
-            if (!data) {
-                document.getElementById("seedBox").style.display = "block";
-                document.getElementById("itemsContainer").innerHTML = "";
-            } else {
-                document.getElementById("seedBox").style.display = "none";
-                globalMenuData = data;
-                document.getElementById("updateDateInput").value = data.lastUpdated || "";
-                paneliCiz(data);
-            }
-        });
-    }
-
-    window.ilkVerileriYukle = () => {
-        set(ref(db, 'menuData'), VARSAYILAN_MENU).then(() => bildirimGoster("Tüm menü yüklendi!"));
-    };
-
-    function paneliCiz(data) {
-        const container = document.getElementById("itemsContainer");
-        const aranan = (document.getElementById("searchInput").value || "").toLowerCase();
-        container.innerHTML = "";
-
-        data.categories.forEach(cat => {
-            if (cat.id === "cat-en-cok-tercih-edilenler") return; // Ürünler kendi ana kategorisinde yönetilir
-
-            const catItems = data.items.map((item, index) => ({ ...item, index }))
-                .filter(item => item.cat === cat.id && item.name.toLowerCase().includes(aranan));
-
-            if (catItems.length === 0) return;
-
-            const catHeader = document.createElement("div");
-            catHeader.className = "cat-title";
-            catHeader.textContent = cat.title;
-            container.appendChild(catHeader);
-
-            catItems.forEach(item => {
-                const row = document.createElement("div");
-                row.className = `item-row ${item.active ? '' : 'pasif'}`;
-                row.innerHTML = `
-                    <div class="item-left">
-                        <span class="item-name">${item.name}</span>
-                        <span class="item-sub">${item.subCat ? item.subCat + ' • ' : ''}${item.popular ? '⭐ Popülerde Gösteriliyor' : ''}</span>
-                    </div>
-                    <div class="item-right">
-                        <input type="text" class="price-input" value="${item.price}" 
-                            onchange="fiyatGuncelle(${item.index}, this.value)">
-                        <span style="font-weight:600; color:#d81b60;">₺</span>
-                        <label class="switch">
-                            <input type="checkbox" ${item.active ? 'checked' : ''} 
-                                onchange="durumGuncelle(${item.index}, this.checked)">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                `;
-                container.appendChild(row);
-            });
-        });
-    }
-
-    window.urunleriFiltrele = () => {
-        if (globalMenuData) paneliCiz(globalMenuData);
-    };
-
-    window.fiyatGuncelle = (index, yeniFiyat) => {
-        const bugun = new Date().toLocaleDateString('tr-TR');
-        update(ref(db, `menuData/items/${index}`), { price: yeniFiyat.trim() });
-        update(ref(db, `menuData`), { lastUpdated: bugun });
-        bildirimGoster("Fiyat güncellendi ✓");
-    };
-
-    window.durumGuncelle = (index, aktifMi) => {
-        update(ref(db, `menuData/items/${index}`), { active: aktifMi });
-        bildirimGoster(aktifMi ? "Ürün açıldı ✓" : "Ürün gizlendi ✓");
-    };
-
-    window.tarihGuncelle = () => {
-        const yeniTarih = document.getElementById("updateDateInput").value.trim();
-        update(ref(db, `menuData`), { lastUpdated: yeniTarih });
-        bildirimGoster("Tarih güncellendi ✓");
-    };
-
-    function bildirimGoster(mesaj) {
-        const toast = document.getElementById("toast");
-        toast.textContent = mesaj;
-        toast.style.display = "block";
-        setTimeout(() => toast.style.display = "none", 2000);
-    }
-</script>
-</body>
-</html>
+            { id: "mango-surup", cat: "cat-suruplar-sutler", name: "Mango Şurup", desc: "", price: "80", image
