@@ -9,12 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
     
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
-
+        html { scroll-behavior: smooth; }
         body {
-            /* Font yedeği eklendi: font dosyası yüklenene kadar sistem fontu çalışır */
             font-family: 'Fraunces', serif;
             background-color: #F5F5F7; 
             margin: 0;
@@ -24,302 +20,288 @@
             min-height: 100vh;
             z-index: 1;
         }
-
-        /* Marka Başlığı */
-        .site-header {
-            text-align: center;
-            padding: 32px 15px 20px 15px;
-        }
-
+        .site-header { text-align: center; padding: 32px 15px 20px 15px; }
         .site-header-logo {
-            display: inline-block;
-            max-width: 150px;
-            width: 55%;
-            height: auto;
-            /* Beyaz logoyu açık arka planda göstermek için siyaha çevirir */
-            filter: brightness(0);
+            display: inline-block; max-width: 150px; width: 55%; height: auto; filter: brightness(0);
         }
-
-        .site-header-rule {
-            width: 46px;
-            height: 1px;
-            background: #d81b60;
-            margin: 16px auto 0 auto;
-        }
-
-        /* Kategori Navigasyonu */
+        .site-header-rule { width: 46px; height: 1px; background: #d81b60; margin: 16px auto 0 auto; }
         .category-nav {
-            position: sticky;
-            top: 0;
-            z-index: 500;
+            position: sticky; top: 0; z-index: 500;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            margin: 0 -15px;
-            padding: 14px 0 12px 0;
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            margin: 0 -15px; padding: 14px 0 12px 0;
             border-bottom: 1px solid #f0e2d8;
             box-shadow: 0 4px 12px rgba(44, 30, 22, 0.04);
         }
-
         .category-nav-scroll {
-            display: flex;
-            gap: 18px;
-            overflow-x: auto;
-            padding: 0 15px;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            display: flex; gap: 18px; overflow-x: auto; padding: 0 15px;
+            scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none;
         }
-
-        .category-nav-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
+        .category-nav-scroll::-webkit-scrollbar { display: none; }
         .category-nav-btn {
-            flex: 0 0 auto;
-            font-family: 'Fraunces', serif;
-            font-size: 11.5px;
-            font-weight: 600;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: #a8907c;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid transparent;
-            padding: 6px 4px 10px 4px;
-            cursor: pointer;
-            white-space: nowrap;
+            flex: 0 0 auto; font-family: 'Fraunces', serif; font-size: 11.5px; font-weight: 600;
+            letter-spacing: 0.8px; text-transform: uppercase; color: #a8907c;
+            background: transparent; border: none; border-bottom: 2px solid transparent;
+            padding: 6px 4px 10px 4px; cursor: pointer; white-space: nowrap;
             transition: color 0.25s ease, border-color 0.25s ease;
         }
-
-        .category-nav-btn:active {
-            opacity: 0.7;
-        }
-
-        .category-nav-btn.active {
-            color: #2c1e16;
-            border-bottom-color: #d81b60;
-        }
-
-        /* Sticky nav altında başlıkların gizlenmemesi için */
+        .category-nav-btn:active { opacity: 0.7; }
+        .category-nav-btn.active { color: #2c1e16; border-bottom-color: #d81b60; }
         h2 {
-            scroll-margin-top: 78px;
-        }
-        
-        /* MUA Logolu Hayalet Katman */
-        body::before {
-            content: "";
-            position: fixed; 
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            /* Yerel beyaz logo eklendi */
-            background-image: url('img/logo_white.png');
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: 50%; 
-            opacity: 0.08; 
-            z-index: -1; 
-            /* Beyaz logoyu transparan siyaha çevirmek için eklendi */
-            filter: brightness(0);
-        }
-        
-        .menu-container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        h2 {
-            font-family: 'Fraunces', serif;
-            font-weight: 600;
-            font-style: italic;
-            text-align: center;
-            font-size: 27px;
-            letter-spacing: 0.5px;
-            color: #2c1e16;
-            margin-top: 52px;
-            margin-bottom: 28px;
-            padding-bottom: 12px;
+            scroll-margin-top: 78px; font-family: 'Fraunces', serif; font-weight: 600;
+            font-style: italic; text-align: center; font-size: 27px; letter-spacing: 0.5px;
+            color: #2c1e16; margin-top: 52px; margin-bottom: 28px; padding-bottom: 12px;
             border-bottom: 1px solid #e6d6ca;
         }
-        
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url('img/logo_white.png'); background-position: center;
+            background-repeat: no-repeat; background-size: 50%; opacity: 0.08; z-index: -1; filter: brightness(0);
+        }
+        .menu-container { max-width: 500px; margin: 0 auto; }
         .menu-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 18px 20px;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            box-shadow: 0 3px 12px rgba(44, 30, 22, 0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255, 255, 255, 0.9); padding: 18px 20px; border-radius: 10px;
+            margin-bottom: 12px; box-shadow: 0 3px 12px rgba(44, 30, 22, 0.05);
             transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
-         
-        .item-desc {
-            font-size: 12.5px;
-            color: #a8907c; 
-            margin-top: 1px;
-            font-style: italic;
-            line-height: 1.4;
-        }        
-
-        .menu-item:active {
-            transform: scale(0.985);
-            box-shadow: 0 2px 6px rgba(44, 30, 22, 0.06);
-        }
-        
-        .item-info {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .item-name {
-            font-size: 16.5px;
-            font-weight: 600;
-            letter-spacing: 0.1px;
-            color: #2c1e16;
-        }
-
+        .item-desc { font-size: 12.5px; color: #a8907c; margin-top: 1px; font-style: italic; line-height: 1.4; }        
+        .menu-item:active { transform: scale(0.985); box-shadow: 0 2px 6px rgba(44, 30, 22, 0.06); }
+        .item-info { display: flex; flex-direction: column; gap: 5px; }
+        .item-name { font-size: 16.5px; font-weight: 600; letter-spacing: 0.1px; color: #2c1e16; }
         .sub-category-label {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            color: #c48ba0;
-            margin: 22px 4px 12px 4px;
+            font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+            color: #c48ba0; margin: 22px 4px 12px 4px;
         }
-
-        .sub-category-label--first {
-            margin-top: 4px;
-        }
-
+        .sub-category-label--first { margin-top: 4px; }
         .chef-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            width: fit-content;
-            font-size: 10.5px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            color: #ffffff;
-            background: linear-gradient(135deg, #d81b60, #f06292);
-            padding: 3px 9px;
-            border-radius: 10px;
-            margin-bottom: 2px;
+            display: inline-flex; align-items: center; gap: 4px; width: fit-content;
+            font-size: 10.5px; font-weight: 600; letter-spacing: 0.3px; color: #ffffff;
+            background: linear-gradient(135deg, #d81b60, #f06292); padding: 3px 9px;
+            border-radius: 10px; margin-bottom: 2px;
         }
-
         .menu-item--featured {
             border: 1px solid #f4c9d8;
             background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(252,240,244,0.9));
         }
-        
-        .item-price {
-            font-size: 14.5px;
-            font-weight: 700;
-            letter-spacing: 0.2px;
-            color: #d81b60; 
-        }
-        
+        .item-price { font-size: 14.5px; font-weight: 700; letter-spacing: 0.2px; color: #d81b60; }
         .eye-icon {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-sizing: content-box;
-            width: 24px;
-            height: 24px;
-            padding: 10px;
-            background: #fcf0f4; 
-            border-radius: 50%;
-            fill: #d81b60; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; box-sizing: content-box; width: 24px; height: 24px; padding: 10px;
+            background: #fcf0f4; border-radius: 50%; fill: #d81b60;
             transition: background-color 0.25s ease, fill 0.25s ease;
         }
-
-        /* Görseli olmayan ürünlerde ikonun kapladığı alanı koruyarak gizle */
-        .eye-icon.gorsel-yok {
-            visibility: hidden;
-        }
-        
-        .eye-icon:hover {
-            background: #d81b60; 
-            fill: white; 
-        }
-        
-        /* Modal (Resim Açılma Ekranı) */
+        .eye-icon.gorsel-yok { visibility: hidden; }
+        .eye-icon:hover { background: #d81b60; fill: white; }
         .modal {
-            display: none; 
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(28, 20, 15, 0.9);
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(28, 20, 15, 0.9); justify-content: center; align-items: center;
         }
-        
-        .modal-content {
-            position: relative;
-            max-width: 90%;
-            max-height: 80%;
-            animation: zoomIn 0.3s ease;
-        }
-        
-        @keyframes zoomIn {
-            from {transform: scale(0.9); opacity: 0;}
-            to {transform: scale(1); opacity: 1;}
-        }
-        
+        .modal-content { position: relative; max-width: 90%; max-height: 80%; animation: zoomIn 0.3s ease; }
+        @keyframes zoomIn { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
         .modal-content img {
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            opacity: 0;
-            transition: opacity 0.25s ease;
+            width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0; transition: opacity 0.25s ease;
         }
-
-        .modal-content img.yuklendi {
-            opacity: 1;
-        }
-        
-        .close-btn {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            color: white;
-            font-size: 32px;
-            font-weight: 400;
-            cursor: pointer;
-        }
-
-        /* Footer */
+        .modal-content img.yuklendi { opacity: 1; }
+        .close-btn { position: absolute; top: -40px; right: 0; color: white; font-size: 32px; cursor: pointer; }
         .site-footer {
-            max-width: 500px;
-            margin: 50px auto 10px auto;
-            text-align: center;
-            padding-top: 24px;
-            border-top: 1px solid #e6d6ca;
+            max-width: 500px; margin: 50px auto 10px auto; text-align: center;
+            padding-top: 24px; border-top: 1px solid #e6d6ca;
         }
+        .site-footer-brand { font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: #2c1e16; margin-bottom: 8px; }
+        .site-footer-note { font-size: 11px; letter-spacing: 0.3px; color: #a8907c; margin: 4px 0; }
+    </style>
+</head>
+<body>
 
-        .site-footer-brand {
+    <header class="site-header">
+        <a href="index.html">
+            <img class="site-header-logo" src="img/logo_white.png" alt="MUÀ Gelatieri d'Italia">
+        </a>
+        <div class="site-header-rule"></div>
+    </header>
+
+    <nav class="category-nav">
+        <div class="category-nav-scroll" id="navScroll"></div>
+    </nav>
+
+    <div class="menu-container" id="menuContainer">
+        <p style="text-align: center; color: #a8907c; margin-top: 60px; font-style: italic;">Menü hazırlanıyor...</p>
+    </div>
+
+    <footer class="site-footer">
+        <div class="site-footer-brand">MUÀ</div>
+        <p class="site-footer-note">Tüm fiyatlarımıza KDV dahildir.</p>
+        <p class="site-footer-note" id="lastUpdatedText">Fiyat değişiklik tarihi: 09.11.2026</p>
+    </footer>
+
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <img id="modalImage" src="" alt="Ürün Görseli">
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
+            authDomain: "mua-qr-menu.firebaseapp.com",
+            databaseURL: "https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "mua-qr-menu",
+            storageBucket: "mua-qr-menu.firebasestorage.app",
+            messagingSenderId: "813387212404",
+            appId: "1:813387212404:web:e91c88891cabfb70de5321"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const EYE_SVG_PATH = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
+
+        function urunKartiOlustur(item, isPopularSection = false) {
+            const featured = isPopularSection ? (item.popularFeatured ?? item.featured) : item.featured;
+            const badge = isPopularSection ? (item.popularBadge || item.badge) : item.badge;
+            const gorselVar = item.image && item.image.trim() !== "" && item.image !== "RESİM_LİNKİ";
+
+            return `
+                <div class="menu-item ${featured ? 'menu-item--featured' : ''}">
+                    <div class="item-info">
+                        ${badge ? `<span class="chef-badge">${badge}</span>` : ''}
+                        <span class="item-name">${item.name}</span>${item.desc ? `<span class="item-desc">${item.desc}</span>` : ''}
+                        <span class="item-price">${item.price},00 ₺</span>
+                    </div>
+                    <svg class="eye-icon ${gorselVar ? '' : 'gorsel-yok'}" data-image="${gorselVar ? item.image : ''}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">${EYE_SVG_PATH}</svg>Kanka şimdi taşlar yerine oturdu! Gönderdiğin dosyalara baktım, senin sistemin çok net:
+
+* **`index.html`:** Senin karşılama (Hoşgeldiniz) sayfan. Arka planda slayt dönüyor, kampanya kutusu ve *"Menüyü İncele"* butonu var. **Bu sayfaya hiç dokunmana gerek yok** (hatta istersen kampanya kutusunu da admin panelinden yönetilebilir yaptım, aşağıda ikisini de anlatıyorum).
+* **`menu.html`:** Müşteri *"Menüyü İncele"* butonuna bastığında açılan asıl ürün listesi sayfan[cite: 3, 4]. Senin az önce bana attığın `menu.html` dosyasının içinde **hala eski sabit (statik) kodlar duruyor**[cite: 4]! O yüzden adminden yaptığın hiçbir değişiklik siteye yansımıyordu.
+
+Kafan hiç karışmasın diye senin kendi dosyalarını birebir düzenledim. Hatta hazır elimiz değmişken, `index.html` içindeki o **"🎁 Fırsat / Kampanya Kutusunu"** da admin paneline bağladım ki kampanya bittiğinde veya değiştiğinde yine kodla uğraşma, telefondan tek tıkla kapatıp açabil!
+
+Sırasıyla şu 3 dosyayı GitHub'daki kendi dosyalarının içine yapıştırıp kaydediyorsun:
+
+---
+
+### 1. `menu.html` Dosyasının İçine Yazılacak Kod (Zorunlu)
+GitHub'daki **`menu.html`** dosyanı aç, içindeki eski 900 satırlık kodu **tamamen sil** ve yerine bu yeni dinamik kodu yapıştırıp kaydet[cite: 4]:
+
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUÀ Gelatieri d'Italia - QR Menü</title>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap](https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap)" rel="stylesheet">
+    
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
             font-family: 'Fraunces', serif;
-            font-style: italic;
-            font-size: 20px;
-            color: #2c1e16;
-            margin-bottom: 8px;
+            background-color: #F5F5F7; 
+            margin: 0;
+            padding: 0 15px 20px 15px;
+            color: #4a3b32;
+            position: relative; 
+            min-height: 100vh;
+            z-index: 1;
         }
-
-        .site-footer-note {
-            font-size: 11px;
-            letter-spacing: 0.3px;
-            color: #a8907c;
-            margin: 4px 0;
+        .site-header { text-align: center; padding: 32px 15px 20px 15px; }
+        .site-header-logo {
+            display: inline-block; max-width: 150px; width: 55%; height: auto; filter: brightness(0);
         }
+        .site-header-rule { width: 46px; height: 1px; background: #d81b60; margin: 16px auto 0 auto; }
+        .category-nav {
+            position: sticky; top: 0; z-index: 500;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            margin: 0 -15px; padding: 14px 0 12px 0;
+            border-bottom: 1px solid #f0e2d8;
+            box-shadow: 0 4px 12px rgba(44, 30, 22, 0.04);
+        }
+        .category-nav-scroll {
+            display: flex; gap: 18px; overflow-x: auto; padding: 0 15px;
+            scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .category-nav-scroll::-webkit-scrollbar { display: none; }
+        .category-nav-btn {
+            flex: 0 0 auto; font-family: 'Fraunces', serif; font-size: 11.5px; font-weight: 600;
+            letter-spacing: 0.8px; text-transform: uppercase; color: #a8907c;
+            background: transparent; border: none; border-bottom: 2px solid transparent;
+            padding: 6px 4px 10px 4px; cursor: pointer; white-space: nowrap;
+            transition: color 0.25s ease, border-color 0.25s ease;
+        }
+        .category-nav-btn:active { opacity: 0.7; }
+        .category-nav-btn.active { color: #2c1e16; border-bottom-color: #d81b60; }
+        h2 {
+            scroll-margin-top: 78px; font-family: 'Fraunces', serif; font-weight: 600;
+            font-style: italic; text-align: center; font-size: 27px; letter-spacing: 0.5px;
+            color: #2c1e16; margin-top: 52px; margin-bottom: 28px; padding-bottom: 12px;
+            border-bottom: 1px solid #e6d6ca;
+        }
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url('img/logo_white.png'); background-position: center;
+            background-repeat: no-repeat; background-size: 50%; opacity: 0.08; z-index: -1; filter: brightness(0);
+        }
+        .menu-container { max-width: 500px; margin: 0 auto; }
+        .menu-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255, 255, 255, 0.9); padding: 18px 20px; border-radius: 10px;
+            margin-bottom: 12px; box-shadow: 0 3px 12px rgba(44, 30, 22, 0.05);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .item-desc { font-size: 12.5px; color: #a8907c; margin-top: 1px; font-style: italic; line-height: 1.4; }        
+        .menu-item:active { transform: scale(0.985); box-shadow: 0 2px 6px rgba(44, 30, 22, 0.06); }
+        .item-info { display: flex; flex-direction: column; gap: 5px; }
+        .item-name { font-size: 16.5px; font-weight: 600; letter-spacing: 0.1px; color: #2c1e16; }
+        .sub-category-label {
+            font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+            color: #c48ba0; margin: 22px 4px 12px 4px;
+        }
+        .sub-category-label--first { margin-top: 4px; }
+        .chef-badge {
+            display: inline-flex; align-items: center; gap: 4px; width: fit-content;
+            font-size: 10.5px; font-weight: 600; letter-spacing: 0.3px; color: #ffffff;
+            background: linear-gradient(135deg, #d81b60, #f06292); padding: 3px 9px;
+            border-radius: 10px; margin-bottom: 2px;
+        }
+        .menu-item--featured {
+            border: 1px solid #f4c9d8;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(252,240,244,0.9));
+        }
+        .item-price { font-size: 14.5px; font-weight: 700; letter-spacing: 0.2px; color: #d81b60; }
+        .eye-icon {
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; box-sizing: content-box; width: 24px; height: 24px; padding: 10px;
+            background: #fcf0f4; border-radius: 50%; fill: #d81b60;
+            transition: background-color 0.25s ease, fill 0.25s ease;
+        }
+        .eye-icon.gorsel-yok { visibility: hidden; }
+        .eye-icon:hover { background: #d81b60; fill: white; }
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(28, 20, 15, 0.9); justify-content: center; align-items: center;
+        }
+        .modal-content { position: relative; max-width: 90%; max-height: 80%; animation: zoomIn 0.3s ease; }
+        @keyframes zoomIn { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        .modal-content img {
+            width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0; transition: opacity 0.25s ease;
+        }
+        .modal-content img.yuklendi { opacity: 1; }
+        .close-btn { position: absolute; top: -40px; right: 0; color: white; font-size: 32px; cursor: pointer; }
+        .site-footer {
+            max-width: 500px; margin: 50px auto 10px auto; text-align: center;
+            padding-top: 24px; border-top: 1px solid #e6d6ca;
+        }
+        .site-footer-brand { font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: #2c1e16; margin-bottom: 8px; }
+        .site-footer-note { font-size: 11px; letter-spacing: 0.3px; color: #a8907c; margin: 4px 0; }
     </style>
 </head>
 <body>
@@ -330,1031 +312,19 @@
     </header>
 
     <nav class="category-nav">
-        <div class="category-nav-scroll">
-            <button class="category-nav-btn" data-target="#cat-en-cok-tercih-edilenler">En Çok Tercih Edilenler</button>
-            <button class="category-nav-btn" data-target="#cat-sicak-icecekler">Sıcak İçecekler</button>
-            <button class="category-nav-btn" data-target="#cat-spesiyal">Spesiyal</button>
-            <button class="category-nav-btn" data-target="#cat-caylar">Çaylar</button>
-            <button class="category-nav-btn" data-target="#cat-soguk-icecekler">Soğuk İçecekler</button>
-            <button class="category-nav-btn" data-target="#cat-suruplar-sutler">Şuruplar & Sütler</button>
-            <button class="category-nav-btn" data-target="#cat-matcha-ekstralar">Matcha & Ekstralar</button>
-            <button class="category-nav-btn" data-target="#cat-dondurmalar">Dondurmalar</button>
-            <button class="category-nav-btn" data-target="#cat-dondurmali-pasta">Dondurmalı Pasta</button>
-            <button class="category-nav-btn" data-target="#cat-cikolatalar">Çikolatalar</button>
-            <button class="category-nav-btn" data-target="#cat-ekstra-servis">Ekstra Servis</button>
-        </div>
+        <div class="category-nav-scroll" id="navScroll"></div>
     </nav>
 
-    <div class="menu-container">
-
-        <!-- EN ÇOK TERCIH EDILENLER -->
-        <h2 id="cat-en-cok-tercih-edilenler">En Çok Tercih Edilenler</h2>
-
-        <div class="menu-item menu-item--featured">
-            <div class="item-info">
-                <span class="chef-badge">★ En Çok Satılan</span>
-                <span class="item-name">Sıcak Çikolata</span>
-                <span class="item-desc">Sıcak süt ve eritilmiş çikolata</span>
-                <span class="item-price">260,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item menu-item--featured">
-            <div class="item-info">
-                <span class="chef-badge">★ Şefin Tavsiyesi</span>
-                <span class="item-name">Pistachio Latte</span>
-                <span class="item-desc">Antep fıstığı özü ve sıcak süt</span>
-                <span class="item-price">280,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Çikolatalı Çilek</span>
-                <span class="item-price">320,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <!-- SICAK İÇECEKLER -->
-        <h2 id="cat-sicak-icecekler">Sıcak İçecekler</h2>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Americano</span>
-                <span class="item-desc">Sıcak su ve espresso</span>
-                <span class="item-price">180,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="https://www.escobarista.com/idea/li/11/myassets/blogs/blog-12.jpg?revision=1674215336" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Latte</span>
-                <span class="item-desc">Espresso ve buharda ısıtılmış sıcak süt</span>
-                <span class="item-price">210,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Pistachio Latte</span>
-                <span class="item-desc">Antep fıstığı özü ve sıcak süt</span>
-                <span class="item-price">280,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Espresso</span>
-                <span class="item-desc">Yoğun ve sert içimli tek shot kahve</span>
-                <span class="item-price">160,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Türk Kahvesi</span>
-                <span class="item-desc">Geleneksel yöntemle pişirilmiş ince çekirdek</span>
-                <span class="item-price">150,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Cappucino</span>
-                <span class="item-desc">Espresso, sıcak süt ve kalın süt köpüğü</span>
-                <span class="item-price">210,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ekstra Shot</span>
-                <span class="item-price">70,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Espresso Double</span>
-                <span class="item-price">190,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Cortado</span>
-                <span class="item-desc">Eşit oranda espresso ve sıcak süt</span>
-                <span class="item-price">200,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Flat White</span>
-                <span class="item-desc">Çift shot espresso ve ince köpüklü sıcak süt</span>
-                <span class="item-price">210,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Filtre Kahve</span>
-                <span class="item-desc">Taze demlenmiş filtre kahve</span>
-                <span class="item-price">170,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mocha</span>
-                <span class="item-desc">Espresso, sıcak süt ve çikolata</span>
-                <span class="item-price">260,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Türk Kahvesi Double</span>
-                <span class="item-desc">Çift porsiyon geleneksel Türk kahvesi</span>
-                <span class="item-price">200,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Caramel Macchiato</span>
-                <span class="item-desc">Vanilya, sıcak süt, espresso ve karamel</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Pumpkin Spice Latte</span>
-                <span class="item-desc">Balkabağı baharatları, espresso ve sıcak süt</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Sıcak Çikolata</span>
-                <span class="item-desc">Sıcak süt ve eritilmiş çikolata</span>
-                <span class="item-price">260,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Sütlü Filtre Kahve</span>
-                <span class="item-desc">Taze demlenmiş filtre kahve ve sıcak süt</span>
-                <span class="item-price">180,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">White Mocha</span>
-                <span class="item-desc">Espresso, sıcak süt ve beyaz çikolata</span>
-                <span class="item-price">260,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Caramel Latte</span>
-                <span class="item-desc">Espresso, sıcak süt ve karamel</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Vanilya Latte</span>
-                <span class="item-desc">Espresso, sıcak süt ve vanilya</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <!-- SPESIYAL -->
-        <h2 id="cat-spesiyal">Spesiyal</h2>
-
-        <div class="menu-item menu-item--featured">
-            <div class="item-info">
-                <span class="chef-badge">★ Şefin Tavsiyesi</span>
-                <span class="item-name">Madagascar</span>
-                <span class="item-desc">Özel krep arası muz, çilek, bol Belçika çikolatası ve çıtır krep kırığı</span>
-                <span class="item-price">350,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/madagascar.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">San Sebastian</span>
-                <span class="item-desc">İçi akışkan Bask cheesecake</span>
-                <span class="item-price">330,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Magnolia</span>
-                <span class="item-desc">Hafif krema, taze çilek ve bisküvi</span>
-                <span class="item-price">350,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Tiramisu</span>
-                <span class="item-desc">Espresso, kedi dili ve mascarpone</span>
-                <span class="item-price">350,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Brownie</span>
-                <span class="item-desc">İçi ıslak yoğun çikolatalı kek</span>
-                <span class="item-price">350,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/brownie.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Çikolatalı Çilek</span>
-                <span class="item-price">320,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Fıstıklı Cheesecake</span>
-                <span class="item-desc">Antep fıstıklı fırın cheesecake</span>
-                <span class="item-price">380,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/fistikli-cheesecake.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Cookie Kurabiye</span>
-                <span class="item-price">200,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Limon Cheesecake</span>
-                <span class="item-desc">Limon soslu fırın cheesecake</span>
-                <span class="item-price">330,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/limonlu-cheesecake.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Muffin</span>
-                <span class="item-price">200,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Frambuaz Cheesecake</span>
-                <span class="item-price">330,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/frambuazlı-cheesecake.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <!-- ÇAYLAR -->
-        <h2 id="cat-caylar">Çaylar</h2>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Demleme Çay</span>
-                <span class="item-price">70,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Fincan Çay</span>
-                <span class="item-price">80,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Bitki Çayları</span>
-                <span class="item-price">220,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Kavunlu Beyaz Çay</span>
-                <span class="item-price">230,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">White Early Gray Tea</span>
-                <span class="item-price">230,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Berry Punch Tea</span>
-                <span class="item-price">230,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Jasmine Green Tea</span>
-                <span class="item-price">230,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <!-- SOĞUK İÇECEKLER -->
-        <h2 id="cat-soguk-icecekler">Soğuk İçecekler</h2>
-
-        <div class="sub-category-label sub-category-label--first">Soğuk Kahveler</div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Cold Brew</span>
-                <span class="item-desc">Soğuk suyla uzun sürede demlenmiş yumuşak içimli kahve</span>
-                <span class="item-price">250,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice Americano</span>
-                <span class="item-desc">Espresso ve buzlu su</span>
-                <span class="item-price">190,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice Latte</span>
-                <span class="item-desc">Espresso, soğuk süt ve buz</span>
-                <span class="item-price">210,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice Caramel Latte</span>
-                <span class="item-desc">Espresso, soğuk süt, karamel ve buz</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice Caramel Machiato</span>
-                <span class="item-desc">Vanilya, soğuk süt, espresso, karamel ve buz</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice Vanilya Latte</span>
-                <span class="item-desc">Espresso, soğuk süt, vanilya ve buz</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice Mocha</span>
-                <span class="item-desc">Espresso, soğuk süt, çikolata ve buz</span>
-                <span class="item-price">260,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice White Mocha</span>
-                <span class="item-desc">Espresso, soğuk süt, beyaz çikolata ve buz</span>
-                <span class="item-price">260,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice Filtre Kahve</span>
-                <span class="item-desc">Demlenmiş ve soğutulmuş filtre kahve</span>
-                <span class="item-price">180,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-
-        <div class="sub-category-label">Mua Özel Soğuk İçecekler</div>
-
-        <div class="menu-item menu-item--featured">
-            <div class="item-info">
-                <span class="chef-badge">★ Favori</span>
-                <span class="item-name">Mua Dragon Fruit</span>
-                <span class="item-desc">Ejder meyvesi, mango ve portakal</span>
-                <span class="item-price">270,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/mango-dragon.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mua Latte</span>
-                <span class="item-desc">Seçeceğiniz bir top dondurma ile hazırlanan soğuk kahve</span>
-                <span class="item-price">300,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mua İtalyan Soda</span>
-                <span class="item-desc">Meyve özü ve maden suyu</span>
-                <span class="item-price">270,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/italyansoda.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice Chai Tea Latte</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Pecan Frappe</span>
-                <span class="item-desc">Pikan cevizi aromalı buzlu kahve</span>
-                <span class="item-price">300,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/pecan.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Cool Lime</span>
-                <span class="item-desc">Yeşil çay, Meksika limonu ve Küba nanesi</span>
-                <span class="item-price">250,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/cool-lime.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mua Passion Lavender</span>
-                <span class="item-desc">Çarkıfelek meyvesi ve lavanta</span>
-                <span class="item-price">270,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mua Pinecoco</span>
-                <span class="item-desc">Ananas ve hindistan cevizi</span>
-                <span class="item-price">220,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/pinecoco.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mua Hibiscus Red Tea</span>
-                <span class="item-desc">Hibiskus ve yaban mersini</span>
-                <span class="item-price">270,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mua Hibiscus Tea</span>
-                <span class="item-desc">Hibiskus ve nar</span>
-                <span class="item-price">270,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/hibiscustea.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mua White Jasmine Tea</span>
-                <span class="item-price">220,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/jasmine.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mua Blue Butterfly Tea</span>
-                <span class="item-price">220,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/blue-butterfly.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-
-        <div class="sub-category-label">Limonatalar</div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Limonata</span>
-                <span class="item-price">220,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Çilekli Limonata</span>
-                <span class="item-desc">Taze çilek ile harmanlanmış ev yapımı doğal limonata</span>
-                <span class="item-price">250,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-
-        <div class="sub-category-label">Sular</div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Uludağ Su</span>
-                <span class="item-price">40,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Uludağ Premium Maden Suyu</span>
-                <span class="item-price">60,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Uludağ Maden Suyu Yeşil</span>
-                <span class="item-price">50,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <!-- ŞURUPLAR & SÜTLER -->
-        <h2 id="cat-suruplar-sutler">Şuruplar & Sütler</h2>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mango Şurup</span>
-                <span class="item-price">80,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Yaban Mersini Şurup</span>
-                <span class="item-price">40,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Erik Şurup</span>
-                <span class="item-price">30,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Çilek Şurup</span>
-                <span class="item-price">80,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Yulaf Sütü</span>
-                <span class="item-price">50,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Badem Sütü</span>
-                <span class="item-price">50,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Vanilya Badem Sütü</span>
-                <span class="item-price">30,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Hindistan Cevizi Sütü</span>
-                <span class="item-price">50,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <!-- MATCHA & EKSTRALAR -->
-        <h2 id="cat-matcha-ekstralar">Matcha & Ekstralar</h2>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Matcha Latte</span>
-                <span class="item-price">320,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice Matcha Latte</span>
-                <span class="item-price">320,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ice Strawberry Matcha Latte + Collagen</span>
-                <span class="item-desc">Taze çilek püresi, süt ve matcha</span>
-                <span class="item-price">270,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Collagen</span>
-                <span class="item-price">80,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Protein</span>
-                <span class="item-price">80,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Ekstra Şurup</span>
-                <span class="item-price">50,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Dirty Matcha</span>
-                <span class="item-desc">Espresso ve matcha latte</span>
-                <span class="item-price">330,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <!-- DONDURMALAR -->
-        <h2 id="cat-dondurmalar">Dondurmalar</h2>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Dondurma 1 Top</span>
-                <span class="item-price">160,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Dondurma Çocuk Top</span>
-                <span class="item-price">130,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Dondurma 2 Top</span>
-                <span class="item-price">320,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Dondurma 3 Top</span>
-                <span class="item-price">480,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Dondurma 500 GR</span>
-                <span class="item-price">900,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Dondurma 750 GR</span>
-                <span class="item-price">1.350,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Dondurma 1 KG</span>
-                <span class="item-price">1.800,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Dondurma 1,5 KG</span>
-                <span class="item-price">2.400,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Affogato</span>
-                <span class="item-desc">Gelato üzerine dökülen taze çekilmiş sıcak espresso. Gerçek bir İtalyan klasiği.</span>
-                <span class="item-price">290,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <!-- DONDURMALI PASTA -->
-        <h2 id="cat-dondurmali-pasta">Dondurmalı Pasta</h2>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mono Antep Pasta</span>
-                <span class="item-desc">Antep fıstıklı dondurma dolgulu porsiyon pasta</span>
-                <span class="item-price">410,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/dondurmali-pasta-fistikli.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mono Brüksel Pasta</span>
-                <span class="item-desc">Belçika çikolatalı dondurma dolgulu porsiyon pasta</span>
-                <span class="item-price">410,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/dondurmali-pasta-brüksel.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Mono Frambuaz Pasta</span>
-                <span class="item-desc">Frambuaz dondurması dolgulu porsiyon pasta</span>
-                <span class="item-price">410,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="img/dondurmali-pasta-frambuaz.jpg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <!-- ÇIKOLATALAR -->
-        <h2 id="cat-cikolatalar">Çikolatalar</h2>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Dubai Çikolatası</span>
-                <span class="item-desc">Çıtır kadayıf ve Antep fıstığı ezmeli sütlü çikolata</span>
-                <span class="item-price">560,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Bar Antep</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Bar Brüksel</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Bar Cocostar</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Bar Snickers</span>
-                <span class="item-price">240,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Fit Bar</span>
-                <span class="item-price">270,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Trüf Fındık</span>
-                <span class="item-price">370,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Trüf Hindistan Cevizli</span>
-                <span class="item-price">370,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Tablet Antep</span>
-                <span class="item-price">300,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Tablet Bitter</span>
-                <span class="item-price">300,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Tablet Brüksel</span>
-                <span class="item-price">300,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Rocher Bitter Antep</span>
-                <span class="item-price">350,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Rocher Sütlü Antep</span>
-                <span class="item-price">350,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Bitter Hurma Badem</span>
-                <span class="item-price">270,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Chocolate Sticks</span>
-                <span class="item-price">340,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Cornflakes</span>
-                <span class="item-price">340,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Popcorn</span>
-                <span class="item-price">290,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Fındık Cips</span>
-                <span class="item-price">290,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
-        <!-- EKSTRA SERVIS -->
-        <h2 id="cat-ekstra-servis">Ekstra Servis</h2>
-
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">L Strafor</span>
-                <span class="item-price">20,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">XL Strafor</span>
-                <span class="item-price">30,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Eritilmiş Belçika Çikolatası</span>
-                <span class="item-price">80,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Kavanozda</span>
-                <span class="item-price">90,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">İmza Kornet</span>
-                <span class="item-price">70,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <span class="item-name">Sade Kornet</span>
-                <span class="item-price">5,00 ₺</span>
-            </div>
-            <svg class="eye-icon" data-image="RESİM_LİNKİ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-        </div>
-
+    <div class="menu-container" id="menuContainer">
+        <p style="text-align: center; color: #a8907c; margin-top: 60px; font-style: italic;">Menü hazırlanıyor...</p>
     </div>
 
     <footer class="site-footer">
         <div class="site-footer-brand">MUÀ</div>
         <p class="site-footer-note">Tüm fiyatlarımıza KDV dahildir.</p>
-        <p class="site-footer-note">Fiyat değişiklik tarihi: 04.09.2026</p>
+        <p class="site-footer-note" id="lastUpdatedText">Fiyat değişiklik tarihi: 09.11.2026</p>
     </footer>
 
-    <!-- Modal Yapısı -->
     <div id="imageModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -1362,75 +332,116 @@
         </div>
     </div>
 
-    <script>
-        const modal = document.getElementById("imageModal");
-        const modalImg = document.getElementById("modalImage");
-        const eyeIcons = document.querySelectorAll(".eye-icon");
-        const closeBtn = document.querySelector(".close-btn");
+    <script type="module">
+        import { initializeApp } from "[https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js](https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js)";
+        import { getDatabase, ref, onValue } from "[https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js](https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js)";
 
-        // --- Görseli henüz eklenmemiş ürünlerin göz ikonunu gizle ---
-        eyeIcons.forEach(icon => {
-            const url = (icon.getAttribute("data-image") || "").trim();
-            const gecerliLink = url !== "" && url !== "RESİM_LİNKİ";
-            if (!gecerliLink) {
-                icon.classList.add("gorsel-yok");
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
+            authDomain: "mua-qr-menu.firebaseapp.com",
+            databaseURL: "[https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app](https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app)",
+            projectId: "mua-qr-menu",
+            storageBucket: "mua-qr-menu.firebasestorage.app",
+            messagingSenderId: "813387212404",
+            appId: "1:813387212404:web:e91c88891cabfb70de5321"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const EYE_SVG_PATH = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
+
+        function urunKartiOlustur(item, isPopularSection = false) {
+            const featured = isPopularSection ? (item.popularFeatured ?? item.featured) : item.featured;
+            const badge = isPopularSection ? (item.popularBadge || item.badge) : item.badge;
+            const gorselVar = item.image && item.image.trim() !== "" && item.image !== "RESİM_LİNKİ";
+
+            return `
+                <div class="menu-item ${featured ? 'menu-item--featured' : ''}">
+                    <div class="item-info">
+                        ${badge ? `<span class="chef-badge">${badge}</span>` : ''}
+                        <span class="item-name">${item.name}</span>
+                        ${item.desc ? `<span class="item-desc">${item.desc}</span>` : ''}
+                        <span class="item-price">${item.price},00 ₺</span>
+                    </div>
+                    <svg class="eye-icon ${gorselVar ? '' : 'gorsel-yok'}" data-image="${gorselVar ? item.image : ''}" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="24" height="24" viewBox="0 0 24 24">${EYE_SVG_PATH}</svg>
+                </div>
+            `;
+        }
+
+        onValue(ref(db, 'menuData'), (snapshot) => {
+            const data = snapshot.val();
+            if (!data) {
+                document.getElementById("menuContainer").innerHTML = `<p style="text-align:center; padding:40px; color:#d81b60;">Henüz ürünler veritabanına aktarılmamış. Lütfen admin.html sayfasına girip 'Mevcut Menüyü Veritabanına Aktar' butonuna bas.</p>`;
+                return;
             }
+
+            if (data.lastUpdated) {
+                document.getElementById("lastUpdatedText").textContent = "Fiyat değişiklik tarihi: " + data.lastUpdated;
+            }
+
+            const navScroll = document.getElementById("navScroll");
+            const menuContainer = document.getElementById("menuContainer");
+            navScroll.innerHTML = "";
+            menuContainer.innerHTML = "";
+
+            const aktifUrunler = (data.items || []).filter(i => i && i.active !== false);
+
+            data.categories.forEach(cat => {
+                let catUrunleri = [];
+                if (cat.id === "cat-en-cok-tercih-edilenler") {
+                    catUrunleri = aktifUrunler.filter(i => i.popular).sort((a, b) => (a.popularOrder || 99) - (b.popularOrder || 99));
+                } else {
+                    catUrunleri = aktifUrunler.filter(i => i.cat === cat.id);
+                }
+
+                if (catUrunleri.length === 0) return;
+
+                const btn = document.createElement("button");
+                btn.className = "category-nav-btn";
+                btn.setAttribute("data-target", "#" + cat.id);
+                btn.textContent = cat.title;
+                btn.addEventListener("click", () => {
+                    document.getElementById(cat.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                });
+                navScroll.appendChild(btn);
+
+                const h2 = document.createElement("h2");
+                h2.id = cat.id;
+                h2.textContent = cat.title;
+                menuContainer.appendChild(h2);
+
+                let sonAltKategori = null;
+                let ilkAltKategoriMi = true;
+
+                catUrunleri.forEach(item => {
+                    if (cat.id !== "cat-en-cok-tercih-edilenler" && item.subCat && item.subCat !== sonAltKategori) {
+                        const subDiv = document.createElement("div");
+                        subDiv.className = "sub-category-label" + (ilkAltKategoriMi ? " sub-category-label--first" : "");
+                        subDiv.textContent = item.subCat;
+                        menuContainer.appendChild(subDiv);
+                        sonAltKategori = item.subCat;
+                        ilkAltKategoriMi = false;
+                    }
+                    menuContainer.insertAdjacentHTML("beforeend", urunKartiOlustur(item, cat.id === "cat-en-cok-tercih-edilenler"));
+                });
+            });
+
+            etkilesimleriBagla();
+            menuGorselleriniOnYukle();
         });
 
-        // --- Görselleri arka planda sessizce önceden yükleme (preload) ---
-        function menuGorselleriniOnYukle() {
-            const urlSeti = new Set();
-            eyeIcons.forEach(icon => {
-                const url = (icon.getAttribute("data-image") || "").trim();
-                if (url !== "" && url !== "RESİM_LİNKİ") {
-                    urlSeti.add(url);
-                }
-            });
-
-            const urlListesi = Array.from(urlSeti);
-            let sira = 0;
-
-            function sirdakiniYukle() {
-                if (sira >= urlListesi.length) return;
-                const gizliResim = new Image();
-                gizliResim.onload = gizliResim.onerror = function () {
-                    sira++;
-                    if ("requestIdleCallback" in window) {
-                        requestIdleCallback(sirdakiniYukle);
-                    } else {
-                        setTimeout(sirdakiniYukle, 60);
-                    }
-                };
-                gizliResim.src = urlListesi[sira];
-            }
-
-            sirdakiniYukle();
-        }
-
-        if ("requestIdleCallback" in window) {
-            requestIdleCallback(menuGorselleriniOnYukle);
-        } else {
-            window.addEventListener("load", function () {
-                setTimeout(menuGorselleriniOnYukle, 500);
-            });
-        }
-
-        // --- Modal açma/kapama + geri tuşu yönetimi ---
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
         let modalGecmisteAcik = false;
 
         function modaliAc(url) {
+            if (!url) return;
             modalImg.classList.remove("yuklendi");
             modal.style.display = "flex";
-
-            modalImg.onload = function () {
-                modalImg.classList.add("yuklendi");
-            };
+            modalImg.onload = () => modalImg.classList.add("yuklendi");
             modalImg.src = url;
-
-            if (modalImg.complete) {
-                modalImg.classList.add("yuklendi");
-            }
-
+            if (modalImg.complete) modalImg.classList.add("yuklendi");
             history.pushState({ modal: true }, "");
             modalGecmisteAcik = true;
         }
@@ -1443,96 +454,58 @@
             }
         }
 
-        eyeIcons.forEach(icon => {
-            icon.addEventListener("click", function() {
-                modaliAc(this.getAttribute("data-image"));
+        document.querySelector(".close-btn").addEventListener("click", () => modaliKapat(true));
+        modal.addEventListener("click", (e) => { if (e.target === modal) modaliKapat(true); });
+        window.addEventListener("popstate", () => {
+            if (modalGecmisteAcik) { modalGecmisteAcik = false; modal.style.display = "none"; }
+        });
+
+        function menuGorselleriniOnYukle() {
+            const urlSeti = new Set();
+            document.querySelectorAll(".eye-icon:not(.gorsel-yok)").forEach(icon => {
+                const url = (icon.getAttribute("data-image") || "").trim();
+                if (url) urlSeti.add(url);
             });
-        });
-
-        closeBtn.addEventListener("click", function() {
-            modaliKapat(true);
-        });
-
-        modal.addEventListener("click", function(event) {
-            if (event.target === modal) {
-                modaliKapat(true);
+            const urlListesi = Array.from(urlSeti);
+            let sira = 0;
+            function sirdakiniYukle() {
+                if (sira >= urlListesi.length) return;
+                const gizliResim = new Image();
+                gizliResim.onload = gizliResim.onerror = () => {
+                    sira++;
+                    setTimeout(sirdakiniYukle, 60);
+                };
+                gizliResim.src = urlListesi[sira];
             }
-        });
-
-        window.addEventListener("popstate", function() {
-            if (modalGecmisteAcik) {
-                modalGecmisteAcik = false;
-                modal.style.display = "none";
-            }
-        });
-
-        // --- Kategori Navigasyonu (Çakışma Önleyici Güncel Versiyon) ---
-        const navButtons = document.querySelectorAll(".category-nav-btn");
-        const navScroll = document.querySelector(".category-nav-scroll");
-        const categoryNav = document.querySelector(".category-nav");
-        const sectionHeaders = document.querySelectorAll(".menu-container h2[id]");
-
-        let tiklamaKaydirmasiAktif = false;
-        let kaydirmaZamanlayici = null;
-
-        function setActiveButton(id) {
-            navButtons.forEach(btn => {
-                const isActive = btn.getAttribute("data-target") === "#" + id;
-                btn.classList.toggle("active", isActive);
-                if (isActive && navScroll) {
-                    const btnLeft = btn.offsetLeft;
-                    const btnWidth = btn.offsetWidth;
-                    const scrollWidth = navScroll.clientWidth;
-                    const hedefSol = btnLeft - (scrollWidth / 2) + (btnWidth / 2);
-                    navScroll.scrollTo({ left: hedefSol, behavior: "smooth" });
-                }
-            });
+            sirdakiniYukle();
         }
 
-        navButtons.forEach(btn => {
-            btn.addEventListener("click", function() {
-                const targetId = this.getAttribute("data-target");
-                const targetEl = document.querySelector(targetId);
-                
-                if (targetEl) {
-                    tiklamaKaydirmasiAktif = true;
-                    if (kaydirmaZamanlayici) clearTimeout(kaydirmaZamanlayici);
+        function etkilesimleriBagla() {
+            document.querySelectorAll(".eye-icon:not(.gorsel-yok)").forEach(icon => {
+                icon.addEventListener("click", function() { modaliAc(this.getAttribute("data-image")); });
+            });
 
-                    const cleanId = targetId.replace("#", "");
-                    setActiveButton(cleanId);
+            const navButtons = document.querySelectorAll(".category-nav-btn");
+            const sectionHeaders = document.querySelectorAll(".menu-container h2[id]");
 
-                    const navHeight = categoryNav ? categoryNav.offsetHeight : 65;
-                    const targetPosition = targetEl.getBoundingClientRect().top + window.pageYOffset - navHeight - 15;
+            if (navButtons.length) navButtons[0].classList.add("active");
 
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: "smooth"
+            if ("IntersectionObserver" in window) {
+                const spyObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            navButtons.forEach(btn => {
+                                const isActive = btn.getAttribute("data-target") === "#" + entry.target.id;
+                                btn.classList.toggle("active", isActive);
+                                if (isActive) btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                            });
+                        }
                     });
+                }, { rootMargin: "-90px 0px -75% 0px", threshold: 0 });
 
-                    kaydirmaZamanlayici = setTimeout(() => {
-                        tiklamaKaydirmasiAktif = false;
-                    }, 750);
-                }
-            });
-        });
-
-        if ("IntersectionObserver" in window) {
-            const spyObserver = new IntersectionObserver((entries) => {
-                if (tiklamaKaydirmasiAktif) return;
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        setActiveButton(entry.target.id);
-                    }
-                });
-            }, { rootMargin: "-90px 0px -75% 0px", threshold: 0 });
-
-            sectionHeaders.forEach(header => spyObserver.observe(header));
-        }
-
-        if (navButtons.length) {
-            navButtons[0].classList.add("active");
+                sectionHeaders.forEach(header => spyObserver.observe(header));
+            }
         }
     </script>
-
 </body>
 </html>
