@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="robots" content="noindex, nofollow">
   <title>MUÀ - Masa & Sipariş Takip</title>
   <style>
     :root {
@@ -17,18 +18,27 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 12px; padding-bottom: 80px; }
-    
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; gap: 8px; }
     header h1 { font-size: 1.15rem; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
-    .conn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); display: inline-block; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .conn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); display: inline-block; flex-shrink: 0; }
     .conn-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
     .legend { display: flex; gap: 10px; font-size: 0.75rem; }
     .legend span { display: flex; align-items: center; gap: 4px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .logout-btn { background: none; border: 1px solid #444; color: #aaa; padding: 4px 8px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; }
+
+    /* Giriş ekranı */
+    .login-card { max-width: 360px; margin: 80px auto 0; background: var(--card); padding: 24px; border-radius: 14px; }
+    .login-card h2 { font-size: 1.1rem; text-align: center; margin-bottom: 16px; }
+    .login-card input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #121212; color: #fff; font-size: 1rem; margin-bottom: 10px; }
+    .login-card button { width: 100%; padding: 12px; border: none; border-radius: 8px; background: var(--green); color: #fff; font-weight: bold; font-size: 1rem; cursor: pointer; }
+    .login-err { color: var(--danger); font-size: 0.85rem; text-align: center; margin-top: 10px; min-height: 1em; }
 
     .zone-title { font-size: 0.95rem; color: #aaa; margin: 16px 0 8px; font-weight: 600; text-transform: uppercase; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; }
-    
+
     .table-btn {
       background: var(--empty);
       border: 2px solid transparent;
@@ -49,7 +59,7 @@
     .table-btn .t-name { font-size: 1.1rem; font-weight: 700; }
     .table-btn .t-info { font-size: 0.68rem; margin-top: 3px; opacity: 0.9; }
     .table-btn .t-price { font-size: 0.72rem; margin-top: 2px; color: #ffd54f; font-weight: 600; }
-    
+
     .table-btn.status-waiting {
       background: rgba(255, 152, 0, 0.22);
       border-color: var(--waiting);
@@ -88,9 +98,11 @@
     .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 8px; }
     .modal-header h2 { font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
     .total-badge { background: #333; color: #ffd54f; font-size: 0.95rem; padding: 4px 10px; border-radius: 8px; }
+    .total-badge:empty { display: none; }
     .close-btn { background: #333; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
     .order-list { list-style: none; margin-bottom: 10px; max-height: 200px; overflow-y: auto; flex-shrink: 0; }
+    .order-empty { color: #777; text-align: center; padding: 12px 0; font-size: 0.9rem; }
     .order-item {
       display: flex;
       justify-content: space-between;
@@ -141,6 +153,7 @@
     }
     .q-btn .q-price { font-size: 0.72rem; color: #ffd54f; }
     .q-btn:active { background: var(--green); color: #fff; }
+    .q-empty { color: #777; font-size: 0.85rem; grid-column: 1 / -1; text-align: center; padding: 12px 0; }
 
     .clear-table-btn {
       width: 100%; background: var(--danger); color: #fff; border: none; padding: 13px; border-radius: 10px; font-size: 0.95rem; font-weight: bold; cursor: pointer; flex-shrink: 0;
@@ -149,15 +162,30 @@
 </head>
 <body>
 
-  <header>
-    <h1><span id="connDot" class="conn-dot"></span> MUÀ SİPARİŞ TAKİP</h1>
-    <div class="legend">
-      <span><i class="dot" style="background:var(--waiting)"></i> Bekliyor</span>
-      <span><i class="dot" style="background:var(--served)"></i> Servis Edildi</span>
-    </div>
-  </header>
+  <!-- GİRİŞ -->
+  <div id="loginSection" class="login-card" style="display:none;">
+    <h2>MUÀ Sipariş Takip Girişi</h2>
+    <input type="email" id="email" placeholder="E-posta" autocomplete="username">
+    <input type="password" id="password" placeholder="Şifre" autocomplete="current-password">
+    <button id="loginBtn">Giriş Yap</button>
+    <p id="loginError" class="login-err"></p>
+  </div>
 
-  <div id="zones-container"></div>
+  <!-- UYGULAMA -->
+  <div id="appSection" style="display:none;">
+    <header>
+      <h1><span id="connDot" class="conn-dot"></span> MUÀ SİPARİŞ TAKİP</h1>
+      <div class="header-right">
+        <div class="legend">
+          <span><i class="dot" style="background:var(--waiting)"></i> Bekliyor</span>
+          <span><i class="dot" style="background:var(--served)"></i> Servis</span>
+        </div>
+        <button class="logout-btn" id="logoutBtn">Çıkış</button>
+      </div>
+    </header>
+
+    <div id="zones-container"></div>
+  </div>
 
   <!-- Masa Detay Modalı -->
   <div class="modal" id="tableModal">
@@ -167,27 +195,27 @@
           <span id="modalTableName">B1</span>
           <span id="modalTableTotal" class="total-badge"></span>
         </h2>
-        <button class="close-btn" onclick="closeModal()">Kapat ✕</button>
+        <button class="close-btn" id="closeModalBtn">Kapat ✕</button>
       </div>
 
       <ul class="order-list" id="orderList"></ul>
 
-      <!-- Hem Menüde Arama Yapar Hem Özel Not Ekler -->
       <div class="search-and-custom">
-        <input type="text" id="searchInput" placeholder="🔍 Menüde ara veya özel not yaz..." oninput="handleSearch()" />
-        <button onclick="addCustomFromSearch()">+ Özel Ekle</button>
+        <input type="text" id="searchInput" placeholder="🔍 Menüde ara veya özel not yaz..." />
+        <button id="addCustomBtn">+ Özel Ekle</button>
       </div>
 
       <div class="quick-cats" id="catTabs"></div>
       <div class="quick-items" id="quickItems"></div>
 
-      <button class="clear-table-btn" onclick="clearTable()">💰 ROBOTPOS'A GEÇİLDİ / MASAYI BOŞALT</button>
+      <button class="clear-table-btn" id="clearTableBtn">💰 ROBOTPOS'A GEÇİLDİ / MASAYI BOŞALT</button>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getDatabase, ref, child, push, onValue, runTransaction, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
@@ -206,298 +234,304 @@
       { title: "Üst Kat", prefix: "ÜST ", count: 1 }
     ];
 
-    // Veritabanı boşsa veya yüklenene kadar yedek menü
-    let DYNAMIC_MENU = {
-      "Yükleniyor...": [{ name: "Menü veritabanından çekiliyor...", price: 0 }]
-    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const tablesRef = ref(db, 'mua_adisyon_masalar');
 
     let tablesData = {};
+    let menu = {};            // { "Soğuk İçecekler": [{name, price}], ... }
     let activeTable = null;
     let activeCategory = "";
     let searchQuery = "";
+    let unsubs = [];
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const tablesRef = ref(db, 'mua_adisyon_masalar');
-    const rootRef = ref(db, '/');
-    const connRef = ref(db, '.info/connected');
+    const $ = (id) => document.getElementById(id);
 
-    onValue(connRef, (snap) => {
-      const dot = document.getElementById('connDot');
-      snap.val() === true ? dot.classList.add('online') : dot.classList.remove('online');
+    // ---------- YARDIMCILAR ----------
+    function el(tag, className, text) {
+      const e = document.createElement(tag);
+      if (className) e.className = className;
+      if (text !== undefined) e.textContent = text;
+      return e;
+    }
+
+    // "1.350" -> 1350, "1.350,50" -> 1350.5, "250" -> 250
+    function parsePrice(raw) {
+      const s = String(raw ?? '').replace(/[^0-9.,]/g, '').replace(/\./g, '').replace(',', '.');
+      return Number(s) || 0;
+    }
+
+    function formatTL(n) {
+      return n.toLocaleString('tr-TR', { maximumFractionDigits: 2 }) + ' ₺';
+    }
+
+    // Masa verisi eski sürümde dizi olarak kaydedilmiş olabilir; hepsini [key, item] listesine çevir
+    function tableEntries(tName) {
+      const t = tablesData[tName];
+      if (!t) return [];
+      return Object.entries(t)
+        .filter(([, it]) => it && it.name)
+        .sort((a, b) => (a[1].t || 0) - (b[1].t || 0));
+    }
+
+    function toObject(cur) {
+      if (!cur) return {};
+      if (Array.isArray(cur)) {
+        const o = {};
+        cur.forEach((v, i) => { if (v) o[i] = v; });
+        return o;
+      }
+      return cur;
+    }
+
+    function hata(err) {
+      console.error(err);
+      alert("Kayıt yapılamadı: " + (err?.message || err));
+    }
+
+    // ---------- GİRİŞ ----------
+    $('loginBtn').addEventListener('click', () => {
+      $('loginError').textContent = '';
+      signInWithEmailAndPassword(auth, $('email').value.trim(), $('password').value)
+        .catch(() => { $('loginError').textContent = 'Giriş başarısız, e-posta veya şifreyi kontrol et.'; });
     });
+    $('password').addEventListener('keypress', (e) => { if (e.key === 'Enter') $('loginBtn').click(); });
+    $('logoutBtn').addEventListener('click', () => signOut(auth));
 
-    // 1. ADİSYON MASALARINI DİNLE
-    onValue(tablesRef, (snapshot) => {
-      tablesData = snapshot.val() || {};
-      renderZones();
-      if (activeTable) renderModalOrders();
-    });
-
-    // 2. SENİN QR MENÜDEKİ TÜM ÜRÜNLERİ OTOMATİK TARA VE ÇEK
-    onValue(rootRef, (snapshot) => {
-      const rootData = snapshot.val();
-      if (!rootData) return;
-
-      const parsedMenu = extractMenuFromFirebase(rootData);
-      if (Object.keys(parsedMenu).length > 0) {
-        DYNAMIC_MENU = parsedMenu;
-        if (!activeCategory || !DYNAMIC_MENU[activeCategory]) {
-          activeCategory = Object.keys(DYNAMIC_MENU)[0];
-        }
-        if (activeTable) renderQuickMenu();
+    onAuthStateChanged(auth, (user) => {
+      unsubs.forEach(u => u());
+      unsubs = [];
+      if (user) {
+        $('loginSection').style.display = 'none';
+        $('appSection').style.display = 'block';
+        dinlemeyiBaslat();
+      } else {
+        closeModal();
+        tablesData = {};
+        $('loginSection').style.display = 'block';
+        $('appSection').style.display = 'none';
       }
     });
 
-    // Akıllı Firebase Menü Çözücü (Veritabanı yapın nasıl olursa olsun ürünleri ve kategorileri bulur)
-    function extractMenuFromFirebase(root) {
-      const result = {};
+    // ---------- CANLI DİNLEME ----------
+    function dinlemeyiBaslat() {
+      unsubs.push(onValue(ref(db, '.info/connected'), (snap) => {
+        $('connDot').classList.toggle('online', snap.val() === true);
+      }));
 
-      function addProduct(catName, prodObj) {
-        if (!prodObj || typeof prodObj !== 'object') return;
-        // Aç/Kapa sisteminde kapalı (aktif olmayan) ürünleri gizle
-        if (prodObj.active === false || prodObj.isAvailable === false || prodObj.aktif === false || prodObj.durum === false || prodObj.status === 'passive' || prodObj.hidden === true) {
-          return;
-        }
-        const name = prodObj.name || prodObj.title || prodObj.urunAdi || prodObj.ad || prodObj.isim || prodObj.productName;
-        if (!name || typeof name !== 'string') return;
+      unsubs.push(onValue(tablesRef, (snap) => {
+        tablesData = snap.val() || {};
+        renderZones();
+        if (activeTable) renderModalOrders();
+      }, (err) => alert("Masalar okunamadı (yetki yok olabilir): " + err.message)));
 
-        const rawPrice = prodObj.price ?? prodObj.fiyat ?? prodObj.tutar ?? 0;
-        const price = parseFloat(String(rawPrice).replace(/[^0-9.,]/g, '').replace(',', '.')) || 0;
-        const category = String(catName || prodObj.category || prodObj.kategori || prodObj.cat || "Genel").trim();
-
-        if (!result[category]) result[category] = [];
-        if (!result[category].some(x => x.name === name)) {
-          result[category].push({ name: name.trim(), price });
-        }
-      }
-
-      function traverse(node, currentCat) {
-        if (!node || typeof node !== 'object') return;
-        const hasName = node.name || node.title || node.urunAdi || node.ad || node.isim || node.productName;
-        const hasItems = node.items || node.products || node.urunler;
-
-        // Eğer bu bir kategori objesiyse ve içinde ürünler varsa
-        if (hasName && hasItems && typeof hasItems === 'object') {
-          Object.values(hasItems).forEach(item => addProduct(hasName, item));
-          return;
-        }
-
-        // Eğer doğrudan bir ürün objesiyse
-        if (hasName && (node.price !== undefined || node.fiyat !== undefined || node.category !== undefined || node.kategori !== undefined || node.active !== undefined || node.aktif !== undefined || node.desc !== undefined || node.aciklama !== undefined || node.image !== undefined || node.resim !== undefined)) {
-          addProduct(currentCat, node);
-          return;
-        }
-
-        // Alt dalları gezmeye devam et
-        Object.entries(node).forEach(([key, val]) => {
-          if (key === 'mua_adisyon_masalar' || key === 'admin' || key === 'users' || key === 'settings' || key === 'ayarlar') return;
-          const nextCat = (!Array.isArray(node) && isNaN(key) && !['menu', 'products', 'urunler', 'categories', 'kategoriler', 'items', 'data'].includes(key.toLowerCase())) ? key : currentCat;
-          traverse(val, nextCat);
+      unsubs.push(onValue(ref(db, 'menuData'), (snap) => {
+        const d = snap.val();
+        if (!d || !d.items) return;
+        const m = {};
+        (d.categories || []).forEach(c => {
+          if (c && c.id !== 'cat-en-cok-tercih-edilenler') m[c.title] = [];
         });
-      }
-
-      traverse(root, "Menü");
-      return result;
+        const titles = Object.fromEntries((d.categories || []).filter(Boolean).map(c => [c.id, c.title]));
+        Object.values(d.items).forEach(it => {
+          if (!it || !it.name || it.active === false) return;
+          const cat = titles[it.cat] || 'Diğer';
+          (m[cat] ||= []).push({ name: it.name.trim(), price: parsePrice(it.price) });
+        });
+        Object.keys(m).forEach(k => { if (!m[k].length) delete m[k]; });
+        menu = m;
+        if (!menu[activeCategory]) activeCategory = Object.keys(menu)[0] || '';
+        if (activeTable) renderQuickMenu();
+      }));
     }
 
-    function saveData() {
-      set(tablesRef, tablesData).catch(err => {
-        alert("Kayıt hatası: " + err.message);
-      });
-    }
-
+    // ---------- MASALAR ----------
     function renderZones() {
-      const container = document.getElementById('zones-container');
+      const container = $('zones-container');
       container.innerHTML = '';
 
       ZONES.forEach(zone => {
-        const titleEl = document.createElement('div');
-        titleEl.className = 'zone-title';
-        titleEl.textContent = zone.title;
-        container.appendChild(titleEl);
-
-        const gridEl = document.createElement('div');
-        gridEl.className = 'grid';
+        container.appendChild(el('div', 'zone-title', zone.title));
+        const grid = el('div', 'grid');
 
         for (let i = 1; i <= zone.count; i++) {
           const tName = `${zone.prefix}${i}`;
-          const items = tablesData[tName] || [];
-          const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
-          const waitingQty = items.filter(x => !x.served).reduce((sum, item) => sum + item.qty, 0);
-          const totalPrice = items.reduce((sum, item) => sum + ((item.price || 0) * item.qty), 0);
+          const items = tableEntries(tName).map(([, it]) => it);
+          const totalQty = items.reduce((s, it) => s + (it.qty || 0), 0);
+          const waitingQty = items.filter(x => !x.served).reduce((s, it) => s + (it.qty || 0), 0);
+          const totalPrice = items.reduce((s, it) => s + (it.price || 0) * (it.qty || 0), 0);
 
-          const btn = document.createElement('button');
-          btn.className = 'table-btn';
-          if (items.length > 0) {
-            btn.classList.add(waitingQty > 0 ? 'status-waiting' : 'status-served');
-          }
-
-          btn.innerHTML = `
-            <span class="t-name">${tName}</span>
-            <span class="t-info">${totalQty > 0 ? (waitingQty > 0 ? `⏳ ${waitingQty} Bekliyor` : `✓ ${totalQty} Ürün`) : 'Boş'}</span>
-            ${totalPrice > 0 ? `<span class="t-price">${totalPrice} ₺</span>` : ''}
-          `;
+          const btn = el('button', 'table-btn');
+          if (items.length) btn.classList.add(waitingQty > 0 ? 'status-waiting' : 'status-served');
+          btn.appendChild(el('span', 't-name', tName));
+          btn.appendChild(el('span', 't-info',
+            totalQty > 0 ? (waitingQty > 0 ? `⏳ ${waitingQty} Bekliyor` : `✓ ${totalQty} Ürün`) : 'Boş'));
+          if (totalPrice > 0) btn.appendChild(el('span', 't-price', formatTL(totalPrice)));
           btn.onclick = () => openModal(tName);
-          gridEl.appendChild(btn);
+          grid.appendChild(btn);
         }
-        container.appendChild(gridEl);
+        container.appendChild(grid);
       });
     }
 
-    window.openModal = function(tName) {
+    // ---------- MODAL ----------
+    function openModal(tName) {
       activeTable = tName;
-      searchQuery = "";
-      document.getElementById('searchInput').value = "";
-      document.getElementById('modalTableName').textContent = `Masa: ${tName}`;
-      document.getElementById('tableModal').classList.add('active');
+      searchQuery = '';
+      $('searchInput').value = '';
+      $('modalTableName').textContent = `Masa: ${tName}`;
+      $('tableModal').classList.add('active');
       renderModalOrders();
       renderQuickMenu();
-    };
+    }
 
-    window.closeModal = function() {
+    function closeModal() {
       activeTable = null;
-      document.getElementById('tableModal').classList.remove('active');
-    };
+      $('tableModal').classList.remove('active');
+    }
+    $('closeModalBtn').addEventListener('click', closeModal);
 
     function renderModalOrders() {
-      const listEl = document.getElementById('orderList');
-      const totalEl = document.getElementById('modalTableTotal');
-      const items = tablesData[activeTable] || [];
-      listEl.innerHTML = '';
+      const list = $('orderList');
+      const entries = tableEntries(activeTable);
+      list.innerHTML = '';
 
-      const totalPrice = items.reduce((sum, item) => sum + ((item.price || 0) * item.qty), 0);
-      totalEl.textContent = totalPrice > 0 ? `${totalPrice} ₺` : '';
+      const total = entries.reduce((s, [, it]) => s + (it.price || 0) * (it.qty || 0), 0);
+      $('modalTableTotal').textContent = total > 0 ? formatTL(total) : '';
 
-      if (items.length === 0) {
-        listEl.innerHTML = `<li style="color:#777; text-align:center; padding:12px 0; font-size:0.9rem;">Bu masada henüz sipariş yok.</li>`;
+      if (!entries.length) {
+        list.appendChild(el('li', 'order-empty', 'Bu masada henüz sipariş yok.'));
         return;
       }
 
-      items.forEach((item, idx) => {
-        const li = document.createElement('li');
-        li.className = `order-item ${item.served ? 'served' : ''}`;
-        const itemTotal = (item.price || 0) * item.qty;
-        li.innerHTML = `
-          <div class="item-left" onclick="toggleServed(${idx})">
-            <span class="item-qty">${item.qty}x</span>
-            <span class="item-name">${item.name}</span>
-            ${itemTotal > 0 ? `<span class="item-price">${itemTotal} ₺</span>` : ''}
-          </div>
-          <div class="item-actions">
-            <button class="btn-small btn-plus" onclick="changeQty(${idx}, 1)">+1</button>
-            <button class="btn-small btn-del" onclick="changeQty(${idx}, -1)">🗑️</button>
-          </div>
-        `;
-        listEl.appendChild(li);
+      entries.forEach(([key, it]) => {
+        const li = el('li', 'order-item' + (it.served ? ' served' : ''));
+
+        const left = el('div', 'item-left');
+        left.appendChild(el('span', 'item-qty', `${it.qty}x`));
+        left.appendChild(el('span', 'item-name', it.name));
+        const itemTotal = (it.price || 0) * (it.qty || 0);
+        if (itemTotal > 0) left.appendChild(el('span', 'item-price', formatTL(itemTotal)));
+        left.onclick = () => toggleServed(key);
+
+        const actions = el('div', 'item-actions');
+        const plus = el('button', 'btn-small btn-plus', '+1');
+        plus.onclick = () => changeQty(key, 1);
+        const del = el('button', 'btn-small btn-del', '🗑️');
+        del.onclick = () => changeQty(key, -1);
+        actions.append(plus, del);
+
+        li.append(left, actions);
+        list.appendChild(li);
       });
     }
 
-    window.addItem = function(itemName, itemPrice = 0) {
-      if (!activeTable || !itemName.trim()) return;
-      if (!tablesData[activeTable]) tablesData[activeTable] = [];
+    // ---------- YAZMA İŞLEMLERİ (her biri sadece kendi masasına / ürününe dokunur) ----------
+    function addItem(name, price = 0) {
+      name = (name || '').trim();
+      if (!activeTable || !name) return;
+      const tableRef = child(tablesRef, activeTable);
+      const newKey = push(tableRef).key; // sadece anahtar üretir, yazmaz
 
-      const existing = tablesData[activeTable].find(x => x.name.toLowerCase() === itemName.toLowerCase() && !x.served);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        tablesData[activeTable].push({ name: itemName.trim(), qty: 1, price: itemPrice, served: false });
-      }
-      saveData();
-    };
+      runTransaction(tableRef, (cur) => {
+        const t = toObject(cur);
+        const existingKey = Object.keys(t).find(k =>
+          t[k] && !t[k].served && String(t[k].name).toLowerCase() === name.toLowerCase());
+        if (existingKey) {
+          t[existingKey].qty = (t[existingKey].qty || 0) + 1;
+        } else {
+          t[newKey] = { name, qty: 1, price, served: false, t: Date.now() };
+        }
+        return t;
+      }).catch(hata);
+    }
 
-    window.handleSearch = function() {
-      searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
-      renderQuickMenu();
-    };
+    function toggleServed(key) {
+      runTransaction(child(tablesRef, `${activeTable}/${key}`), (cur) => {
+        if (!cur) return null;
+        cur.served = !cur.served;
+        return cur;
+      }).catch(hata);
+    }
 
-    window.addCustomFromSearch = function() {
-      const input = document.getElementById('searchInput');
-      if (input.value.trim()) {
-        window.addItem(input.value.trim(), 0);
-        input.value = '';
-        searchQuery = '';
-        renderQuickMenu();
-      }
-    };
+    function changeQty(key, delta) {
+      runTransaction(child(tablesRef, `${activeTable}/${key}`), (cur) => {
+        if (!cur) return null;
+        const q = (cur.qty || 0) + delta;
+        if (q <= 0) return null; // ürünü sil
+        cur.qty = q;
+        return cur;
+      }).catch(hata);
+    }
 
-    window.toggleServed = function(idx) {
-      const item = tablesData[activeTable][idx];
-      if (item) {
-        item.served = !item.served;
-        saveData();
-      }
-    };
-
-    window.changeQty = function(idx, delta) {
-      const item = tablesData[activeTable][idx];
-      if (!item) return;
-      item.qty += delta;
-      if (item.qty <= 0) {
-        tablesData[activeTable].splice(idx, 1);
-      }
-      saveData();
-    };
-
-    window.clearTable = function() {
+    $('clearTableBtn').addEventListener('click', () => {
       if (!activeTable) return;
-      if (confirm(`${activeTable} masasının hesabı RobotPOS'tan alındı mı? Masa sıfırlanacak.`)) {
-        delete tablesData[activeTable];
-        saveData();
-        closeModal();
+      const t = activeTable;
+      if (confirm(`${t} masasının hesabı RobotPOS'tan alındı mı? Masa sıfırlanacak.`)) {
+        remove(child(tablesRef, t)).then(closeModal).catch(hata);
       }
-    };
+    });
+
+    // ---------- HIZLI MENÜ ----------
+    $('searchInput').addEventListener('input', () => {
+      searchQuery = $('searchInput').value.trim().toLocaleLowerCase('tr-TR');
+      renderQuickMenu();
+    });
+    $('searchInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') $('addCustomBtn').click(); });
+    $('addCustomBtn').addEventListener('click', () => {
+      const v = $('searchInput').value.trim();
+      if (!v) return;
+      addItem(v, 0);
+      $('searchInput').value = '';
+      searchQuery = '';
+      renderQuickMenu();
+    });
 
     function renderQuickMenu() {
-      const catContainer = document.getElementById('catTabs');
-      const itemsContainer = document.getElementById('quickItems');
-      catContainer.innerHTML = '';
-      itemsContainer.innerHTML = '';
+      const tabs = $('catTabs');
+      const box = $('quickItems');
+      tabs.innerHTML = '';
+      box.innerHTML = '';
 
-      const categories = Object.keys(DYNAMIC_MENU);
-      if (!activeCategory && categories.length > 0) activeCategory = categories[0];
-
-      // Kategori Sekmeleri
-      categories.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = `cat-tab ${(!searchQuery && cat === activeCategory) ? 'active' : ''}`;
-        btn.textContent = cat;
-        btn.onclick = () => {
+      const cats = Object.keys(menu);
+      cats.forEach(cat => {
+        const b = el('button', 'cat-tab' + (!searchQuery && cat === activeCategory ? ' active' : ''), cat);
+        b.onclick = () => {
           activeCategory = cat;
-          searchQuery = "";
-          document.getElementById('searchInput').value = "";
+          searchQuery = '';
+          $('searchInput').value = '';
           renderQuickMenu();
         };
-        catContainer.appendChild(btn);
+        tabs.appendChild(b);
       });
 
-      // Eğer arama kutusuna bir şey yazıldıysa tüm kategorilerde filtrele
-      let productsToShow = [];
+      let products = [];
       if (searchQuery) {
-        categories.forEach(cat => {
-          DYNAMIC_MENU[cat].forEach(prod => {
-            if (prod.name.toLowerCase().includes(searchQuery)) {
-              productsToShow.push(prod);
-            }
-          });
-        });
-      } else if (DYNAMIC_MENU[activeCategory]) {
-        productsToShow = DYNAMIC_MENU[activeCategory];
+        cats.forEach(c => menu[c].forEach(p => {
+          if (p.name.toLocaleLowerCase('tr-TR').includes(searchQuery)) products.push(p);
+        }));
+      } else if (menu[activeCategory]) {
+        products = menu[activeCategory];
       }
 
-      productsToShow.forEach(prod => {
-        const btn = document.createElement('button');
-        btn.className = 'q-btn';
-        btn.innerHTML = `
-          <span>${prod.name}</span>
-          ${prod.price > 0 ? `<span class="q-price">${prod.price} ₺</span>` : ''}
-        `;
-        btn.onclick = () => window.addItem(prod.name, prod.price);
-        itemsContainer.appendChild(btn);
+      if (!cats.length) {
+        box.appendChild(el('div', 'q-empty', 'Menü yükleniyor...'));
+        return;
+      }
+      if (!products.length) {
+        box.appendChild(el('div', 'q-empty', 'Ürün bulunamadı, "+ Özel Ekle" ile not olarak ekleyebilirsin.'));
+        return;
+      }
+
+      products.forEach(p => {
+        const b = el('button', 'q-btn');
+        b.appendChild(el('span', '', p.name));
+        if (p.price > 0) b.appendChild(el('span', 'q-price', formatTL(p.price)));
+        b.onclick = () => addItem(p.name, p.price);
+        box.appendChild(b);
       });
     }
-
-    renderZones();
   </script>
 </body>
 </html>
