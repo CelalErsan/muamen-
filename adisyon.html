@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MUÀ - Masa & Sipariş Takip</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --card: #1e1e1e;
+      --text: #f5f5f5;
+      --empty: #2c2c2c;
+      --waiting: #ff9800;
+      --served: #2196f3;
+      --green: #4caf50;
+      --danger: #f44336;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 12px; padding-bottom: 80px; }
+    
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    header h1 { font-size: 1.15rem; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+    .conn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); display: inline-block; }
+    .conn-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .legend { display: flex; gap: 10px; font-size: 0.75rem; }
+    .legend span { display: flex; align-items: center; gap: 4px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+    .zone-title { font-size: 0.95rem; color: #aaa; margin: 16px 0 8px; font-weight: 600; text-transform: uppercase; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 8px; }
+    
+    .table-btn {
+      background: var(--empty);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 12px 6px;
+      color: var(--text);
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: 0.15s;
+      min-height: 68px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+    }
+    .table-btn .t-name { font-size: 1.1rem; font-weight: 700; }
+    .table-btn .t-info { font-size: 0.7rem; margin-top: 4px; opacity: 0.9; }
+    
+    .table-btn.status-waiting {
+      background: rgba(255, 152, 0, 0.22);
+      border-color: var(--waiting);
+      animation: pulse 1.8s infinite;
+    }
+    .table-btn.status-served {
+      background: rgba(33, 150, 243, 0.22);
+      border-color: var(--served);
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.5); }
+      70% { box-shadow: 0 0 0 8px rgba(255, 152, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 100;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--card);
+      width: 100%;
+      max-width: 600px;
+      max-height: 92vh;
+      border-radius: 16px 16px 0 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 12px; }
+    .modal-header h2 { font-size: 1.4rem; }
+    .close-btn { background: #333; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+    .order-list { list-style: none; margin-bottom: 16px; max-height: 250px; overflow-y: auto; }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #282828;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      border-left: 4px solid var(--waiting);
+    }
+    .order-item.served {
+      border-left-color: var(--green);
+      opacity: 0.65;
+    }
+    .order-item.served .item-name { text-decoration: line-through; color: #aaa; }
+    .item-left { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; }
+    .item-qty { background: #444; padding: 2px 8px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; }
+    .item-name { font-size: 1rem; font-weight: 500; }
+    .item-actions { display: flex; gap: 6px; }
+    .btn-small { border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #fff; }
+    .btn-plus { background: #3b82f6; }
+    .btn-del { background: var(--danger); }
+
+    .custom-input-row { display: flex; gap: 8px; margin-bottom: 14px; }
+    .custom-input-row input {
+      flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #121212; color: #fff; font-size: 1rem;
+    }
+    .custom-input-row button {
+      background: var(--green); color: #fff; border: none; padding: 0 18px; border-radius: 8px; font-weight: bold; cursor: pointer;
+    }
+
+    .quick-cats { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 8px; }
+    .cat-tab { background: #2c2c2c; color: #ccc; border: none; padding: 8px 12px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.85rem; }
+    .cat-tab.active { background: #fff; color: #000; font-weight: bold; }
+
+    .quick-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; margin-bottom: 18px; max-height: 190px; overflow-y: auto; }
+    .q-btn {
+      background: #2a2a2a; color: #eee; border: 1px solid #3a3a3a; padding: 10px 6px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; text-align: center; user-select: none;
+    }
+    .q-btn:active { background: var(--green); color: #fff; }
+
+    .clear-table-btn {
+      width: 100%; background: var(--danger); color: #fff; border: none; padding: 14px; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1><span id="connDot" class="conn-dot" title="Canlı Bağlantı Durumu"></span> MUÀ SİPARİŞ TAKİP</h1>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--waiting)"></i> Bekliyor</span>
+      <span><i class="dot" style="background:var(--served)"></i> Servis Edildi</span>
+    </div>
+  </header>
+
+  <div id="zones-container"></div>
+
+  <!-- Masa Detay Modalı -->
+  <div class="modal" id="tableModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTableName">B1</h2>
+        <button class="close-btn" onclick="closeModal()">Kapat ✕</button>
+      </div>
+
+      <p style="font-size:0.75rem; color:#aaa; margin-bottom:6px;">
+        💡 <i>Ürünü masaya götürdüğünde üzerine tıkla (Yeşil olur). Tek ödemede çöp kutusuyla düş.</i>
+      </p>
+
+      <ul class="order-list" id="orderList"></ul>
+
+      <div class="custom-input-row">
+        <input type="text" id="customItemInput" placeholder="Özel not / ürün yaz (Örn: 2 Top Külah Sütlü)..." />
+        <button onclick="addCustomItem()">Ekle</button>
+      </div>
+
+      <div class="quick-cats" id="catTabs"></div>
+      <div class="quick-items" id="quickItems"></div>
+
+      <button class="clear-table-btn" onclick="clearTable()">💰 ROBOTPOS'A GEÇİLDİ / MASAYI BOŞALT</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    // Senin MUA QR Menü Firebase Bilgilerin
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
+      authDomain: "mua-qr-menu.firebaseapp.com",
+      databaseURL: "https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "mua-qr-menu",
+      storageBucket: "mua-qr-menu.firebasestorage.app",
+      messagingSenderId: "813387212404",
+      appId: "1:813387212404:web:e91c88891cabfb70de5321"
+    };
+
+    const ZONES = [
+      { title: "Bahçe (B1 - B18)", prefix: "B", count: 18 },
+      { title: "Kış Bahçesi (K1 - K14)", prefix: "K", count: 14 },
+      { title: "İç Mekan (İ1 - İ4)", prefix: "İ", count: 4 },
+      { title: "Üst Kat", prefix: "ÜST ", count: 1 }
+    ];
+
+    const QUICK_MENU = {
+      "Soğuk Kahve": ["Iced Latte", "Iced Americano", "Iced Mocha", "Iced White Mocha", "Cold Brew", "Frappe", "Iced Caramel Macchiato"],
+      "Sıcak Kahve": ["Latte", "Americano", "Espresso", "Double Espresso", "Türk Kahvesi", "Double Türk Kahvesi", "Cappuccino", "Flat White", "Filtre Kahve", "Salep", "Sıcak Çikolata"],
+      "Gelato & Tatlı": ["1 Top Gelato", "2 Top Gelato", "3 Top Gelato", "Külah", "Sütlü Sade", "Pop Corn", "Antep Fıstık", "Belçika Çikolata", "Lotus", "San Sebastian", "Tiramisu", "Waffle", "Kruvasan"],
+      "Meşrubat & Çay": ["Su", "Soda", "Meyveli Soda", "Çay", "Fincan Çay", "Limonata", "Hibiskus", "Cool Lime", "Churchill", "Redbull"]
+    };
+
+    let tablesData = {};
+    let activeTable = null;
+    let activeCategory = Object.keys(QUICK_MENU)[0];
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const tablesRef = ref(db, 'mua_adisyon_masalar');
+    const connRef = ref(db, '.info/connected');
+
+    // Bağlantı durumu ışığı (Sol üstteki nokta yeşilse Firebase canlı bağlıdır)
+    onValue(connRef, (snap) => {
+      const dot = document.getElementById('connDot');
+      if (snap.val() === true) {
+        dot.classList.add('online');
+      } else {
+        dot.classList.remove('online');
+      }
+    });
+
+    // Veritabanından anlık dinleme
+    onValue(tablesRef, (snapshot) => {
+      tablesData = snapshot.val() || {};
+      renderZones();
+      if (activeTable) renderModalOrders();
+    });
+
+    function saveData() {
+      set(tablesRef, tablesData).catch(err => {
+        alert("Kayıt hatası! Firebase kurallarında yazma izni kapalı olabilir: " + err.message);
+      });
+    }
+
+    function renderZones() {
+      const container = document.getElementById('zones-container');
+      container.innerHTML = '';
+
+      ZONES.forEach(zone => {
+        const titleEl = document.createElement('div');
+        titleEl.className = 'zone-title';
+        titleEl.textContent = zone.title;
+        container.appendChild(titleEl);
+
+        const gridEl = document.createElement('div');
+        gridEl.className = 'grid';
+
+        for (let i = 1; i <= zone.count; i++) {
+          const tName = `${zone.prefix}${i}`;
+          const items = tablesData[tName] || [];
+          const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
+          const waitingQty = items.filter(x => !x.served).reduce((sum, item) => sum + item.qty, 0);
+
+          const btn = document.createElement('button');
+          btn.className = 'table-btn';
+          if (items.length > 0) {
+            btn.classList.add(waitingQty > 0 ? 'status-waiting' : 'status-served');
+          }
+
+          btn.innerHTML = `
+            <span class="t-name">${tName}</span>
+            <span class="t-info">${totalQty > 0 ? (waitingQty > 0 ? `⏳ ${waitingQty} Bekliyor` : `✓ ${totalQty} Ürün`) : 'Boş'}</span>
+          `;
+          btn.onclick = () => openModal(tName);
+          gridEl.appendChild(btn);
+        }
+        container.appendChild(gridEl);
+      });
+    }
+
+    window.openModal = function(tName) {
+      activeTable = tName;
+      document.getElementById('modalTableName').textContent = `Masa: ${tName}`;
+      document.getElementById('tableModal').classList.add('active');
+      renderModalOrders();
+      renderQuickMenu();
+    };
+
+    window.closeModal = function() {
+      activeTable = null;
+      document.getElementById('tableModal').classList.remove('active');
+    };
+
+    function renderModalOrders() {
+      const listEl = document.getElementById('orderList');
+      const items = tablesData[activeTable] || [];
+      listEl.innerHTML = '';
+
+      if (items.length === 0) {
+        listEl.innerHTML = `<li style="color:#777; text-align:center; padding:18px 0;">Bu masada henüz sipariş yok.</li>`;
+        return;
+      }
+
+      items.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = `order-item ${item.served ? 'served' : ''}`;
+        li.innerHTML = `
+          <div class="item-left" onclick="toggleServed(${idx})">
+            <span class="item-qty">${item.qty}x</span>
+            <span class="item-name">${item.name}</span>
+          </div>
+          <div class="item-actions">
+            <button class="btn-small btn-plus" onclick="changeQty(${idx}, 1)">+1</button>
+            <button class="btn-small btn-del" onclick="changeQty(${idx}, -1)">🗑️</button>
+          </div>
+        `;
+        listEl.appendChild(li);
+      });
+    }
+
+    window.addItem = function(itemName) {
+      if (!activeTable || !itemName.trim()) return;
+      if (!tablesData[activeTable]) tablesData[activeTable] = [];
+
+      const existing = tablesData[activeTable].find(x => x.name.toLowerCase() === itemName.toLowerCase() && !x.served);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        tablesData[activeTable].push({ name: itemName.trim(), qty: 1, served: false });
+      }
+      saveData();
+    };
+
+    window.addCustomItem = function() {
+      const input = document.getElementById('customItemInput');
+      if (input.value.trim()) {
+        window.addItem(input.value.trim());
+        input.value = '';
+      }
+    };
+
+    document.getElementById('customItemInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') window.addCustomItem();
+    });
+
+    window.toggleServed = function(idx) {
+      const item = tablesData[activeTable][idx];
+      if (item) {
+        item.served = !item.served;
+        saveData();
+      }
+    };
+
+    window.changeQty = function(idx, delta) {
+      const item = tablesData[activeTable][idx];
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        tablesData[activeTable].splice(idx, 1);
+      }
+      saveData();
+    };
+
+    window.clearTable = function() {
+      if (!activeTable) return;
+      if (confirm(`${activeTable} masasının hesabı RobotPOS'tan alındı mı? Masa sıfırlanacak.`)) {
+        delete tablesData[activeTable];
+        saveData();
+        closeModal();
+      }
+    };
+
+    function renderQuickMenu() {
+      const catContainer = document.getElementById('catTabs');
+      const itemsContainer = document.getElementById('quickItems');
+      catContainer.innerHTML = '';
+      itemsContainer.innerHTML = '';
+
+      Object.keys(QUICK_MENU).forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `cat-tab ${cat === activeCategory ? 'active' : ''}`;
+        btn.textContent = cat;
+        btn.onclick = () => {
+          activeCategory = cat;
+          renderQuickMenu();
+        };
+        catContainer.innerHTML = '';
+        catContainer.appendChild(btn);
+      });
+
+      // Kategorileri düzgün çizmek için döngü düzeltmesi:
+      catContainer.innerHTML = '';
+      Object.keys(QUICK_MENU).forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `cat-tab ${cat === activeCategory ? 'active' : ''}`;
+        btn.textContent = cat;
+        btn.onclick = () => {
+          activeCategory = cat;
+          renderQuickMenu();
+        };
+        catContainer.appendChild(btn);
+      });
+
+      QUICK_MENU[activeCategory].forEach(prod => {
+        const btn = document.createElement('button');
+        btn.className = 'q-btn';
+        btn.textContent = prod;
+        btn.onclick = () => window.addItem(prod);
+        itemsContainer.appendChild(btn);
+      });
+    }
+
+    renderZones();
+  </script>
+</body>
+</html>
