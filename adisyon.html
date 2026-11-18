@@ -84,6 +84,19 @@
     .bar-meta .late-t { color: #ff6e63; font-weight: 700; }
     .bar-act { border: none; border-radius: 10px; padding: 14px 12px; font-weight: 800; font-size: 0.9rem; cursor: pointer; color: #fff; background: var(--ready); white-space: nowrap; }
     .bar-act.blue { background: var(--served); }
+    .deliver-card { background: var(--card); border-left: 5px solid var(--ready); border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+    .deliver-card.late { background: rgba(244,67,54,0.14); }
+    .dc-head { display: flex; align-items: center; gap: 10px; }
+    .dc-head .bar-table { min-width: 0; }
+    .dc-status { flex: 1; font-size: 0.8rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
+    .dc-status.full { background: rgba(76,175,80,0.25); color: #9be39f; }
+    .dc-status.part { background: rgba(255,152,0,0.2); color: #ffc46b; }
+    .dc-line { font-size: 0.95rem; margin-top: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .dc-line.pending { color: #bbb; font-size: 0.85rem; }
+    .dc-line .q { color: var(--gold); font-weight: 700; }
+    .dc-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; gap: 8px; }
+    .dc-foot .bar-meta { margin: 0; }
+    .other-hint { font-size: 0.75rem; color: #8fc3ff; margin-top: 4px; }
     .empty-msg { color: #666; text-align: center; padding: 18px 0; font-size: 0.9rem; }
     .sound-row { display: flex; justify-content: flex-end; margin-top: 10px; }
     .filter-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
@@ -672,7 +685,13 @@
       t2.appendChild(el('span', 'n', String(ready.reduce((s, l) => s + l.it.qty, 0))));
       box.appendChild(t2);
       if (!ready.length) box.appendChild(el('div', 'empty-msg', 'Götürülecek ürün yok'));
-      ready.forEach(l => box.appendChild(barCard(l, true)));
+      // Masa bazında grupla: götüren kişi o masanın İKİ BARDAKİ hazır ürünlerini birlikte görür
+      const readyTables = [...new Set(ready.map(l => l.t))].sort((a, b) => {
+        const ma = Math.min(...ready.filter(l => l.t === a).map(l => l.it.readyAt || 0));
+        const mb = Math.min(...ready.filter(l => l.t === b).map(l => l.it.readyAt || 0));
+        return ma - mb;
+      });
+      readyTables.forEach(t => box.appendChild(deliverCard(t)));
 
       const sr = el('div', 'sound-row');
       sr.appendChild(el('span', '', 'Bu cihazda yeni sipariş sesi:'));
@@ -682,6 +701,45 @@
         sr.appendChild(b);
       });
       box.appendChild(sr);
+    }
+
+    function deliverCard(t) {
+      const entries = tableEntries(t);
+      const readyL = entries.filter(([, it]) => it.status === 'hazir');
+      const pendL = entries.filter(([, it]) => it.status === 'bekliyor');
+      const enEskiHazir = Math.min(...readyL.map(([, it]) => it.readyAt || Date.now()));
+      const late = dakika(enEskiHazir) >= GOTURME_GECIKME_DK;
+
+      const card = el('div', 'deliver-card' + (late ? ' late' : ''));
+      const head = el('div', 'dc-head');
+      head.appendChild(el('div', 'bar-table', t));
+      head.appendChild(pendL.length
+        ? el('div', 'dc-status part', `⏳ Masanın ${pendL.reduce((s, [, it]) => s + it.qty, 0)} ürünü daha hazırlanıyor`)
+        : el('div', 'dc-status full', '✅ Masanın tüm siparişi hazır'));
+      card.appendChild(head);
+
+      readyL.forEach(([, it]) => {
+        const ln = el('div', 'dc-line');
+        ln.appendChild(el('span', 'st-tag ' + it.station, it.station === 'kahve' ? '☕' : '🍨'));
+        ln.appendChild(el('span', 'q', `${it.qty}×`));
+        ln.appendChild(document.createTextNode(it.name));
+        if (it.note) ln.appendChild(el('span', 'oi-note', it.note));
+        card.appendChild(ln);
+      });
+      pendL.forEach(([, it]) => {
+        const ln = el('div', 'dc-line pending');
+        ln.appendChild(document.createTextNode(`⏳ ${it.qty}× ${it.name} – ${it.station === 'kahve' ? 'kahve barında' : 'dondurma barında'} hazırlanıyor`));
+        card.appendChild(ln);
+      });
+
+      const foot = el('div', 'dc-foot');
+      foot.appendChild(el('div', 'bar-meta' + (late ? ' late-t' : ''),
+        (late ? '⚠️ ' : '') + `${dkOnce(enEskiHazir)}${dakika(enEskiHazir) >= 1 ? "'dır" : ''} hazır bekliyor`));
+      const btn = el('button', 'bar-act blue', pendL.length ? 'Hazırları götürdüm ✓' : 'Hepsini götürdüm ✓');
+      btn.onclick = () => readyL.forEach(([k]) => setStatus(t, k, 'servis'));
+      foot.appendChild(btn);
+      card.appendChild(foot);
+      return card;
     }
 
     function barCard({ t, k, it }, isReady) {
@@ -699,6 +757,13 @@
       nm.appendChild(document.createTextNode(it.name));
       main.appendChild(nm);
       if (it.note) main.appendChild(el('div', 'bar-note', it.note));
+      if (!isReady) {
+        const diger = tableEntries(t).filter(([kk, x]) => kk !== k && x.station !== it.station && (x.status === 'bekliyor' || x.status === 'hazir'));
+        if (diger.length) {
+          const barAdi = it.station === 'kahve' ? 'dondurma barında' : 'kahve barında';
+          main.appendChild(el('div', 'other-hint', `↔ Aynı masaya ${barAdi}: ` + diger.map(([, x]) => `${x.qty}× ${x.name}`).join(', ')));
+        }
+      }
       const meta = el('div', 'bar-meta');
       let zamanYazi = '';
       if (isReady) {
