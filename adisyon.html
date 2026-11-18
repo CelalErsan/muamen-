@@ -96,6 +96,15 @@
     .dc-line .q { color: var(--gold); font-weight: 700; }
     .dc-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; gap: 8px; }
     .dc-foot .bar-meta { margin: 0; }
+    .prep-card { background: var(--card); border-left: 5px solid var(--waiting); border-radius: 10px; padding: 10px; margin-bottom: 10px; }
+    .prep-card.late { background: rgba(244,67,54,0.14); }
+    .pc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .pc-head .bar-meta { margin: 0; flex: 1; }
+    .pc-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #2e2e2e; }
+    .pc-item:first-of-type { border-top: none; }
+    .pc-item .bar-main { flex: 1; }
+    .pc-item .bar-act { padding: 10px 12px; font-size: 0.85rem; }
+    .pc-all { width: 100%; margin-top: 8px; }
     .other-hint { font-size: 0.75rem; color: #8fc3ff; margin-top: 4px; }
     .empty-msg { color: #666; text-align: center; padding: 18px 0; font-size: 0.9rem; }
     .sound-row { display: flex; justify-content: flex-end; margin-top: 10px; }
@@ -113,6 +122,9 @@
     .kasa-card .k-main { flex: 1; }
     .kasa-card .k-items { font-size: 0.82rem; color: #ccc; line-height: 1.4; }
     .kasa-card .k-warn { font-size: 0.72rem; color: var(--waiting); margin-top: 3px; }
+    .kasa-search { width: 100%; padding: 11px 12px; border-radius: 10px; border: 1px solid #444; background: #1a1a1a; color: #fff; font-size: 0.95rem; margin-bottom: 10px; }
+    .kasa-card .k-time { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+    .kasa-card .k-time.uzun { color: #ff6e63; font-weight: 700; }
     .kasa-card .k-total { font-size: 1.05rem; font-weight: 800; color: var(--gold); white-space: nowrap; }
 
     /* ---------- Modal ---------- */
@@ -197,6 +209,20 @@
     @keyframes flashAnim { 0% { opacity: 1; border-width: 14px; background: rgba(255,152,0,0.18); } 100% { opacity: 0; border-width: 0; background: transparent; } }
     .sound-row { gap: 6px; align-items: center; flex-wrap: wrap; font-size: 0.75rem; color: var(--muted); }
     .chip-btn.on { background: #fff; color: #000; border-color: #fff; }
+
+    /* Masa taşıma seçici */
+    .picker { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; padding: 16px; overflow-y: auto; }
+    .picker.active { display: block; }
+    .picker-box { max-width: 650px; margin: 0 auto; }
+    .picker-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .picker-head h3 { font-size: 1.1rem; }
+    .picker-hint { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
+    .pick-btn { background: var(--empty); border: 2px solid transparent; border-radius: 10px; color: #fff; padding: 10px 4px; cursor: pointer; min-height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .pick-btn b { font-size: 1.05rem; }
+    .pick-btn small { font-size: 0.66rem; color: #bbb; margin-top: 2px; }
+    .pick-btn.dolu { border-color: var(--waiting); background: rgba(255,152,0,0.15); }
+    .pick-btn.dolu small { color: #ffc46b; }
+    .pick-btn.kendisi { opacity: 0.3; pointer-events: none; }
 
     /* Toast */
     .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 10px 14px; border-radius: 24px; font-size: 0.88rem; display: none; z-index: 300; box-shadow: 0 4px 16px rgba(0,0,0,.5); align-items: center; gap: 12px; white-space: nowrap; }
@@ -289,6 +315,17 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="picker" id="movePicker">
+    <div class="picker-box">
+      <div class="picker-head">
+        <h3 id="pickerTitle">Hangi masaya taşınsın?</h3>
+        <button class="close-btn" id="pickerClose">Vazgeç ✕</button>
+      </div>
+      <p class="picker-hint">Boş masalar gri. <span style="color:#ffc46b">Turuncu</span> masalar dolu, seçersen iki masa birleşir.</p>
+      <div id="pickerZones"></div>
     </div>
   </div>
 
@@ -573,8 +610,24 @@
     // ================= GÖRÜNÜMLER =================
     document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
 
+    // Bar ve kasa ekranı kararmasın (telefon cepteyken Masalar ekranında pil yemesin diye sadece bu ekranlarda)
+    let wakeLock = null;
+    async function ekranUyanik() {
+      const iste = auth.currentUser && (currentView === 'bar' || currentView === 'kasa') && document.visibilityState === 'visible';
+      try {
+        if (iste && !wakeLock && navigator.wakeLock) {
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', () => { wakeLock = null; });
+        } else if (!iste && wakeLock) {
+          await wakeLock.release(); wakeLock = null;
+        }
+      } catch {}
+    }
+    document.addEventListener('visibilitychange', ekranUyanik);
+
     function showView(v) {
       currentView = v;
+      setTimeout(ekranUyanik, 0);
       store.set("mua_view", v);
       document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.view === v));
       document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + v));
@@ -681,7 +734,7 @@
       t1.appendChild(el('span', 'n', String(waiting.reduce((s, l) => s + l.it.qty, 0))));
       box.appendChild(t1);
       if (!waiting.length) box.appendChild(el('div', 'empty-msg', 'Bekleyen sipariş yok 👌'));
-      waiting.forEach(l => box.appendChild(barCard(l, false)));
+      siparisGruplari(waiting).forEach(g => box.appendChild(prepCard(g)));
 
       const t2 = el('div', 'sec-title', '🔔 Hazır, masaya götürülecek');
       t2.appendChild(el('span', 'n', String(ready.reduce((s, l) => s + l.it.qty, 0))));
@@ -744,6 +797,67 @@
       return card;
     }
 
+    // Aynı masanın birkaç dakika içinde girilen ürünleri tek sipariş sayılır ve birlikte gösterilir.
+    // Böylece B1 ve B2 aynı anda gelince liste "B1 B2 B2 B1" diye karışmaz; sonradan eklenen ek sipariş ayrı kart olur.
+    const GRUP_DK = 3;
+    function siparisGruplari(lines) {
+      const sirali = [...lines].sort((a, b) => (a.it.t || 0) - (b.it.t || 0));
+      const gruplar = [];
+      sirali.forEach(l => {
+        const g = gruplar.find(g => g.t === l.t && ((l.it.t || 0) - g.son) <= GRUP_DK * 60000);
+        if (g) { g.lines.push(l); g.son = l.it.t || 0; }
+        else gruplar.push({ t: l.t, ilk: l.it.t || 0, son: l.it.t || 0, lines: [l] });
+      });
+      return gruplar.sort((a, b) => a.ilk - b.ilk);
+    }
+
+    function prepCard(g) {
+      const late = g.ilk && dakika(g.ilk) >= GECIKME_DK;
+      const card = el('div', 'prep-card' + (late ? ' late' : ''));
+
+      const head = el('div', 'pc-head');
+      head.appendChild(el('div', 'bar-table', g.t));
+      const meta = el('div', 'bar-meta');
+      if (g.ilk) meta.appendChild(el('span', late ? 'late-t' : '',
+        (late ? '⚠️ ' : '') + `🕐 ${saat(g.ilk)} · ${dkOnce(g.ilk)}${dakika(g.ilk) >= 1 ? "'dır bekliyor" : ''}`));
+      const alanlar = [...new Set(g.lines.map(l => l.it.by).filter(Boolean))];
+      if (alanlar.length) meta.appendChild(document.createTextNode(' · alan: ' + alanlar.join(', ')));
+      head.appendChild(meta);
+      card.appendChild(head);
+
+      // Aynı masanın diğer bardaki ürünleri
+      const bu = new Set(g.lines.map(l => l.k));
+      const stationlar = new Set(g.lines.map(l => l.it.station));
+      const diger = tableEntries(g.t).filter(([kk, x]) => !bu.has(kk) && !stationlar.has(x.station) && (x.status === 'bekliyor' || x.status === 'hazir'));
+      if (diger.length && stationlar.size === 1) {
+        const barAdi = [...stationlar][0] === 'kahve' ? 'dondurma barında' : 'kahve barında';
+        card.appendChild(el('div', 'other-hint', `↔ Aynı masaya ${barAdi}: ` + diger.map(([, x]) => `${x.qty}× ${x.name}`).join(', ')));
+      }
+
+      g.lines.forEach(({ t, k, it }) => {
+        const row = el('div', 'pc-item');
+        const main = el('div', 'bar-main');
+        const nm = el('div', 'bar-name');
+        nm.appendChild(el('span', 'st-tag ' + it.station, it.station === 'kahve' ? '☕' : '🍨'));
+        nm.appendChild(el('span', 'q', `${it.qty}×`));
+        nm.appendChild(document.createTextNode(it.name));
+        main.appendChild(nm);
+        if (it.note) main.appendChild(el('div', 'bar-note', it.note));
+        row.appendChild(main);
+        const act = el('button', 'bar-act', 'Hazır ✓');
+        act.onclick = () => setStatus(t, k, 'hazir');
+        row.appendChild(act);
+        card.appendChild(row);
+      });
+
+      if (g.lines.length > 1) {
+        const all = el('button', 'bar-act pc-all', `Hepsi hazır ✓ (${g.lines.reduce((s, l) => s + l.it.qty, 0)} ürün)`);
+        all.onclick = () => g.lines.forEach(({ t, k }) => setStatus(t, k, 'hazir'));
+        card.appendChild(all);
+      }
+      return card;
+    }
+
     function barCard({ t, k, it }, isReady) {
       const ref0 = isReady ? it.readyAt : it.t;
       const late = isReady
@@ -769,9 +883,9 @@
       const meta = el('div', 'bar-meta');
       let zamanYazi = '';
       if (isReady) {
-        zamanYazi = `${saat(it.t)}'de alındı · ${dkOnce(it.readyAt)}${it.readyAt && dakika(it.readyAt) >= 1 ? "'dır" : ''} hazır bekliyor`;
+        zamanYazi = `🕐 ${saat(it.t)} · ${dkOnce(it.readyAt)}${it.readyAt && dakika(it.readyAt) >= 1 ? "'dır" : ''} hazır bekliyor`;
       } else if (it.t) {
-        zamanYazi = `${saat(it.t)}'de alındı · ${dkOnce(it.t)}${dakika(it.t) >= 1 ? "'dır bekliyor" : ''}`;
+        zamanYazi = `🕐 ${saat(it.t)} · ${dkOnce(it.t)}${dakika(it.t) >= 1 ? "'dır bekliyor" : ''}`;
       }
       if (zamanYazi) meta.appendChild(el('span', late ? 'late-t' : '', (late ? '⚠️ ' : '') + zamanYazi));
       if (it.by) meta.appendChild(document.createTextNode(' · alan: ' + it.by));
@@ -786,26 +900,53 @@
     }
 
     // ---------- Kasa ----------
+    // Masalarda numara olmadığı için kasada müşterinin söylediği ürünle de masa bulunabilsin
+    let kasaArama = '';
+    const kasaInput = el('input', 'kasa-search');
+    kasaInput.type = 'search';
+    kasaInput.placeholder = '🔍 Masa ya da ürün ara (örn: latte, cheesecake)';
+    kasaInput.addEventListener('input', () => { kasaArama = lower(kasaInput.value.trim()); renderKasaListe(); });
+    const kasaListe = el('div');
+
+    function sureYaz(ts) {
+      const m = dakika(ts);
+      return m < 60 ? `${m} dk` : `${Math.floor(m / 60)} sa ${m % 60} dk`;
+    }
+
     function renderKasa() {
       const box = $('view-kasa');
-      box.innerHTML = '';
-      const names = openTableNames();
-      if (!names.length) { box.appendChild(el('div', 'empty-msg', 'Açık masa yok')); return; }
-      box.appendChild(el('div', 'sec-title', 'Açık masalar – ödeme almak için dokun'));
-      names.forEach(t => {
+      if (kasaInput.parentNode !== box) { box.innerHTML = ''; box.append(el('div', 'sec-title', 'Açık masalar – ödeme almak için dokun'), kasaInput, kasaListe); }
+      renderKasaListe();
+    }
+
+    function renderKasaListe() {
+      kasaListe.innerHTML = '';
+      const kartlar = openTableNames().map(t => {
         const items = tableEntries(t).map(([, it]) => it);
-        const unpaid = items.filter(it => !it.paid);
-        if (!unpaid.length) return;
+        return { t, items, unpaid: items.filter(it => !it.paid) };
+      }).filter(x => x.unpaid.length);
+
+      if (!kartlar.length) { kasaListe.appendChild(el('div', 'empty-msg', 'Açık masa yok')); return; }
+
+      const eslesen = kartlar.filter(({ t, unpaid }) => !kasaArama ||
+        lower(t).includes(kasaArama) || unpaid.some(it => lower(it.name).includes(kasaArama) || lower(it.note).includes(kasaArama)));
+      if (!eslesen.length) { kasaListe.appendChild(el('div', 'empty-msg', 'Eşleşen açık masa yok')); return; }
+
+      eslesen.forEach(({ t, items, unpaid }) => {
         const card = el('div', 'kasa-card');
         card.appendChild(el('div', 'k-name', t));
         const main = el('div', 'k-main');
         main.appendChild(el('div', 'k-items', unpaid.map(it => `${it.qty}× ${it.name}`).join(', ')));
+        const ilk = Math.min(...items.map(it => it.t || Date.now()));
+        const acikDk = dakika(ilk);
+        main.appendChild(el('div', 'k-time' + (acikDk >= 120 ? ' uzun' : ''),
+          `🕐 ${saat(ilk)}'den beri açık · ${sureYaz(ilk)}` + (acikDk >= 120 ? ' – müşteri hâlâ masada mı?' : '')));
         const notServed = unpaid.filter(it => it.status !== 'servis').reduce((s, it) => s + it.qty, 0);
         if (notServed) main.appendChild(el('div', 'k-warn', `⚠️ ${notServed} ürün henüz masaya gitmedi`));
         card.appendChild(main);
         card.appendChild(el('div', 'k-total', formatTL(unpaid.reduce((s, it) => s + lineTotal(it), 0))));
-        card.onclick = () => openModal(t, 'odeme');
-        box.appendChild(card);
+        card.onclick = () => { kasaInput.value = ''; kasaArama = ''; openModal(t, 'odeme'); };
+        kasaListe.appendChild(card);
       });
     }
 
@@ -868,7 +1009,11 @@
 
         const sub = el('div', 'oi-sub');
         const chip = el('button', 'st-chip ' + it.status, STATUS_TEXT[it.status]);
-        chip.onclick = () => setStatus(activeTable, key, NEXT_STATUS[it.status]);
+        chip.onclick = () => {
+          // Servis edilmiş ürünü yanlışlıkla tekrar bara düşürmeyelim
+          if (it.status === 'servis' && !confirm(`"${it.name}" servis edilmiş görünüyor.\nTekrar "Hazırlanıyor"a alınsın mı? (Bara yeniden düşer)`)) return;
+          setStatus(activeTable, key, NEXT_STATUS[it.status]);
+        };
         sub.appendChild(chip);
         if (it.paid) sub.appendChild(el('span', 'st-chip odendi', '💰 Ödendi'));
         if (it.note) sub.appendChild(el('span', 'oi-note', it.note));
@@ -1033,7 +1178,8 @@
         // Aynı ürün, hâlâ hazırlanmayı bekliyor, notu yok ve ödenmemişse adedini artır
         const existingKey = Object.keys(t).find(k => {
           const it = t[k];
-          return it && !it.paid && !it.note && statusOf(it) === 'bekliyor' && lower(it.name) === lower(name);
+          return it && !it.paid && !it.note && statusOf(it) === 'bekliyor' && lower(it.name) === lower(name)
+            && (Date.now() - (it.t || 0)) <= GRUP_DK * 60000 && (it.by || '') === by;
         });
         if (existingKey) t[existingKey].qty = (t[existingKey].qty || 1) + 1;
         else t[newKey] = { name, qty: 1, price, station, status: 'bekliyor', note: '', by, t: Date.now(), paid: false };
@@ -1156,26 +1302,70 @@
       masayiKapat(t, structuredClone(toObject(tablesData[t])), "Masa boşaltıldı", "bosaltildi");
     });
 
+    // ---------- Masa taşıma / birleştirme ----------
+    let tasinacakMasa = null;
+    $('pickerClose').addEventListener('click', () => $('movePicker').classList.remove('active'));
+
     $('moveTableBtn').addEventListener('click', () => {
       if (!activeTable) return;
-      const src = activeTable;
-      let dst = prompt(`${src} masasındaki siparişler hangi masaya taşınsın? (örn: K3, İ2, P1)`);
-      if (!dst) return;
-      dst = dst.trim().toLocaleUpperCase('tr-TR').replace(/^UST/, 'ÜST');
-      if (dst.startsWith('ÜST') && !dst.startsWith('ÜST ')) dst = dst.replace('ÜST', 'ÜST ');
-      if (!ALL_TABLES.includes(dst)) { alert(`"${dst}" diye bir masa yok.`); return; }
-      if (dst === src) return;
+      if (!tableEntries(activeTable).length) { alert("Bu masada taşınacak sipariş yok."); return; }
+      tasinacakMasa = activeTable;
+      $('pickerTitle').textContent = `${activeTable} hangi masaya taşınsın?`;
+      const box = $('pickerZones');
+      box.innerHTML = '';
+      ZONES.forEach(zone => {
+        box.appendChild(el('div', 'zone-title', zone.title));
+        const grid = el('div', 'grid');
+        for (let i = 1; i <= zone.count; i++) {
+          const t = `${zone.prefix}${i}`;
+          const items = tableEntries(t).map(([, it]) => it).filter(it => !it.paid);
+          const b = el('button', 'pick-btn' + (items.length ? ' dolu' : '') + (t === activeTable ? ' kendisi' : ''));
+          b.appendChild(el('b', '', t));
+          b.appendChild(el('small', '', items.length ? `DOLU · ${items.reduce((s, it) => s + it.qty, 0)} ürün` : 'boş'));
+          b.onclick = () => masaTasi(tasinacakMasa, t);
+          grid.appendChild(b);
+        }
+        box.appendChild(grid);
+      });
+      $('movePicker').classList.add('active');
+    });
 
-      const items = toObject(tablesData[src]);
+    function masaTasi(src, dst) {
+      if (!src || src === dst) return;
+      const srcItems = toObject(tablesData[src]);
+      const dstItems = toObject(tablesData[dst]);
+      const dstDolu = Object.values(dstItems).filter(it => it && !it.paid);
+
+      if (dstDolu.length) {
+        const ozet = dstDolu.map(it => `${it.qty || 1}× ${it.name}`).join(', ');
+        const ok = confirm(`⚠️ ${dst} DOLU!\n\n${dst} masasında: ${ozet}\n\n${src} masasının siparişleri buna EKLENECEK ve iki masa tek hesap olacak.\n\nSadece müşteriler aynı masada birleştiyse onayla.`);
+        if (!ok) return;
+      }
+
+      const srcSnap = structuredClone(srcItems);
       const dstRef = child(tablesRef, dst);
       const updates = {};
-      Object.values(items).forEach(it => { if (it) updates[`${dst}/${push(dstRef).key}`] = it; });
+      const yeniKeyler = [];
+      Object.values(srcItems).forEach(it => {
+        if (!it) return;
+        const k = push(dstRef).key;
+        yeniKeyler.push(k);
+        updates[`${dst}/${k}`] = it;
+      });
       updates[src] = null;
+
       update(tablesRef, updates).then(() => {
-        toast(`${src} → ${dst} taşındı ✓`);
+        $('movePicker').classList.remove('active');
         openModal(dst, modalMode);
+        toast(dstDolu.length ? `${src} → ${dst} ile birleştirildi` : `${src} → ${dst} taşındı ✓`, () => {
+          // Geri al: taşınan ürünleri hedeften kaldır, kaynağa eski haliyle koy
+          const back = {};
+          yeniKeyler.forEach(k => { back[`${dst}/${k}`] = null; });
+          Object.entries(srcSnap).forEach(([k, it]) => { if (it) back[`${src}/${k}`] = it; });
+          update(tablesRef, back).then(() => { toast(`Taşıma geri alındı, ${src} eski haline döndü`); if (activeTable) openModal(src, modalMode); }).catch(hata);
+        });
       }).catch(hata);
-    });
+    }
   </script>
 </body>
 </html>
