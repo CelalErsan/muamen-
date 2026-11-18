@@ -446,8 +446,10 @@
       alert("Kayıt yapılamadı: " + (err?.message || err));
     }
 
+    // İş günü: gece 05:00'e kadar yapılan işlemler bir önceki güne yazılır (gece yarısını geçen vardiya bölünmesin)
+    const GUN_DONUMU_SAAT = 5;
     function bugunKey() {
-      const d = new Date();
+      const d = new Date(Date.now() - GUN_DONUMU_SAAT * 3600000);
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
@@ -1057,12 +1059,40 @@
     }
 
     function changeQty(tName, key, delta) {
-      itemTx(tName, key, (cur) => {
-        const q = (cur.qty || 1) + delta;
-        if (q <= 0) return null; // ürünü sil
+      if (delta > 0) {
+        itemTx(tName, key, (cur) => { cur.qty = (cur.qty || 1) + delta; return cur; });
+        return;
+      }
+      // Azaltma = iptal. Hazırlanmış/servis edilmiş ürün iptal ediliyorsa sebep sor.
+      const mevcut = toObject(tablesData[tName])[key];
+      if (!mevcut) return;
+      let sebep = '';
+      if (statusOf(mevcut) !== 'bekliyor') {
+        sebep = prompt(`"${mevcut.name}" hazırlanmış/servis edilmiş görünüyor. İptal sebebi?\n(örn: müşteri vazgeçti, yanlış ürün, döküldü)`);
+        if (sebep === null) return;
+        sebep = sebep.trim().slice(0, 80);
+      }
+      let silinen = null;
+      runTransaction(child(tablesRef, `${tName}/${key}`), (cur) => {
+        if (!cur) { silinen = null; return null; }
+        silinen = { ...cur };
+        const q = (cur.qty || 1) - 1;
+        if (q <= 0) return null;
         cur.qty = q;
         return cur;
-      });
+      }).then(res => {
+        if (!res.committed || !silinen) return;
+        const day = bugunKey();
+        const k = push(ref(db, `mua_adisyon_arsiv/${day}/iptaller`)).key;
+        return update(ref(db), {
+          [`mua_adisyon_arsiv/${day}/iptaller/${k}`]: {
+            table: tName, name: silinen.name, qty: 1, price: silinen.price || 0,
+            status: statusOf(silinen), paid: !!silinen.paid,
+            orderBy: silinen.by || '', orderAt: silinen.t || null,
+            by: me(), at: Date.now(), sebep
+          }
+        });
+      }).catch(hata);
     }
 
     function editNote(tName, key, current) {
@@ -1099,9 +1129,9 @@
     function masayiKapat(tName, snapshot, mesaj, tip = 'odendi') {
       const current = toObject(tablesData[tName]);
       const day = bugunKey();
-      const archKey = push(ref(db, `mua_adisyon_arsiv/${day}`)).key;
+      const archKey = push(ref(db, `mua_adisyon_arsiv/${day}/masalar`)).key;
       const updates = {};
-      updates[`mua_adisyon_arsiv/${day}/${archKey}`] = {
+      updates[`mua_adisyon_arsiv/${day}/masalar/${archKey}`] = {
         table: tName, closedAt: Date.now(), by: me(), tip,
         items: Object.values(current).filter(Boolean).map(it => tip === 'odendi' ? { ...it, paid: true } : it)
       };
@@ -1112,7 +1142,7 @@
         toast(`${tName}: ${mesaj}`, () => {
           const back = {};
           Object.entries(snapshot || {}).forEach(([k, it]) => { if (it) back[`mua_adisyon_masalar/${tName}/${k}`] = it; });
-          back[`mua_adisyon_arsiv/${day}/${archKey}`] = null;
+          back[`mua_adisyon_arsiv/${day}/masalar/${archKey}`] = null;
           update(ref(db), back).then(() => toast(`${tName} geri getirildi`)).catch(hata);
         });
       }).catch(hata);

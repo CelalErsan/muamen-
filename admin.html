@@ -82,6 +82,29 @@
         .checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 13.5px; cursor: pointer; }
         .checkbox-group input { width: 18px; height: 18px; margin: 0; }
 
+        /* Sekmeler */
+        .pane-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .pane-tab { padding: 11px; border: none; border-radius: 10px; background: #e7e7ea; color: #555; font-weight: 700; font-size: 14px; cursor: pointer; }
+        .pane-tab.active { background: #d81b60; color: #fff; }
+
+        /* Gün Sonu */
+        .r-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .r-stat { background: #fff; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .r-stat .lbl { font-size: 11.5px; color: #888; font-weight: 600; }
+        .r-stat .val { font-size: 22px; font-weight: 800; margin-top: 4px; }
+        .r-stat .val.pink { color: #d81b60; }
+        .r-stat .val.red { color: #e53935; }
+        .r-card { background: #fff; border-radius: 12px; padding: 14px 16px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .r-card h3 { margin: 0 0 10px; font-size: 15px; display: flex; justify-content: space-between; }
+        .r-card h3 small { color: #888; font-weight: 600; }
+        .r-row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid #f1f1f3; font-size: 13.5px; }
+        .r-row:last-child { border-bottom: none; }
+        .r-row .r-sub { display: block; font-size: 11.5px; color: #888; margin-top: 2px; }
+        .r-row .r-num { font-weight: 700; white-space: nowrap; text-align: right; }
+        .r-empty { color: #999; font-size: 13px; text-align: center; padding: 8px 0; }
+        .r-warn { background: #fff4e5; border: 1px solid #ffcc80; color: #8a5300; border-radius: 10px; padding: 12px 14px; font-size: 13px; margin-bottom: 15px; }
+        .r-note { font-size: 11.5px; color: #888; text-align: center; margin: -5px 0 15px; }
+
         .toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: #2c1e16; color: white; padding: 10px 20px; border-radius: 20px;
@@ -108,6 +131,21 @@
             <button onclick="cikisYap()" style="background:none; border:none; color:#888; cursor:pointer; font-size:13px;">Çıkış Yap</button>
         </div>
 
+        <div class="pane-tabs">
+            <button class="pane-tab active" data-pane="menuPane">🍦 Menü</button>
+            <button class="pane-tab" data-pane="raporPane">📊 Gün Sonu</button>
+        </div>
+
+        <div id="raporPane" style="display:none;">
+            <div class="date-box">
+                <span style="font-size: 13px; font-weight: 500; flex: 1;">İş Günü:</span>
+                <input type="date" id="raporTarih" style="width: 150px;">
+            </div>
+            <p class="r-note">Gece 05:00'e kadar kapanan masalar bir önceki iş gününe sayılır.</p>
+            <div id="raporIcerik"></div>
+        </div>
+
+        <div id="menuPane">
         <div id="seedBox" class="card" style="display: none; text-align: center; background: #fff8fa; border: 1px solid #f4c9d8;">
             <p style="margin-top:0; font-size:14px;">Veritabanı henüz boş. Mevcut menündeki tüm ürünleri tek tıkla yüklemek için butona bas:</p>
             <button class="btn" onclick="ilkVerileriYukle()">Mevcut Menüyü Veritabanına Aktar</button>
@@ -126,6 +164,7 @@
         <input type="search" id="searchInput" placeholder="🔍 Ürün ara (örn: San Sebastian, Latte...)" oninput="urunleriFiltrele()">
 
         <div id="itemsContainer"></div>
+        </div>
     </div>
 </div>
 
@@ -666,6 +705,160 @@
         toast.style.display = "block";
         clearTimeout(bildirimGoster._t);
         bildirimGoster._t = setTimeout(() => toast.style.display = "none", 2000);
+    }
+
+    // ================= GÜN SONU RAPORU =================
+    const GUN_DONUMU_SAAT = 5; // adisyon.html ile aynı olmalı
+
+    function isGunuKey(ts = Date.now()) {
+        const d = new Date(ts - GUN_DONUMU_SAAT * 3600000);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+    const tl = (n) => (n || 0).toLocaleString('tr-TR', { maximumFractionDigits: 2 }) + ' ₺';
+    const saatYaz = (ts) => ts ? new Date(ts).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '';
+    const DURUM = { bekliyor: 'hazırlanmadan', hazir: 'hazırlandıktan sonra', servis: 'servis edildikten sonra' };
+
+    function mk(tag, cls, text) {
+        const e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text !== undefined) e.textContent = text;
+        return e;
+    }
+    function satir(sol, alt, sag) {
+        const r = mk('div', 'r-row');
+        const l = mk('div', '', sol);
+        if (alt) l.appendChild(mk('span', 'r-sub', alt));
+        r.append(l, mk('div', 'r-num', sag));
+        return r;
+    }
+    function kart(baslik, sagBaslik) {
+        const c = mk('div', 'r-card');
+        const h = mk('h3', '', baslik);
+        if (sagBaslik) h.appendChild(mk('small', '', sagBaslik));
+        c.appendChild(h);
+        return c;
+    }
+
+    let raporUnsubs = [];
+    let raporArsiv = null, acikMasalar = {};
+
+    document.querySelectorAll('.pane-tab').forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll('.pane-tab').forEach(x => x.classList.toggle('active', x === b));
+        $('menuPane').style.display = b.dataset.pane === 'menuPane' ? 'block' : 'none';
+        $('raporPane').style.display = b.dataset.pane === 'raporPane' ? 'block' : 'none';
+        if (b.dataset.pane === 'raporPane') raporuDinle();
+    }));
+    $('raporTarih').addEventListener('change', raporuDinle);
+
+    function raporuDinle() {
+        if (!$('raporTarih').value) $('raporTarih').value = isGunuKey();
+        raporUnsubs.forEach(u => u());
+        raporUnsubs = [];
+        raporArsiv = null;
+        $('raporIcerik').innerHTML = '<p class="r-empty">Yükleniyor...</p>';
+        const gun = $('raporTarih').value;
+        raporUnsubs.push(onValue(ref(db, `mua_adisyon_arsiv/${gun}`), (snap) => {
+            raporArsiv = snap.val() || {};
+            raporuCiz();
+        }, (err) => { $('raporIcerik').innerHTML = ''; $('raporIcerik').appendChild(mk('p', 'r-warn', 'Arşiv okunamadı: ' + err.message)); }));
+        raporUnsubs.push(onValue(ref(db, 'mua_adisyon_masalar'), (snap) => {
+            acikMasalar = snap.val() || {};
+            if (raporArsiv) raporuCiz();
+        }, () => {}));
+    }
+
+    const liste = (o) => !o ? [] : (Array.isArray(o) ? o : Object.values(o)).filter(Boolean);
+
+    function raporuCiz() {
+        const box = $('raporIcerik');
+        box.innerHTML = '';
+        const gun = $('raporTarih').value;
+        const a = raporArsiv || {};
+
+        // Masalar: yeni kayıtlar {gun}/masalar altında, ilk günlerin kayıtları doğrudan {gun} altında
+        const masalar = [...liste(a.masalar), ...Object.entries(a).filter(([k, v]) => k !== 'masalar' && k !== 'iptaller' && v && v.table).map(([, v]) => v)];
+        const iptaller = liste(a.iptaller).sort((x, y) => (x.at || 0) - (y.at || 0));
+
+        let ciro = 0, urunAdet = 0, odenenMasa = 0;
+        const urunler = {}, personel = {}, odenmeden = [];
+
+        masalar.forEach(m => {
+            const items = liste(m.items);
+            const tip = m.tip || 'odendi';
+            if (tip === 'odendi') odenenMasa++;
+            const odenmemis = [];
+            items.forEach(it => {
+                const qty = it.qty || 1, tutar = (it.price || 0) * qty;
+                const odendi = tip === 'odendi' || it.paid;
+                if (!odendi) { odenmemis.push(it); return; }
+                ciro += tutar; urunAdet += qty;
+                const u = (urunler[it.name] ||= { adet: 0, tutar: 0 });
+                u.adet += qty; u.tutar += tutar;
+                const p = (personel[it.by || 'Bilinmiyor'] ||= { adet: 0, tutar: 0 });
+                p.adet += qty; p.tutar += tutar;
+            });
+            if (odenmemis.length) odenmeden.push({ ...m, odenmemis });
+        });
+
+        const iptalTutar = iptaller.reduce((s, x) => s + (x.price || 0) * (x.qty || 1), 0);
+        const odenmedenTutar = odenmeden.reduce((s, m) => s + m.odenmemis.reduce((t, it) => t + (it.price || 0) * (it.qty || 1), 0), 0);
+
+        // Bugünse hâlâ açık masaları uyar
+        if (gun === isGunuKey()) {
+            const acik = Object.entries(acikMasalar).map(([t, v]) => [t, liste(v).filter(it => it && !it.paid)]).filter(([, v]) => v.length);
+            if (acik.length) {
+                const toplam = acik.reduce((s, [, v]) => s + v.reduce((t, it) => t + (it.price || 0) * (it.qty || 1), 0), 0);
+                box.appendChild(mk('div', 'r-warn', `⚠️ Hâlâ açık ${acik.length} masa var (${acik.map(([t]) => t).join(', ')}) – ödenmemiş ${tl(toplam)}. Bunlar kapanınca rapora eklenir.`));
+            }
+        }
+
+        const stats = mk('div', 'r-stats');
+        [['Adisyondan Ödenen', tl(ciro), 'pink'], ['Kapanan Masa', String(odenenMasa), ''],
+         ['Satılan Ürün', String(urunAdet), ''], ['İptal', `${iptaller.length} kalem · ${tl(iptalTutar)}`, iptaller.length ? 'red' : '']]
+            .forEach(([lbl, val, cls]) => {
+                const d = mk('div', 'r-stat');
+                d.append(mk('div', 'lbl', lbl), mk('div', 'val ' + cls, val));
+                if (lbl === 'İptal') d.lastChild.style.fontSize = '16px';
+                stats.appendChild(d);
+            });
+        box.appendChild(stats);
+        box.appendChild(mk('p', 'r-note', `"Adisyondan Ödenen" tutarını RobotPOS gün sonu (Z) raporuyla karşılaştır. Özel eklenen (fiyatsız) ürünler tutara dahil değil.`));
+
+        // Ödenmeden boşaltılan masalar
+        const c0 = kart('🚫 Ödenmeden Boşaltılan', odenmeden.length ? tl(odenmedenTutar) : '');
+        if (!odenmeden.length) c0.appendChild(mk('div', 'r-empty', 'Yok 👍'));
+        odenmeden.forEach(m => c0.appendChild(satir(
+            `${m.table} · ${saatYaz(m.closedAt)}`,
+            m.odenmemis.map(it => `${it.qty || 1}× ${it.name}`).join(', ') + (m.by ? ` — boşaltan: ${m.by}` : ''),
+            tl(m.odenmemis.reduce((t, it) => t + (it.price || 0) * (it.qty || 1), 0)))));
+        box.appendChild(c0);
+
+        // İptaller
+        const c1 = kart('↩️ İptaller', iptaller.length ? tl(iptalTutar) : '');
+        if (!iptaller.length) c1.appendChild(mk('div', 'r-empty', 'İptal yok 👍'));
+        iptaller.forEach(x => {
+            const alt = [`${saatYaz(x.at)} · iptal eden: ${x.by || '?'}`,
+                x.orderBy && x.orderBy !== x.by ? `siparişi alan: ${x.orderBy}` : '',
+                DURUM[x.status] ? `${DURUM[x.status]} iptal` : '',
+                x.paid ? 'ÖDENMİŞTİ' : '',
+                x.sebep ? `sebep: ${x.sebep}` : ''].filter(Boolean).join(' · ');
+            c1.appendChild(satir(`${x.table} · ${x.qty || 1}× ${x.name}`, alt, tl((x.price || 0) * (x.qty || 1))));
+        });
+        box.appendChild(c1);
+
+        // Personel
+        const c2 = kart('👤 Personel (aldığı siparişler)');
+        const pl = Object.entries(personel).sort((x, y) => y[1].tutar - x[1].tutar);
+        if (!pl.length) c2.appendChild(mk('div', 'r-empty', 'Kayıt yok'));
+        pl.forEach(([ad, v]) => c2.appendChild(satir(ad, `${v.adet} ürün`, tl(v.tutar))));
+        box.appendChild(c2);
+
+        // Ürünler
+        const c3 = kart('🧾 Ürün Bazında Satış', `${Object.keys(urunler).length} çeşit`);
+        const ul = Object.entries(urunler).sort((x, y) => y[1].adet - x[1].adet);
+        if (!ul.length) c3.appendChild(mk('div', 'r-empty', 'Bu gün için kapanmış masa yok'));
+        ul.forEach(([ad, v]) => c3.appendChild(satir(ad, '', `${v.adet} adet · ${tl(v.tutar)}`)));
+        box.appendChild(c3);
     }
 </script>
 </body>
