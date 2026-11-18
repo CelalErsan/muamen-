@@ -9,155 +9,186 @@
     :root {
       --bg: #121212;
       --card: #1e1e1e;
+      --card2: #262626;
       --text: #f5f5f5;
+      --muted: #999;
       --empty: #2c2c2c;
       --waiting: #ff9800;
+      --ready: #4caf50;
       --served: #2196f3;
-      --green: #4caf50;
+      --paid: #777;
       --danger: #f44336;
+      --pink: #d81b60;
+      --gold: #ffd54f;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 12px; padding-bottom: 80px; }
+    body { background: var(--bg); color: var(--text); padding: 0 12px 90px; }
+    button { font-family: inherit; }
 
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; gap: 8px; }
-    header h1 { font-size: 1.15rem; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
-    .header-right { display: flex; align-items: center; gap: 10px; }
-    .conn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); display: inline-block; flex-shrink: 0; }
-    .conn-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
-    .legend { display: flex; gap: 10px; font-size: 0.75rem; }
-    .legend span { display: flex; align-items: center; gap: 4px; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-    .logout-btn { background: none; border: 1px solid #444; color: #aaa; padding: 4px 8px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; }
-
-    /* Giriş ekranı */
+    /* ---------- Giriş ---------- */
     .login-card { max-width: 360px; margin: 80px auto 0; background: var(--card); padding: 24px; border-radius: 14px; }
     .login-card h2 { font-size: 1.1rem; text-align: center; margin-bottom: 16px; }
     .login-card input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #121212; color: #fff; font-size: 1rem; margin-bottom: 10px; }
-    .login-card button { width: 100%; padding: 12px; border: none; border-radius: 8px; background: var(--green); color: #fff; font-weight: bold; font-size: 1rem; cursor: pointer; }
+    .login-card button { width: 100%; padding: 12px; border: none; border-radius: 8px; background: var(--ready); color: #fff; font-weight: bold; font-size: 1rem; cursor: pointer; }
     .login-err { color: var(--danger); font-size: 0.85rem; text-align: center; margin-top: 10px; min-height: 1em; }
 
-    .zone-title { font-size: 0.95rem; color: #aaa; margin: 16px 0 8px; font-weight: 600; text-transform: uppercase; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; }
+    /* ---------- Üst bar + sekmeler ---------- */
+    .topbar { position: sticky; top: 0; z-index: 50; background: var(--bg); padding-top: 10px; }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-bottom: 8px; }
+    header h1 { font-size: 1.05rem; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+    .conn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); display: inline-block; flex-shrink: 0; }
+    .conn-dot.online { background: var(--ready); box-shadow: 0 0 6px var(--ready); }
+    .header-right { display: flex; align-items: center; gap: 6px; }
+    .chip-btn { background: #2a2a2a; border: 1px solid #3a3a3a; color: #ddd; padding: 5px 9px; border-radius: 16px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; }
 
+    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding-bottom: 10px; border-bottom: 1px solid #333; }
+    .tab { background: var(--empty); color: #ccc; border: none; padding: 9px 4px; border-radius: 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer; position: relative; }
+    .tab.active { background: #fff; color: #000; }
+    .tab .cnt { display: inline-block; min-width: 18px; padding: 0 5px; border-radius: 9px; background: var(--waiting); color: #000; font-size: 0.7rem; margin-left: 3px; }
+    .tab .cnt:empty { display: none; }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ---------- Masalar ---------- */
+    .zone-title { font-size: 0.9rem; color: #aaa; margin: 14px 0 8px; font-weight: 600; text-transform: uppercase; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; }
     .table-btn {
-      background: var(--empty);
-      border: 2px solid transparent;
-      border-radius: 10px;
-      padding: 10px 4px;
-      color: var(--text);
-      text-align: center;
-      cursor: pointer;
-      position: relative;
-      transition: 0.15s;
-      min-height: 72px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      user-select: none;
+      background: var(--empty); border: 2px solid transparent; border-radius: 10px; padding: 8px 4px; color: var(--text);
+      text-align: center; cursor: pointer; min-height: 74px; display: flex; flex-direction: column; justify-content: center; align-items: center; user-select: none;
     }
     .table-btn .t-name { font-size: 1.1rem; font-weight: 700; }
-    .table-btn .t-info { font-size: 0.68rem; margin-top: 3px; opacity: 0.9; }
-    .table-btn .t-price { font-size: 0.72rem; margin-top: 2px; color: #ffd54f; font-weight: 600; }
+    .table-btn .t-info { font-size: 0.66rem; margin-top: 3px; opacity: 0.95; line-height: 1.3; }
+    .table-btn .t-price { font-size: 0.72rem; margin-top: 2px; color: var(--gold); font-weight: 600; }
+    .table-btn.st-waiting { background: rgba(255,152,0,0.2); border-color: var(--waiting); animation: pulseO 1.8s infinite; }
+    .table-btn.st-ready { background: rgba(76,175,80,0.22); border-color: var(--ready); animation: pulseG 1.2s infinite; }
+    .table-btn.st-served { background: rgba(33,150,243,0.2); border-color: var(--served); }
+    @keyframes pulseO { 0% { box-shadow: 0 0 0 0 rgba(255,152,0,.5); } 70% { box-shadow: 0 0 0 8px rgba(255,152,0,0); } 100% { box-shadow: 0 0 0 0 rgba(255,152,0,0); } }
+    @keyframes pulseG { 0% { box-shadow: 0 0 0 0 rgba(76,175,80,.6); } 70% { box-shadow: 0 0 0 9px rgba(76,175,80,0); } 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0); } }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.72rem; color: #bbb; margin-top: 10px; }
+    .legend span { display: flex; align-items: center; gap: 4px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-    .table-btn.status-waiting {
-      background: rgba(255, 152, 0, 0.22);
-      border-color: var(--waiting);
-      animation: pulse 1.8s infinite;
-    }
-    .table-btn.status-served {
-      background: rgba(33, 150, 243, 0.22);
-      border-color: var(--served);
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.5); }
-      70% { box-shadow: 0 0 0 8px rgba(255, 152, 0, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
-    }
+    /* ---------- Bar ekranları ---------- */
+    .sec-title { font-size: 0.9rem; font-weight: 700; margin: 14px 0 8px; display: flex; align-items: center; gap: 8px; }
+    .sec-title .n { background: #333; padding: 1px 8px; border-radius: 10px; font-size: 0.8rem; }
+    .bar-card { display: flex; align-items: center; gap: 10px; background: var(--card); border-left: 5px solid var(--waiting); border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+    .bar-card.ready { border-left-color: var(--ready); }
+    .bar-card.late { background: rgba(244,67,54,0.14); }
+    .bar-table { font-size: 1.25rem; font-weight: 800; min-width: 54px; text-align: center; }
+    .bar-main { flex: 1; min-width: 0; }
+    .bar-name { font-size: 1.02rem; font-weight: 600; }
+    .bar-name .q { color: var(--gold); margin-right: 4px; }
+    .bar-note { font-size: 0.85rem; color: #111; background: var(--gold); display: inline-block; padding: 1px 7px; border-radius: 5px; margin-top: 4px; font-weight: 600; }
+    .bar-meta { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+    .bar-meta .late-t { color: #ff6e63; font-weight: 700; }
+    .bar-act { border: none; border-radius: 10px; padding: 14px 12px; font-weight: 800; font-size: 0.9rem; cursor: pointer; color: #fff; background: var(--ready); white-space: nowrap; }
+    .bar-act.blue { background: var(--served); }
+    .empty-msg { color: #666; text-align: center; padding: 18px 0; font-size: 0.9rem; }
+    .sound-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+    .filter-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+    .f-btn { background: var(--empty); color: #ccc; border: 2px solid transparent; padding: 9px 4px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+    .f-btn.active { border-color: #fff; color: #fff; background: #333; }
+    .f-btn .fc { color: var(--waiting); margin-left: 4px; }
+    .st-tag { font-size: 0.72rem; font-weight: 700; padding: 1px 6px; border-radius: 5px; margin-right: 6px; vertical-align: middle; }
+    .st-tag.kahve { background: #6d4c41; color: #fff; }
+    .st-tag.dondurma { background: var(--pink); color: #fff; }
 
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      z-index: 100;
-      justify-content: center;
-      align-items: flex-end;
-    }
+    /* ---------- Kasa listesi ---------- */
+    .kasa-card { background: var(--card); border-radius: 12px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .kasa-card .k-name { font-size: 1.3rem; font-weight: 800; min-width: 56px; text-align: center; }
+    .kasa-card .k-main { flex: 1; }
+    .kasa-card .k-items { font-size: 0.82rem; color: #ccc; line-height: 1.4; }
+    .kasa-card .k-warn { font-size: 0.72rem; color: var(--waiting); margin-top: 3px; }
+    .kasa-card .k-total { font-size: 1.05rem; font-weight: 800; color: var(--gold); white-space: nowrap; }
+
+    /* ---------- Modal ---------- */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: flex-end; }
     .modal.active { display: flex; }
-    .modal-content {
-      background: var(--card);
-      width: 100%;
-      max-width: 650px;
-      height: 94vh;
-      border-radius: 16px 16px 0 0;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-    }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 8px; }
+    .modal-content { background: var(--card); width: 100%; max-width: 650px; height: 94vh; border-radius: 16px 16px 0 0; padding: 14px; display: flex; flex-direction: column; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; }
     .modal-header h2 { font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-    .total-badge { background: #333; color: #ffd54f; font-size: 0.95rem; padding: 4px 10px; border-radius: 8px; }
+    .total-badge { background: #333; color: var(--gold); font-size: 0.9rem; padding: 4px 10px; border-radius: 8px; }
     .total-badge:empty { display: none; }
     .close-btn { background: #333; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-    .order-list { list-style: none; margin-bottom: 10px; max-height: 200px; overflow-y: auto; flex-shrink: 0; }
-    .order-empty { color: #777; text-align: center; padding: 12px 0; font-size: 0.9rem; }
-    .order-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #282828;
-      padding: 8px 10px;
-      border-radius: 8px;
-      margin-bottom: 6px;
-      border-left: 4px solid var(--waiting);
-    }
-    .order-item.served {
-      border-left-color: var(--green);
-      opacity: 0.6;
-    }
-    .order-item.served .item-name { text-decoration: line-through; color: #aaa; }
-    .item-left { display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; }
-    .item-qty { background: #444; padding: 2px 7px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; }
+    .mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+    .mode-btn { background: var(--empty); color: #ccc; border: none; padding: 9px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+    .mode-btn.active { background: #fff; color: #000; }
+    .mode-pane { display: none; flex-direction: column; flex: 1; min-height: 0; }
+    .mode-pane.active { display: flex; }
+
+    .order-list { list-style: none; margin-bottom: 10px; max-height: 34vh; overflow-y: auto; flex-shrink: 0; }
+    .order-item { display: flex; align-items: center; gap: 8px; background: #282828; padding: 8px; border-radius: 8px; margin-bottom: 6px; border-left: 4px solid var(--waiting); }
+    .order-item.s-hazir { border-left-color: var(--ready); }
+    .order-item.s-servis { border-left-color: var(--served); opacity: 0.7; }
+    .order-item.paid { border-left-color: var(--paid); opacity: 0.45; }
+    .oi-main { flex: 1; min-width: 0; }
+    .oi-top { display: flex; align-items: center; gap: 6px; }
+    .item-qty { background: #444; padding: 1px 7px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; }
     .item-name { font-size: 0.95rem; font-weight: 500; }
-    .item-price { font-size: 0.8rem; color: #ffd54f; margin-left: auto; margin-right: 8px; }
-    .item-actions { display: flex; gap: 5px; }
-    .btn-small { border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #fff; }
+    .item-price { font-size: 0.78rem; color: var(--gold); margin-left: auto; white-space: nowrap; }
+    .oi-sub { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+    .st-chip { border: none; border-radius: 12px; padding: 3px 9px; font-size: 0.72rem; font-weight: 700; cursor: pointer; color: #000; }
+    .st-chip.bekliyor { background: var(--waiting); }
+    .st-chip.hazir { background: var(--ready); color: #fff; }
+    .st-chip.servis { background: var(--served); color: #fff; }
+    .st-chip.odendi { background: #555; color: #ddd; cursor: default; }
+    .oi-note { font-size: 0.75rem; background: var(--gold); color: #111; padding: 1px 6px; border-radius: 5px; font-weight: 600; }
+    .oi-meta { font-size: 0.68rem; color: var(--muted); }
+    .item-actions { display: flex; flex-direction: column; gap: 4px; }
+    .item-actions .row { display: flex; gap: 4px; }
+    .btn-small { border: none; padding: 6px 9px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #fff; font-size: 0.8rem; }
     .btn-plus { background: #3b82f6; }
     .btn-del { background: var(--danger); }
+    .btn-note { background: #555; }
 
     .search-and-custom { display: flex; gap: 6px; margin-bottom: 8px; flex-shrink: 0; }
-    .search-and-custom input {
-      flex: 1; padding: 9px 10px; border-radius: 8px; border: 1px solid #444; background: #121212; color: #fff; font-size: 0.9rem;
-    }
-    .search-and-custom button {
-      background: var(--green); color: #fff; border: none; padding: 0 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; white-space: nowrap;
-    }
+    .search-and-custom input { flex: 1; min-width: 0; padding: 9px 10px; border-radius: 8px; border: 1px solid #444; background: #121212; color: #fff; font-size: 0.9rem; }
+    .search-and-custom button { background: #3a3a3a; color: #fff; border: none; padding: 0 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.8rem; white-space: nowrap; }
 
     .quick-cats { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 6px; flex-shrink: 0; }
     .cat-tab { background: #2c2c2c; color: #ccc; border: none; padding: 7px 12px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.82rem; }
     .cat-tab.active { background: #fff; color: #000; font-weight: bold; }
-
-    .quick-items {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
-      gap: 7px;
-      margin-bottom: 10px;
-      overflow-y: auto;
-      flex: 1;
-      align-content: start;
-    }
-    .q-btn {
-      background: #262626; color: #eee; border: 1px solid #383838; padding: 9px 6px; border-radius: 8px; font-size: 0.82rem; cursor: pointer; text-align: center; user-select: none; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3px; min-height: 54px;
-    }
-    .q-btn .q-price { font-size: 0.72rem; color: #ffd54f; }
-    .q-btn:active { background: var(--green); color: #fff; }
+    .quick-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 7px; margin-bottom: 10px; overflow-y: auto; flex: 1; align-content: start; }
+    .q-btn { background: var(--card2); color: #eee; border: 1px solid #383838; padding: 9px 6px; border-radius: 8px; font-size: 0.82rem; cursor: pointer; text-align: center; user-select: none; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3px; min-height: 54px; }
+    .q-btn .q-price { font-size: 0.72rem; color: var(--gold); }
+    .q-btn:active { background: var(--ready); color: #fff; }
     .q-empty { color: #777; font-size: 0.85rem; grid-column: 1 / -1; text-align: center; padding: 12px 0; }
 
-    .clear-table-btn {
-      width: 100%; background: var(--danger); color: #fff; border: none; padding: 13px; border-radius: 10px; font-size: 0.95rem; font-weight: bold; cursor: pointer; flex-shrink: 0;
-    }
+    .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex-shrink: 0; }
+    .gray-btn { background: #3a3a3a; color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+    .red-btn { background: var(--danger); color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+
+    /* Ödeme modu */
+    .pay-hint { font-size: 0.75rem; color: var(--muted); margin-bottom: 8px; }
+    .pay-list { list-style: none; overflow-y: auto; flex: 1; }
+    .pay-item { display: flex; align-items: center; gap: 10px; background: #282828; padding: 11px 10px; border-radius: 8px; margin-bottom: 6px; cursor: pointer; user-select: none; border: 2px solid transparent; }
+    .pay-item.sel { border-color: var(--ready); background: rgba(76,175,80,0.15); }
+    .pay-item.paid { opacity: 0.4; cursor: default; }
+    .pay-check { width: 34px; text-align: center; font-weight: 800; font-size: 0.85rem; color: var(--ready); }
+    .pay-name { flex: 1; font-size: 0.95rem; }
+    .pay-name small { display: block; color: var(--muted); font-size: 0.72rem; }
+    .pay-price { color: var(--gold); font-weight: 700; white-space: nowrap; }
+    .paid-title { font-size: 0.75rem; color: var(--muted); margin: 10px 0 6px; }
+    .pay-footer { flex-shrink: 0; padding-top: 8px; border-top: 1px solid #333; }
+    .pay-sum { display: flex; justify-content: space-between; font-size: 1rem; margin-bottom: 8px; }
+    .pay-sum b { color: var(--gold); }
+    .pay-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .green-btn { background: var(--ready); color: #fff; border: none; padding: 13px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.88rem; }
+    .green-btn:disabled { opacity: 0.4; }
+
+    /* Yeni sipariş görsel uyarısı */
+    .flash { position: fixed; inset: 0; pointer-events: none; z-index: 250; border: 0 solid var(--waiting); opacity: 0; }
+    .flash.on { animation: flashAnim 0.9s ease-out 3; }
+    @keyframes flashAnim { 0% { opacity: 1; border-width: 14px; background: rgba(255,152,0,0.18); } 100% { opacity: 0; border-width: 0; background: transparent; } }
+    .sound-row { gap: 6px; align-items: center; flex-wrap: wrap; font-size: 0.75rem; color: var(--muted); }
+    .chip-btn.on { background: #fff; color: #000; border-color: #fff; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 10px 14px; border-radius: 24px; font-size: 0.88rem; display: none; z-index: 300; box-shadow: 0 4px 16px rgba(0,0,0,.5); align-items: center; gap: 12px; white-space: nowrap; }
+    .toast.show { display: flex; }
+    .toast button { background: var(--pink); color: #fff; border: none; padding: 6px 12px; border-radius: 14px; font-weight: 700; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -173,49 +204,88 @@
 
   <!-- UYGULAMA -->
   <div id="appSection" style="display:none;">
-    <header>
-      <h1><span id="connDot" class="conn-dot"></span> MUÀ SİPARİŞ TAKİP</h1>
-      <div class="header-right">
-        <div class="legend">
-          <span><i class="dot" style="background:var(--waiting)"></i> Bekliyor</span>
-          <span><i class="dot" style="background:var(--served)"></i> Servis</span>
+    <div class="topbar">
+      <header>
+        <h1><span id="connDot" class="conn-dot"></span> MUÀ SİPARİŞ</h1>
+        <div class="header-right">
+          <button class="chip-btn" id="userBtn">👤 —</button>
+          <button class="chip-btn" id="logoutBtn">Çıkış</button>
         </div>
-        <button class="logout-btn" id="logoutBtn">Çıkış</button>
-      </div>
-    </header>
+      </header>
+      <nav class="tabs">
+        <button class="tab" data-view="masalar">🪑 Masalar</button>
+        <button class="tab" data-view="bar">🧑‍🍳 Hazırlık<span class="cnt" id="cnt-bar"></span></button>
+        <button class="tab" data-view="kasa">💰 Kasa<span class="cnt" id="cnt-kasa" style="background:var(--gold)"></span></button>
+      </nav>
+    </div>
 
-    <div id="zones-container"></div>
+    <section class="view" id="view-masalar">
+      <div id="zones-container"></div>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--waiting)"></i> Hazırlanıyor</span>
+        <span><i class="dot" style="background:var(--ready)"></i> Hazır, götürülecek</span>
+        <span><i class="dot" style="background:var(--served)"></i> Servis edildi, ödeme bekliyor</span>
+      </div>
+    </section>
+
+    <section class="view" id="view-bar"></section>
+    <section class="view" id="view-kasa"></section>
   </div>
 
-  <!-- Masa Detay Modalı -->
+  <!-- MASA MODALI -->
   <div class="modal" id="tableModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>
-          <span id="modalTableName">B1</span>
-          <span id="modalTableTotal" class="total-badge"></span>
-        </h2>
+        <h2><span id="modalTableName">B1</span><span id="modalTableTotal" class="total-badge"></span></h2>
         <button class="close-btn" id="closeModalBtn">Kapat ✕</button>
       </div>
 
-      <ul class="order-list" id="orderList"></ul>
-
-      <div class="search-and-custom">
-        <input type="text" id="searchInput" placeholder="🔍 Menüde ara veya özel not yaz..." />
-        <button id="addCustomBtn">+ Özel Ekle</button>
+      <div class="mode-switch">
+        <button class="mode-btn" data-mode="siparis">📝 Sipariş</button>
+        <button class="mode-btn" data-mode="odeme">💰 Ödeme</button>
       </div>
 
-      <div class="quick-cats" id="catTabs"></div>
-      <div class="quick-items" id="quickItems"></div>
+      <!-- Sipariş modu -->
+      <div class="mode-pane" id="pane-siparis">
+        <ul class="order-list" id="orderList"></ul>
 
-      <button class="clear-table-btn" id="clearTableBtn">💰 ROBOTPOS'A GEÇİLDİ / MASAYI BOŞALT</button>
+        <div class="search-and-custom">
+          <input type="text" id="searchInput" placeholder="🔍 Menüde ara / özel ürün yaz" />
+          <button id="addCustomKahve" title="Kahve barına özel ürün ekle">+☕</button>
+          <button id="addCustomDondurma" title="Dondurma barına özel ürün ekle">+🍨</button>
+        </div>
+
+        <div class="quick-cats" id="catTabs"></div>
+        <div class="quick-items" id="quickItems"></div>
+
+        <div class="bottom-row">
+          <button class="gray-btn" id="moveTableBtn">⇄ Masayı Taşı</button>
+          <button class="red-btn" id="clearTableBtn">🗑️ Masayı Boşalt</button>
+        </div>
+      </div>
+
+      <!-- Ödeme modu -->
+      <div class="mode-pane" id="pane-odeme">
+        <p class="pay-hint">Ödenecek ürünlere dokun (aynı üründen birden fazla varsa her dokunuş 1 adet seçer). RobotPOS'a girdikten sonra "Seçilenler Ödendi"ye bas.</p>
+        <ul class="pay-list" id="payList"></ul>
+        <div class="pay-footer">
+          <div class="pay-sum"><span>Seçilen: <b id="paySelTotal">0 ₺</b></span><span>Kalan: <b id="payRemTotal">0 ₺</b></span></div>
+          <div class="pay-btns">
+            <button class="green-btn" id="paySelectedBtn">Seçilenler Ödendi</button>
+            <button class="green-btn" id="payAllBtn" style="background:var(--pink)">Hepsi Ödendi, Masayı Kapat</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <div class="flash" id="flash"></div>
+  <div class="toast" id="toast"><span id="toastMsg"></span><button id="toastUndo" style="display:none">Geri Al</button></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getDatabase, ref, child, push, onValue, runTransaction, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getDatabase, ref, child, push, onValue, runTransaction, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
@@ -227,28 +297,61 @@
       appId: "1:813387212404:web:e91c88891cabfb70de5321"
     };
 
+    // ================= AYARLAR =================
     const ZONES = [
       { title: "Bahçe (B1 - B18)", prefix: "B", count: 18 },
       { title: "Kış Bahçesi (K1 - K14)", prefix: "K", count: 14 },
       { title: "İç Mekan (İ1 - İ4)", prefix: "İ", count: 4 },
-      { title: "Üst Kat", prefix: "ÜST ", count: 1 }
+      { title: "Üst Kat", prefix: "ÜST ", count: 1 },
+      { title: "Paket / Kasa Önü", prefix: "P", count: 4 }
     ];
 
+    // Bu kategorilerdeki ürünler DONDURMA barında hazırlanır, geri kalanı KAHVE barında.
+    const DONDURMA_KATEGORILERI = new Set([
+      "cat-spesiyal", "cat-caylar", "cat-dondurmalar", "cat-dondurmali-pasta", "cat-cikolatalar", "cat-ekstra-servis"
+    ]);
+    // Kategorisi kahve tarafında olsa bile dondurma barında yapılan ürünler (isimde geçmesi yeter)
+    const DONDURMA_ISTISNALARI = ["sıcak çikolata"];
+
+    const GECIKME_DK = 10;        // bu kadar dakikadır hazırlanmayı bekleyen ürün kırmızı yanar
+    const GOTURME_GECIKME_DK = 4; // hazır olup bu kadar dakikadır masaya gitmeyen ürün kırmızı yanar
+    const STATUS_TEXT = { bekliyor: "⏳ Hazırlanıyor", hazir: "🔔 Hazır", servis: "✓ Servis edildi" };
+    const NEXT_STATUS = { bekliyor: "hazir", hazir: "servis", servis: "bekliyor" };
+
+    // ================= KURULUM =================
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
     const tablesRef = ref(db, 'mua_adisyon_masalar');
 
+    const ALL_TABLES = ZONES.flatMap(z => Array.from({ length: z.count }, (_, i) => `${z.prefix}${i + 1}`));
+
+    const store = {
+      get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+      set(k, v) { try { localStorage.setItem(k, v); } catch {} }
+    };
+
     let tablesData = {};
-    let menu = {};            // { "Soğuk İçecekler": [{name, price}], ... }
+    let menu = {};             // { "Soğuk İçecekler": [{name, price, station}] }
+    let menuStation = {};      // "latte" -> "kahve"
     let activeTable = null;
+    let modalMode = "siparis";
     let activeCategory = "";
     let searchQuery = "";
+    let paySel = {};           // { itemKey: adet }
     let unsubs = [];
+    let currentView = store.get("mua_view") || "masalar";
+    let barFilter = store.get("mua_bar_filter") || "hepsi";   // hepsi | kahve | dondurma
+    if (currentView === "kahve" || currentView === "dondurma") { barFilter = currentView; currentView = "bar"; }
+    if (!["masalar", "bar", "kasa"].includes(currentView)) currentView = "masalar";
+    // Ses seviyesi cihaz bazında: kapali | kisik | normal. Varsayılan kapalı (kafe hoparlörü olan cihazda çalmasın).
+    let soundLevel = { "1": "normal", "0": "kapali" }[store.get("mua_sound")] || store.get("mua_sound") || "kapali";
+    if (!["kapali", "kisik", "normal"].includes(soundLevel)) soundLevel = "kapali";
+    let lastWaitingCount = { kahve: null, dondurma: null };
 
     const $ = (id) => document.getElementById(id);
 
-    // ---------- YARDIMCILAR ----------
+    // ================= YARDIMCILAR =================
     function el(tag, className, text) {
       const e = document.createElement(tag);
       if (className) e.className = className;
@@ -256,23 +359,43 @@
       return e;
     }
 
-    // "1.350" -> 1350, "1.350,50" -> 1350.5, "250" -> 250
+    function lower(s) { return String(s || '').toLocaleLowerCase('tr-TR'); }
+
     function parsePrice(raw) {
       const s = String(raw ?? '').replace(/[^0-9.,]/g, '').replace(/\./g, '').replace(',', '.');
       return Number(s) || 0;
     }
 
-    function formatTL(n) {
-      return n.toLocaleString('tr-TR', { maximumFractionDigits: 2 }) + ' ₺';
+    function formatTL(n) { return (n || 0).toLocaleString('tr-TR', { maximumFractionDigits: 2 }) + ' ₺'; }
+
+    function saat(ts) {
+      if (!ts) return '';
+      return new Date(ts).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
     }
 
-    // Masa verisi eski sürümde dizi olarak kaydedilmiş olabilir; hepsini [key, item] listesine çevir
-    function tableEntries(tName) {
-      const t = tablesData[tName];
-      if (!t) return [];
-      return Object.entries(t)
-        .filter(([, it]) => it && it.name)
-        .sort((a, b) => (a[1].t || 0) - (b[1].t || 0));
+    function dakika(ts) { return ts ? Math.floor((Date.now() - ts) / 60000) : 0; }
+
+    function dkOnce(ts) {
+      if (!ts) return '';
+      const m = Math.floor((Date.now() - ts) / 60000);
+      return m < 1 ? 'şimdi' : `${m} dk`;
+    }
+
+    function stationFor(cat, name) {
+      const n = lower(name);
+      if (DONDURMA_ISTISNALARI.some(x => n.includes(x))) return "dondurma";
+      return DONDURMA_KATEGORILERI.has(cat) ? "dondurma" : "kahve";
+    }
+
+    function statusOf(it) { return it.status || (it.served ? "servis" : "bekliyor"); }
+
+    function norm(it) {
+      return {
+        ...it,
+        qty: it.qty || 1,
+        status: statusOf(it),
+        station: it.station || menuStation[lower(it.name)] || "dondurma"
+      };
     }
 
     function toObject(cur) {
@@ -285,12 +408,77 @@
       return cur;
     }
 
+    // [key, item] listesi, eskiden yeniye
+    function tableEntries(tName) {
+      return Object.entries(toObject(tablesData[tName]))
+        .filter(([, it]) => it && it.name)
+        .map(([k, it]) => [k, norm(it)])
+        .sort((a, b) => (a[1].t || 0) - (b[1].t || 0));
+    }
+
+    function openTableNames() {
+      const names = Object.keys(tablesData).filter(t => tableEntries(t).length);
+      return names.sort((a, b) => {
+        const ia = ALL_TABLES.indexOf(a), ib = ALL_TABLES.indexOf(b);
+        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+      });
+    }
+
+    function lineTotal(it) { return (it.price || 0) * (it.qty || 0); }
+
+    function me() { return store.get("mua_user") || ""; }
+
     function hata(err) {
       console.error(err);
       alert("Kayıt yapılamadı: " + (err?.message || err));
     }
 
-    // ---------- GİRİŞ ----------
+    function bugunKey() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    let toastTimer = null;
+    function toast(msg, undoFn) {
+      $('toastMsg').textContent = msg;
+      const u = $('toastUndo');
+      u.style.display = undoFn ? 'inline-block' : 'none';
+      u.onclick = () => { $('toast').classList.remove('show'); undoFn && undoFn(); };
+      $('toast').classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $('toast').classList.remove('show'), undoFn ? 10000 : 2200);
+    }
+
+    // Sesli uyarı (bar tableti için)
+    let audioCtx = null;
+    function beep() {
+      if (soundLevel === "kapali") return;
+      const vol = soundLevel === "kisik" ? 0.04 : 0.25;
+      try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        [0, 0.18].forEach(off => {
+          const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+          o.frequency.value = 880; o.connect(g); g.connect(audioCtx.destination);
+          g.gain.setValueAtTime(vol, audioCtx.currentTime + off);
+          g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + off + 0.15);
+          o.start(audioCtx.currentTime + off); o.stop(audioCtx.currentTime + off + 0.16);
+        });
+      } catch {}
+    }
+
+    // Sessiz uyarı: ekran kenarı turuncu yanıp söner, telefonda titrer, sekme başlığı değişir
+    const ORIJINAL_BASLIK = document.title;
+    function yeniSiparisUyarisi(adet) {
+      const f = $('flash');
+      f.classList.remove('on'); void f.offsetWidth; f.classList.add('on');
+      try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch {}
+      beep();
+    }
+    function baslikGuncelle(bekleyen) {
+      document.title = bekleyen ? `(${bekleyen}) Hazırlanacak – MUÀ` : ORIJINAL_BASLIK;
+    }
+
+    // ================= GİRİŞ & KULLANICI =================
     $('loginBtn').addEventListener('click', () => {
       $('loginError').textContent = '';
       signInWithEmailAndPassword(auth, $('email').value.trim(), $('password').value)
@@ -299,12 +487,24 @@
     $('password').addEventListener('keypress', (e) => { if (e.key === 'Enter') $('loginBtn').click(); });
     $('logoutBtn').addEventListener('click', () => signOut(auth));
 
+    function isimSor(zorunlu) {
+      let ad = prompt("Adın ne? (Girdiğin siparişlerde görünecek)", me()) ;
+      if (ad === null && !zorunlu) return;
+      ad = (ad || '').trim().slice(0, 20);
+      if (ad) store.set("mua_user", ad);
+      $('userBtn').textContent = '👤 ' + (me() || 'İsim seç');
+    }
+    $('userBtn').addEventListener('click', () => isimSor(false));
+
     onAuthStateChanged(auth, (user) => {
       unsubs.forEach(u => u());
       unsubs = [];
       if (user) {
         $('loginSection').style.display = 'none';
         $('appSection').style.display = 'block';
+        if (!me()) isimSor(true);
+        $('userBtn').textContent = '👤 ' + (me() || 'İsim seç');
+        showView(currentView);
         dinlemeyiBaslat();
       } else {
         closeModal();
@@ -314,60 +514,124 @@
       }
     });
 
-    // ---------- CANLI DİNLEME ----------
+    // ================= CANLI DİNLEME =================
     function dinlemeyiBaslat() {
       unsubs.push(onValue(ref(db, '.info/connected'), (snap) => {
         $('connDot').classList.toggle('online', snap.val() === true);
       }));
 
-      unsubs.push(onValue(tablesRef, (snap) => {
-        tablesData = snap.val() || {};
-        renderZones();
-        if (activeTable) renderModalOrders();
-      }, (err) => alert("Masalar okunamadı (yetki yok olabilir): " + err.message)));
-
       unsubs.push(onValue(ref(db, 'menuData'), (snap) => {
         const d = snap.val();
         if (!d || !d.items) return;
+        const cats = (Array.isArray(d.categories) ? d.categories : Object.values(d.categories || {})).filter(Boolean);
+        const titles = Object.fromEntries(cats.map(c => [c.id, c.title]));
         const m = {};
-        (d.categories || []).forEach(c => {
-          if (c && c.id !== 'cat-en-cok-tercih-edilenler') m[c.title] = [];
-        });
-        const titles = Object.fromEntries((d.categories || []).filter(Boolean).map(c => [c.id, c.title]));
+        const ms = {};
+        cats.forEach(c => { if (c.id !== 'cat-en-cok-tercih-edilenler') m[c.title] = []; });
         Object.values(d.items).forEach(it => {
-          if (!it || !it.name || it.active === false) return;
+          if (!it || !it.name) return;
+          const station = it.station || stationFor(it.cat, it.name);
+          ms[lower(it.name.trim())] = station;
+          if (it.active === false) return;
           const cat = titles[it.cat] || 'Diğer';
-          (m[cat] ||= []).push({ name: it.name.trim(), price: parsePrice(it.price) });
+          (m[cat] ||= []).push({ name: it.name.trim(), price: parsePrice(it.price), station });
         });
         Object.keys(m).forEach(k => { if (!m[k].length) delete m[k]; });
         menu = m;
+        menuStation = ms;
         if (!menu[activeCategory]) activeCategory = Object.keys(menu)[0] || '';
-        if (activeTable) renderQuickMenu();
+        renderAll();
       }));
+
+      unsubs.push(onValue(tablesRef, (snap) => {
+        tablesData = snap.val() || {};
+        renderAll();
+      }, (err) => alert("Masalar okunamadı (yetki yok olabilir): " + err.message)));
     }
 
-    // ---------- MASALAR ----------
+    // Bekleme sürelerini canlı tut
+    setInterval(() => {
+      if (auth.currentUser && currentView !== 'masalar') renderView();
+      if (activeTable) renderModal();
+    }, 30000);
+
+    // ================= GÖRÜNÜMLER =================
+    document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
+
+    function showView(v) {
+      currentView = v;
+      store.set("mua_view", v);
+      document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.view === v));
+      document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + v));
+      renderView();
+    }
+
+    function allLines() {
+      const out = [];
+      openTableNames().forEach(t => tableEntries(t).forEach(([k, it]) => out.push({ t, k, it })));
+      return out;
+    }
+
+    function renderAll() {
+      renderCounts();
+      renderView();
+      if (activeTable) renderModal();
+    }
+
+    function renderCounts() {
+      const lines = allLines();
+      let toplam = 0, sesCal = false;
+      ['kahve', 'dondurma'].forEach(st => {
+        const w = lines.filter(l => l.it.station === st && l.it.status === 'bekliyor')
+          .reduce((s, l) => s + l.it.qty, 0);
+        toplam += w;
+        const izleniyor = currentView === 'bar' && (barFilter === 'hepsi' || barFilter === st);
+        if (lastWaitingCount[st] !== null && w > lastWaitingCount[st] && izleniyor) sesCal = true;
+        lastWaitingCount[st] = w;
+      });
+      $('cnt-bar').textContent = toplam || '';
+      baslikGuncelle(toplam);
+      if (sesCal) yeniSiparisUyarisi();
+      const openCount = openTableNames().length;
+      $('cnt-kasa').textContent = openCount || '';
+    }
+
+    function renderView() {
+      if (currentView === 'masalar') renderZones();
+      else if (currentView === 'kasa') renderKasa();
+      else renderBar();
+    }
+
+    // ---------- Masalar ----------
     function renderZones() {
       const container = $('zones-container');
       container.innerHTML = '';
-
       ZONES.forEach(zone => {
         container.appendChild(el('div', 'zone-title', zone.title));
         const grid = el('div', 'grid');
-
         for (let i = 1; i <= zone.count; i++) {
           const tName = `${zone.prefix}${i}`;
           const items = tableEntries(tName).map(([, it]) => it);
-          const totalQty = items.reduce((s, it) => s + (it.qty || 0), 0);
-          const waitingQty = items.filter(x => !x.served).reduce((s, it) => s + (it.qty || 0), 0);
-          const totalPrice = items.reduce((s, it) => s + (it.price || 0) * (it.qty || 0), 0);
+          const unpaid = items.filter(it => !it.paid);
+          const waiting = items.filter(it => it.status === 'bekliyor').reduce((s, it) => s + it.qty, 0);
+          const ready = items.filter(it => it.status === 'hazir').reduce((s, it) => s + it.qty, 0);
+          const total = unpaid.reduce((s, it) => s + lineTotal(it), 0);
 
           const btn = el('button', 'table-btn');
-          if (items.length) btn.classList.add(waitingQty > 0 ? 'status-waiting' : 'status-served');
+          if (items.length) btn.classList.add(ready > 0 ? 'st-ready' : waiting > 0 ? 'st-waiting' : 'st-served');
           btn.appendChild(el('span', 't-name', tName));
-          btn.appendChild(el('span', 't-info',
-            totalQty > 0 ? (waitingQty > 0 ? `⏳ ${waitingQty} Bekliyor` : `✓ ${totalQty} Ürün`) : 'Boş'));
-          if (totalPrice > 0) btn.appendChild(el('span', 't-price', formatTL(totalPrice)));
+          let info = 'Boş';
+          if (items.length) {
+            const parts = [];
+            const enEski = items.filter(it => it.status !== 'servis' && it.t).reduce((m, it) => Math.min(m, it.t), Infinity);
+            if (ready) parts.push(`🔔 ${ready} götür`);
+            if (waiting) parts.push(`⏳ ${waiting}`);
+            if (enEski !== Infinity && dakika(enEski) >= 1) parts.push(`${dakika(enEski)} dk`);
+            if (!parts.length) parts.push(`✓ ${unpaid.reduce((s, it) => s + it.qty, 0)} ürün`);
+            info = parts.join(' · ');
+          }
+          btn.appendChild(el('span', 't-info', info));
+          if (total > 0) btn.appendChild(el('span', 't-price', formatTL(total)));
           btn.onclick = () => openModal(tName);
           grid.appendChild(btn);
         }
@@ -375,15 +639,119 @@
       });
     }
 
-    // ---------- MODAL ----------
-    function openModal(tName) {
+    // ---------- Bar ekranı ----------
+    function renderBar() {
+      const box = $('view-bar');
+      box.innerHTML = '';
+      const all = allLines();
+      const bekleyenSay = st => all.filter(l => l.it.status === 'bekliyor' && (st === 'hepsi' || l.it.station === st))
+        .reduce((s, l) => s + l.it.qty, 0);
+
+      // Filtre: tek kişi kaldıysa "Hepsi", iki kişi varsa herkes kendi barını seçer
+      const fr = el('div', 'filter-row');
+      [['hepsi', 'Hepsi'], ['kahve', '☕ Kahve'], ['dondurma', '🍨 Dondurma']].forEach(([key, label]) => {
+        const b = el('button', 'f-btn' + (barFilter === key ? ' active' : ''), label);
+        const n = bekleyenSay(key);
+        if (n) b.appendChild(el('span', 'fc', `(${n})`));
+        b.onclick = () => { barFilter = key; store.set("mua_bar_filter", key); renderBar(); };
+        fr.appendChild(b);
+      });
+      box.appendChild(fr);
+
+      const lines = all.filter(l => barFilter === 'hepsi' || l.it.station === barFilter);
+      const waiting = lines.filter(l => l.it.status === 'bekliyor').sort((a, b) => (a.it.t || 0) - (b.it.t || 0));
+      const ready = lines.filter(l => l.it.status === 'hazir').sort((a, b) => (a.it.readyAt || 0) - (b.it.readyAt || 0));
+
+      const t1 = el('div', 'sec-title', '⏳ Hazırlanacaklar');
+      t1.appendChild(el('span', 'n', String(waiting.reduce((s, l) => s + l.it.qty, 0))));
+      box.appendChild(t1);
+      if (!waiting.length) box.appendChild(el('div', 'empty-msg', 'Bekleyen sipariş yok 👌'));
+      waiting.forEach(l => box.appendChild(barCard(l, false)));
+
+      const t2 = el('div', 'sec-title', '🔔 Hazır, masaya götürülecek');
+      t2.appendChild(el('span', 'n', String(ready.reduce((s, l) => s + l.it.qty, 0))));
+      box.appendChild(t2);
+      if (!ready.length) box.appendChild(el('div', 'empty-msg', 'Götürülecek ürün yok'));
+      ready.forEach(l => box.appendChild(barCard(l, true)));
+
+      const sr = el('div', 'sound-row');
+      sr.appendChild(el('span', '', 'Bu cihazda yeni sipariş sesi:'));
+      [['kapali', '🔕 Kapalı'], ['kisik', '🔈 Kısık'], ['normal', '🔔 Normal']].forEach(([k, label]) => {
+        const b = el('button', 'chip-btn' + (soundLevel === k ? ' on' : ''), label);
+        b.onclick = () => { soundLevel = k; store.set("mua_sound", k); beep(); renderView(); };
+        sr.appendChild(b);
+      });
+      box.appendChild(sr);
+    }
+
+    function barCard({ t, k, it }, isReady) {
+      const ref0 = isReady ? it.readyAt : it.t;
+      const late = isReady
+        ? (it.readyAt && dakika(it.readyAt) >= GOTURME_GECIKME_DK)
+        : (it.t && dakika(it.t) >= GECIKME_DK);
+      const card = el('div', 'bar-card' + (isReady ? ' ready' : '') + (late ? ' late' : ''));
+      card.appendChild(el('div', 'bar-table', t));
+
+      const main = el('div', 'bar-main');
+      const nm = el('div', 'bar-name');
+      nm.appendChild(el('span', 'st-tag ' + it.station, it.station === 'kahve' ? '☕ Kahve' : '🍨 Dondurma'));
+      nm.appendChild(el('span', 'q', `${it.qty}×`));
+      nm.appendChild(document.createTextNode(it.name));
+      main.appendChild(nm);
+      if (it.note) main.appendChild(el('div', 'bar-note', it.note));
+      const meta = el('div', 'bar-meta');
+      let zamanYazi = '';
+      if (isReady) {
+        zamanYazi = `${saat(it.t)}'de alındı · ${dkOnce(it.readyAt)}${it.readyAt && dakika(it.readyAt) >= 1 ? "'dır" : ''} hazır bekliyor`;
+      } else if (it.t) {
+        zamanYazi = `${saat(it.t)}'de alındı · ${dkOnce(it.t)}${dakika(it.t) >= 1 ? "'dır bekliyor" : ''}`;
+      }
+      if (zamanYazi) meta.appendChild(el('span', late ? 'late-t' : '', (late ? '⚠️ ' : '') + zamanYazi));
+      if (it.by) meta.appendChild(document.createTextNode(' · alan: ' + it.by));
+      if (it.paid) meta.appendChild(document.createTextNode(' · ödendi'));
+      main.appendChild(meta);
+      card.appendChild(main);
+
+      const act = el('button', 'bar-act' + (isReady ? ' blue' : ''), isReady ? 'Götürüldü ✓' : 'Hazır ✓');
+      act.onclick = () => setStatus(t, k, isReady ? 'servis' : 'hazir');
+      card.appendChild(act);
+      return card;
+    }
+
+    // ---------- Kasa ----------
+    function renderKasa() {
+      const box = $('view-kasa');
+      box.innerHTML = '';
+      const names = openTableNames();
+      if (!names.length) { box.appendChild(el('div', 'empty-msg', 'Açık masa yok')); return; }
+      box.appendChild(el('div', 'sec-title', 'Açık masalar – ödeme almak için dokun'));
+      names.forEach(t => {
+        const items = tableEntries(t).map(([, it]) => it);
+        const unpaid = items.filter(it => !it.paid);
+        if (!unpaid.length) return;
+        const card = el('div', 'kasa-card');
+        card.appendChild(el('div', 'k-name', t));
+        const main = el('div', 'k-main');
+        main.appendChild(el('div', 'k-items', unpaid.map(it => `${it.qty}× ${it.name}`).join(', ')));
+        const notServed = unpaid.filter(it => it.status !== 'servis').reduce((s, it) => s + it.qty, 0);
+        if (notServed) main.appendChild(el('div', 'k-warn', `⚠️ ${notServed} ürün henüz masaya gitmedi`));
+        card.appendChild(main);
+        card.appendChild(el('div', 'k-total', formatTL(unpaid.reduce((s, it) => s + lineTotal(it), 0))));
+        card.onclick = () => openModal(t, 'odeme');
+        box.appendChild(card);
+      });
+    }
+
+    // ================= MODAL =================
+    function openModal(tName, mode) {
       activeTable = tName;
+      modalMode = mode || (currentView === 'kasa' ? 'odeme' : 'siparis');
+      paySel = {};
       searchQuery = '';
       $('searchInput').value = '';
       $('modalTableName').textContent = `Masa: ${tName}`;
       $('tableModal').classList.add('active');
-      renderModalOrders();
-      renderQuickMenu();
+      renderModal();
     }
 
     function closeModal() {
@@ -392,146 +760,327 @@
     }
     $('closeModalBtn').addEventListener('click', closeModal);
 
-    function renderModalOrders() {
-      const list = $('orderList');
+    document.querySelectorAll('.mode-btn').forEach(b => b.addEventListener('click', () => {
+      modalMode = b.dataset.mode;
+      paySel = {};
+      renderModal();
+    }));
+
+    function renderModal() {
+      if (!activeTable) return;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === modalMode));
+      $('pane-siparis').classList.toggle('active', modalMode === 'siparis');
+      $('pane-odeme').classList.toggle('active', modalMode === 'odeme');
+
       const entries = tableEntries(activeTable);
+      const rem = entries.filter(([, it]) => !it.paid).reduce((s, [, it]) => s + lineTotal(it), 0);
+      $('modalTableTotal').textContent = rem > 0 ? formatTL(rem) : '';
+
+      if (modalMode === 'siparis') { renderOrderList(entries); renderQuickMenu(); }
+      else renderPayList(entries);
+    }
+
+    function renderOrderList(entries) {
+      const list = $('orderList');
       list.innerHTML = '';
-
-      const total = entries.reduce((s, [, it]) => s + (it.price || 0) * (it.qty || 0), 0);
-      $('modalTableTotal').textContent = total > 0 ? formatTL(total) : '';
-
       if (!entries.length) {
-        list.appendChild(el('li', 'order-empty', 'Bu masada henüz sipariş yok.'));
+        list.appendChild(el('li', 'empty-msg', 'Bu masada henüz sipariş yok.'));
         return;
       }
+      // Ödenmemişler üstte, ödenenler altta
+      const sorted = [...entries.filter(([, it]) => !it.paid), ...entries.filter(([, it]) => it.paid)];
+      sorted.forEach(([key, it]) => {
+        const li = el('li', `order-item s-${it.status}` + (it.paid ? ' paid' : ''));
 
-      entries.forEach(([key, it]) => {
-        const li = el('li', 'order-item' + (it.served ? ' served' : ''));
+        const main = el('div', 'oi-main');
+        const top = el('div', 'oi-top');
+        top.appendChild(el('span', 'item-qty', `${it.qty}x`));
+        top.appendChild(el('span', 'item-name', it.name));
+        if (lineTotal(it) > 0) top.appendChild(el('span', 'item-price', formatTL(lineTotal(it))));
+        main.appendChild(top);
 
-        const left = el('div', 'item-left');
-        left.appendChild(el('span', 'item-qty', `${it.qty}x`));
-        left.appendChild(el('span', 'item-name', it.name));
-        const itemTotal = (it.price || 0) * (it.qty || 0);
-        if (itemTotal > 0) left.appendChild(el('span', 'item-price', formatTL(itemTotal)));
-        left.onclick = () => toggleServed(key);
+        const sub = el('div', 'oi-sub');
+        const chip = el('button', 'st-chip ' + it.status, STATUS_TEXT[it.status]);
+        chip.onclick = () => setStatus(activeTable, key, NEXT_STATUS[it.status]);
+        sub.appendChild(chip);
+        if (it.paid) sub.appendChild(el('span', 'st-chip odendi', '💰 Ödendi'));
+        if (it.note) sub.appendChild(el('span', 'oi-note', it.note));
+        sub.appendChild(el('span', 'oi-meta',
+          `${it.station === 'kahve' ? '☕' : '🍨'} ${it.t ? saat(it.t) + ' (' + dkOnce(it.t) + (dakika(it.t) >= 1 ? ' önce' : '') + ')' : ''}${it.by ? ' · ' + it.by : ''}`));
+        main.appendChild(sub);
+        li.appendChild(main);
 
-        const actions = el('div', 'item-actions');
-        const plus = el('button', 'btn-small btn-plus', '+1');
-        plus.onclick = () => changeQty(key, 1);
-        const del = el('button', 'btn-small btn-del', '🗑️');
-        del.onclick = () => changeQty(key, -1);
-        actions.append(plus, del);
-
-        li.append(left, actions);
+        if (!it.paid) {
+          const actions = el('div', 'item-actions');
+          const r1 = el('div', 'row');
+          const plus = el('button', 'btn-small btn-plus', '+1');
+          plus.onclick = () => changeQty(activeTable, key, 1);
+          const del = el('button', 'btn-small btn-del', '−1');
+          del.onclick = () => changeQty(activeTable, key, -1);
+          r1.append(plus, del);
+          const note = el('button', 'btn-small btn-note', '✎ Not');
+          note.onclick = () => editNote(activeTable, key, it.note);
+          actions.append(r1, note);
+          li.appendChild(actions);
+        }
         list.appendChild(li);
       });
     }
 
-    // ---------- YAZMA İŞLEMLERİ (her biri sadece kendi masasına / ürününe dokunur) ----------
-    function addItem(name, price = 0) {
-      name = (name || '').trim();
-      if (!activeTable || !name) return;
-      const tableRef = child(tablesRef, activeTable);
-      const newKey = push(tableRef).key; // sadece anahtar üretir, yazmaz
-
-      runTransaction(tableRef, (cur) => {
-        const t = toObject(cur);
-        const existingKey = Object.keys(t).find(k =>
-          t[k] && !t[k].served && String(t[k].name).toLowerCase() === name.toLowerCase());
-        if (existingKey) {
-          t[existingKey].qty = (t[existingKey].qty || 0) + 1;
-        } else {
-          t[newKey] = { name, qty: 1, price, served: false, t: Date.now() };
-        }
-        return t;
-      }).catch(hata);
-    }
-
-    function toggleServed(key) {
-      runTransaction(child(tablesRef, `${activeTable}/${key}`), (cur) => {
-        if (!cur) return null;
-        cur.served = !cur.served;
-        return cur;
-      }).catch(hata);
-    }
-
-    function changeQty(key, delta) {
-      runTransaction(child(tablesRef, `${activeTable}/${key}`), (cur) => {
-        if (!cur) return null;
-        const q = (cur.qty || 0) + delta;
-        if (q <= 0) return null; // ürünü sil
-        cur.qty = q;
-        return cur;
-      }).catch(hata);
-    }
-
-    $('clearTableBtn').addEventListener('click', () => {
-      if (!activeTable) return;
-      const t = activeTable;
-      if (confirm(`${t} masasının hesabı RobotPOS'tan alındı mı? Masa sıfırlanacak.`)) {
-        remove(child(tablesRef, t)).then(closeModal).catch(hata);
-      }
-    });
-
-    // ---------- HIZLI MENÜ ----------
+    // ---------- Hızlı menü ----------
     $('searchInput').addEventListener('input', () => {
-      searchQuery = $('searchInput').value.trim().toLocaleLowerCase('tr-TR');
+      searchQuery = lower($('searchInput').value.trim());
       renderQuickMenu();
     });
-    $('searchInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') $('addCustomBtn').click(); });
-    $('addCustomBtn').addEventListener('click', () => {
+
+    function addCustom(station) {
       const v = $('searchInput').value.trim();
-      if (!v) return;
-      addItem(v, 0);
+      if (!v) { alert("Önce kutuya ürün adını yaz."); return; }
+      addItem(v, 0, station);
       $('searchInput').value = '';
       searchQuery = '';
       renderQuickMenu();
-    });
+    }
+    $('addCustomKahve').addEventListener('click', () => addCustom('kahve'));
+    $('addCustomDondurma').addEventListener('click', () => addCustom('dondurma'));
 
     function renderQuickMenu() {
       const tabs = $('catTabs');
       const box = $('quickItems');
       tabs.innerHTML = '';
       box.innerHTML = '';
-
       const cats = Object.keys(menu);
       cats.forEach(cat => {
         const b = el('button', 'cat-tab' + (!searchQuery && cat === activeCategory ? ' active' : ''), cat);
-        b.onclick = () => {
-          activeCategory = cat;
-          searchQuery = '';
-          $('searchInput').value = '';
-          renderQuickMenu();
-        };
+        b.onclick = () => { activeCategory = cat; searchQuery = ''; $('searchInput').value = ''; renderQuickMenu(); };
         tabs.appendChild(b);
       });
 
+      if (!cats.length) { box.appendChild(el('div', 'q-empty', 'Menü yükleniyor...')); return; }
+
       let products = [];
-      if (searchQuery) {
-        cats.forEach(c => menu[c].forEach(p => {
-          if (p.name.toLocaleLowerCase('tr-TR').includes(searchQuery)) products.push(p);
-        }));
-      } else if (menu[activeCategory]) {
-        products = menu[activeCategory];
-      }
+      if (searchQuery) cats.forEach(c => menu[c].forEach(p => { if (lower(p.name).includes(searchQuery)) products.push(p); }));
+      else products = menu[activeCategory] || [];
 
-      if (!cats.length) {
-        box.appendChild(el('div', 'q-empty', 'Menü yükleniyor...'));
-        return;
-      }
       if (!products.length) {
-        box.appendChild(el('div', 'q-empty', 'Ürün bulunamadı, "+ Özel Ekle" ile not olarak ekleyebilirsin.'));
+        box.appendChild(el('div', 'q-empty', 'Menüde yok. Özel ürün olarak eklemek için +☕ veya +🍨 bas.'));
         return;
       }
-
       products.forEach(p => {
         const b = el('button', 'q-btn');
         b.appendChild(el('span', '', p.name));
         if (p.price > 0) b.appendChild(el('span', 'q-price', formatTL(p.price)));
-        b.onclick = () => addItem(p.name, p.price);
+        b.onclick = () => addItem(p.name, p.price, p.station);
         box.appendChild(b);
       });
     }
+
+    // ---------- Ödeme ----------
+    function renderPayList(entries) {
+      const list = $('payList');
+      list.innerHTML = '';
+      const unpaid = entries.filter(([, it]) => !it.paid);
+      const paid = entries.filter(([, it]) => it.paid);
+
+      // Artık var olmayan seçimleri temizle
+      Object.keys(paySel).forEach(k => {
+        const e = unpaid.find(([kk]) => kk === k);
+        if (!e) delete paySel[k];
+        else paySel[k] = Math.min(paySel[k], e[1].qty);
+      });
+
+      if (!unpaid.length) list.appendChild(el('li', 'empty-msg', 'Ödenmemiş ürün yok.'));
+      unpaid.forEach(([key, it]) => {
+        const n = paySel[key] || 0;
+        const li = el('li', 'pay-item' + (n ? ' sel' : ''));
+        li.appendChild(el('span', 'pay-check', n ? (it.qty > 1 ? `${n}/${it.qty}` : '✓') : ''));
+        const nm = el('span', 'pay-name', `${it.qty}× ${it.name}`);
+        const subTxt = [it.note, it.status !== 'servis' ? STATUS_TEXT[it.status] : ''].filter(Boolean).join(' · ');
+        if (subTxt) nm.appendChild(el('small', '', subTxt));
+        li.appendChild(nm);
+        li.appendChild(el('span', 'pay-price', formatTL(n ? n * (it.price || 0) : lineTotal(it))));
+        li.onclick = () => {
+          const cur = paySel[key] || 0;
+          paySel[key] = cur >= it.qty ? 0 : cur + 1;
+          if (!paySel[key]) delete paySel[key];
+          renderModal();
+        };
+        list.appendChild(li);
+      });
+
+      if (paid.length) {
+        list.appendChild(el('li', 'paid-title', 'Ödenenler'));
+        paid.forEach(([, it]) => {
+          const li = el('li', 'pay-item paid');
+          li.appendChild(el('span', 'pay-check', '💰'));
+          li.appendChild(el('span', 'pay-name', `${it.qty}× ${it.name}`));
+          li.appendChild(el('span', 'pay-price', formatTL(lineTotal(it))));
+          list.appendChild(li);
+        });
+      }
+
+      const selTotal = unpaid.reduce((s, [k, it]) => s + (paySel[k] || 0) * (it.price || 0), 0);
+      const remTotal = unpaid.reduce((s, [, it]) => s + lineTotal(it), 0);
+      $('paySelTotal').textContent = formatTL(selTotal);
+      $('payRemTotal').textContent = formatTL(remTotal);
+      $('paySelectedBtn').disabled = !Object.keys(paySel).length;
+      $('payAllBtn').disabled = !entries.length;
+    }
+
+    $('paySelectedBtn').addEventListener('click', () => {
+      if (!activeTable || !Object.keys(paySel).length) return;
+      const t = activeTable;
+      const snapshot = structuredClone(toObject(tablesData[t]));
+      odemeKaydet(t, { ...paySel }).then(() => {
+        paySel = {};
+        const kalan = tableEntries(t).filter(([, it]) => !it.paid);
+        if (!kalan.length) masayiKapat(t, snapshot, "Masa ödendi ve kapatıldı");
+        else { toast("Ödeme işlendi ✓"); renderModal(); }
+      }).catch(hata);
+    });
+
+    $('payAllBtn').addEventListener('click', () => {
+      if (!activeTable) return;
+      const t = activeTable;
+      const unpaid = tableEntries(t).filter(([, it]) => !it.paid);
+      const total = unpaid.reduce((s, [, it]) => s + lineTotal(it), 0);
+      const notServed = unpaid.filter(([, it]) => it.status !== 'servis').length;
+      const msg = `${t} masasının kalan ${formatTL(total)} tutarı RobotPOS'a girildi mi?` +
+        (notServed ? `\n\n⚠️ ${notServed} ürün henüz servis edilmemiş görünüyor.` : '') + `\n\nMasa kapatılacak.`;
+      if (!confirm(msg)) return;
+      masayiKapat(t, structuredClone(toObject(tablesData[t])), "Masa ödendi ve kapatıldı");
+    });
+
+    // ================= YAZMA İŞLEMLERİ =================
+    // Her işlem sadece kendi masasına/ürününe dokunur; aynı anda yazan telefonlar birbirini ezmez.
+
+    function addItem(name, price = 0, station = 'dondurma') {
+      name = (name || '').trim();
+      if (!activeTable || !name) return;
+      const tableRef = child(tablesRef, activeTable);
+      const newKey = push(tableRef).key;
+      const by = me();
+
+      runTransaction(tableRef, (cur) => {
+        const t = toObject(cur);
+        // Aynı ürün, hâlâ hazırlanmayı bekliyor, notu yok ve ödenmemişse adedini artır
+        const existingKey = Object.keys(t).find(k => {
+          const it = t[k];
+          return it && !it.paid && !it.note && statusOf(it) === 'bekliyor' && lower(it.name) === lower(name);
+        });
+        if (existingKey) t[existingKey].qty = (t[existingKey].qty || 1) + 1;
+        else t[newKey] = { name, qty: 1, price, station, status: 'bekliyor', note: '', by, t: Date.now(), paid: false };
+        return t;
+      }).catch(hata);
+    }
+
+    function itemTx(tName, key, fn) {
+      return runTransaction(child(tablesRef, `${tName}/${key}`), (cur) => {
+        if (!cur) return null;
+        return fn(cur);
+      }).catch(hata);
+    }
+
+    function setStatus(tName, key, status) {
+      itemTx(tName, key, (cur) => {
+        cur.status = status;
+        cur.served = status === 'servis';
+        if (status === 'hazir') cur.readyAt = Date.now();
+        if (status === 'servis') cur.servedAt = Date.now();
+        return cur;
+      });
+    }
+
+    function changeQty(tName, key, delta) {
+      itemTx(tName, key, (cur) => {
+        const q = (cur.qty || 1) + delta;
+        if (q <= 0) return null; // ürünü sil
+        cur.qty = q;
+        return cur;
+      });
+    }
+
+    function editNote(tName, key, current) {
+      const v = prompt("Not (örn: antep + çikolata, yulaf sütlü, şekersiz):", current || '');
+      if (v === null) return;
+      itemTx(tName, key, (cur) => { cur.note = v.trim().slice(0, 80); return cur; });
+    }
+
+    // sel: { key: adet }  — adet < miktar ise satır bölünür
+    function odemeKaydet(tName, sel) {
+      const tableRef = child(tablesRef, tName);
+      const newKeys = Object.fromEntries(Object.keys(sel).map(k => [k, push(tableRef).key]));
+      const now = Date.now();
+      return runTransaction(tableRef, (cur) => {
+        if (!cur) return cur;
+        const t = toObject(cur);
+        Object.entries(sel).forEach(([k, n]) => {
+          const it = t[k];
+          if (!it || it.paid) return;
+          const qty = it.qty || 1;
+          n = Math.min(n, qty);
+          if (n <= 0) return;
+          if (n >= qty) { it.paid = true; it.paidAt = now; }
+          else {
+            it.qty = qty - n;
+            t[newKeys[k]] = { ...it, qty: n, paid: true, paidAt: now };
+          }
+        });
+        return t;
+      });
+    }
+
+    // Masayı arşive taşı + boşalt (tek atomik işlem). snapshot: geri alınca dönülecek hal
+    function masayiKapat(tName, snapshot, mesaj, tip = 'odendi') {
+      const current = toObject(tablesData[tName]);
+      const day = bugunKey();
+      const archKey = push(ref(db, `mua_adisyon_arsiv/${day}`)).key;
+      const updates = {};
+      updates[`mua_adisyon_arsiv/${day}/${archKey}`] = {
+        table: tName, closedAt: Date.now(), by: me(), tip,
+        items: Object.values(current).filter(Boolean).map(it => tip === 'odendi' ? { ...it, paid: true } : it)
+      };
+      updates[`mua_adisyon_masalar/${tName}`] = null;
+
+      update(ref(db), updates).then(() => {
+        if (activeTable === tName) closeModal();
+        toast(`${tName}: ${mesaj}`, () => {
+          const back = {};
+          Object.entries(snapshot || {}).forEach(([k, it]) => { if (it) back[`mua_adisyon_masalar/${tName}/${k}`] = it; });
+          back[`mua_adisyon_arsiv/${day}/${archKey}`] = null;
+          update(ref(db), back).then(() => toast(`${tName} geri getirildi`)).catch(hata);
+        });
+      }).catch(hata);
+    }
+
+    $('clearTableBtn').addEventListener('click', () => {
+      if (!activeTable) return;
+      const t = activeTable;
+      const unpaid = tableEntries(t).filter(([, it]) => !it.paid);
+      if (unpaid.length && !confirm(`${t} masasında ödenmemiş ${unpaid.length} kalem var.\nYine de boşaltılsın mı? (iptal / yanlış giriş vb.)`)) return;
+      masayiKapat(t, structuredClone(toObject(tablesData[t])), "Masa boşaltıldı", "bosaltildi");
+    });
+
+    $('moveTableBtn').addEventListener('click', () => {
+      if (!activeTable) return;
+      const src = activeTable;
+      let dst = prompt(`${src} masasındaki siparişler hangi masaya taşınsın? (örn: K3, İ2, P1)`);
+      if (!dst) return;
+      dst = dst.trim().toLocaleUpperCase('tr-TR').replace(/^UST/, 'ÜST');
+      if (dst.startsWith('ÜST') && !dst.startsWith('ÜST ')) dst = dst.replace('ÜST', 'ÜST ');
+      if (!ALL_TABLES.includes(dst)) { alert(`"${dst}" diye bir masa yok.`); return; }
+      if (dst === src) return;
+
+      const items = toObject(tablesData[src]);
+      const dstRef = child(tablesRef, dst);
+      const updates = {};
+      Object.values(items).forEach(it => { if (it) updates[`${dst}/${push(dstRef).key}`] = it; });
+      updates[src] = null;
+      update(tablesRef, updates).then(() => {
+        toast(`${src} → ${dst} taşındı ✓`);
+        openModal(dst, modalMode);
+      }).catch(hata);
+    });
   </script>
 </body>
 </html>
