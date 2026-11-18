@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>MUÀ - Menü Yönetim Paneli</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -170,18 +171,31 @@
         <label class="form-label">Görsel Yolu veya Linki (İsteğe bağlı)</label>
         <input type="text" id="formImage" placeholder="Örn: img/lotus.jpg veya https://...">
 
-        <label class="form-label">Üst Rozet Yazısı (İsteğe bağlı)</label>
+        <label class="form-label">Rozet Yazısı – kendi kategorisinde (İsteğe bağlı)</label>
         <input type="text" id="formBadge" placeholder="Örn: ★ Şefin Tavsiyesi veya ★ Yeni">
 
         <label class="checkbox-group">
             <input type="checkbox" id="formFeatured">
-            <span>Pembe Çerçeveli (Öne Çıkan) Kutu Yap</span>
+            <span>Kendi kategorisinde pembe çerçeveli (öne çıkan) göster</span>
         </label>
 
         <label class="checkbox-group">
-            <input type="checkbox" id="formPopular">
-            <span>"En Çok Tercih Edilenler" Kategorisinde de Göster</span>
+            <input type="checkbox" id="formPopular" onchange="populerAlanlariniGoster()">
+            <span>"En Çok Tercih Edilenler" kategorisinde de göster</span>
         </label>
+
+        <div id="popularFields" style="display:none; background:#fff8fa; border:1px solid #f4c9d8; border-radius:10px; padding:12px 12px 2px; margin-bottom:10px;">
+            <label class="form-label">Rozet Yazısı – "En Çok Tercih Edilenler"de (boşsa üstteki kullanılır)</label>
+            <input type="text" id="formPopularBadge" placeholder="Örn: ★ En Çok Satılan">
+
+            <label class="checkbox-group">
+                <input type="checkbox" id="formPopularFeatured">
+                <span>Orada pembe çerçeveli göster</span>
+            </label>
+
+            <label class="form-label">Sırası (1 = en üstte)</label>
+            <input type="number" id="formPopularOrder" placeholder="Örn: 1" min="1">
+        </div>
 
         <div style="display: flex; gap: 8px; margin-top: 18px;">
             <button class="btn btn-secondary" onclick="urunModaliniKapat()">İptal</button>
@@ -196,7 +210,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getDatabase, ref, onValue, set, update, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
@@ -346,24 +360,74 @@
     };
 
     let globalMenuData = null;
-    let duzenlenenUrunIndex = null;
+    let duzenlenenUrunId = null;
+    const $ = (id) => document.getElementById(id);
 
+    // ---------- YARDIMCILAR ----------
+    function itemsDizisi(items) {
+        if (!items) return [];
+        return (Array.isArray(items) ? items : Object.values(items)).filter(Boolean);
+    }
+
+    function urunBul(id) {
+        return itemsDizisi(globalMenuData?.items).find(i => i.id === id) || null;
+    }
+
+    function bugun() {
+        return new Date().toLocaleDateString('tr-TR');
+    }
+
+    function slugYap(name) {
+        const tr = { 'ç':'c', 'ğ':'g', 'ı':'i', 'i':'i', 'ö':'o', 'ş':'s', 'ü':'u', 'â':'a', 'î':'i', 'û':'u' };
+        return name.toLocaleLowerCase('tr-TR')
+            .replace(/[çğıöşüâîû]/g, c => tr[c])
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '') + '-' + Date.now().toString(36).slice(-4);
+    }
+
+    // Yeni/taşınan ürünü kendi kategorisinin (ve alt kategorisinin) sonuna yerleştir
+    function dogruYereEkle(arr, urun) {
+        let pos = -1;
+        arr.forEach((i, idx) => { if (i.cat === urun.cat && (i.subCat || '') === (urun.subCat || '')) pos = idx; });
+        if (pos === -1) arr.forEach((i, idx) => { if (i.cat === urun.cat) pos = idx; });
+        if (pos === -1) arr.push(urun);
+        else arr.splice(pos + 1, 0, urun);
+    }
+
+    // Tüm yazmalar buradan geçer: sunucudaki GÜNCEL listeyi alır, ürünü id ile bulur, değiştirir.
+    // Aynı anda iki kişi kaydederse Firebase işlemi tekrar dener, kimsenin değişikliği kaybolmaz.
+    function itemsGuncelle(degistir) {
+        return runTransaction(ref(db, 'menuData/items'), (cur) => {
+            if (!cur) return cur;
+            const arr = itemsDizisi(cur);
+            degistir(arr);
+            return arr;
+        }).then(res => {
+            if (res.committed) update(ref(db, 'menuData'), { lastUpdated: bugun() });
+            return res;
+        });
+    }
+
+    function hata(err) {
+        console.error(err);
+        alert("Kaydedilemedi: " + (err?.message || err));
+    }
+
+    // ---------- GİRİŞ ----------
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            document.getElementById("loginSection").style.display = "none";
-            document.getElementById("adminSection").style.display = "block";
+            $("loginSection").style.display = "none";
+            $("adminSection").style.display = "block";
             verileriDinle();
         } else {
-            document.getElementById("loginSection").style.display = "block";
-            document.getElementById("adminSection").style.display = "none";
+            $("loginSection").style.display = "block";
+            $("adminSection").style.display = "none";
         }
     });
 
-    document.getElementById("loginBtn").addEventListener("click", () => {
-        const email = document.getElementById("email").value;
-        const pass = document.getElementById("password").value;
-        signInWithEmailAndPassword(auth, email, pass).catch(() => {
-            const errEl = document.getElementById("loginError");
+    $("loginBtn").addEventListener("click", () => {
+        signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value).catch(() => {
+            const errEl = $("loginError");
             errEl.textContent = "Giriş başarısız kanka, e-posta veya şifreyi kontrol et.";
             errEl.style.display = "block";
         });
@@ -371,37 +435,43 @@
 
     window.cikisYap = () => signOut(auth);
 
+    let dinleniyor = false;
     function verileriDinle() {
-        const menuRef = ref(db, 'menuData');
-        onValue(menuRef, (snapshot) => {
+        if (dinleniyor) return;
+        dinleniyor = true;
+        onValue(ref(db, 'menuData'), (snapshot) => {
             const data = snapshot.val();
             if (!data || !data.items) {
-                document.getElementById("seedBox").style.display = "block";
-                document.getElementById("itemsContainer").innerHTML = "";
+                $("seedBox").style.display = "block";
+                $("itemsContainer").innerHTML = "";
             } else {
-                document.getElementById("seedBox").style.display = "none";
+                $("seedBox").style.display = "none";
                 globalMenuData = data;
-                document.getElementById("updateDateInput").value = data.lastUpdated || "";
+                if (document.activeElement !== $("updateDateInput")) {
+                    $("updateDateInput").value = data.lastUpdated || "";
+                }
                 paneliCiz(data);
             }
         });
     }
 
     window.ilkVerileriYukle = () => {
-        set(ref(db, 'menuData'), VARSAYILAN_MENU).then(() => bildirimGoster("Tüm menü yüklendi!"));
+        set(ref(db, 'menuData'), VARSAYILAN_MENU).then(() => bildirimGoster("Tüm menü yüklendi!")).catch(hata);
     };
 
+    // ---------- LİSTE ----------
     function paneliCiz(data) {
-        const container = document.getElementById("itemsContainer");
-        const aranan = (document.getElementById("searchInput").value || "").toLowerCase();
+        const container = $("itemsContainer");
+        const aranan = ($("searchInput").value || "").toLocaleLowerCase('tr-TR');
+        const items = itemsDizisi(data.items);
+        const kategoriler = (Array.isArray(data.categories) ? data.categories : Object.values(data.categories || {})).filter(Boolean);
         container.innerHTML = "";
 
-        data.categories.forEach(cat => {
+        kategoriler.forEach(cat => {
             if (cat.id === "cat-en-cok-tercih-edilenler") return;
 
-            const catItems = (data.items || []).map((item, index) => ({ ...item, index }))
-                .filter(item => item && item.cat === cat.id && item.name.toLowerCase().includes(aranan));
-
+            const catItems = items.filter(item =>
+                item.cat === cat.id && String(item.name || '').toLocaleLowerCase('tr-TR').includes(aranan));
             if (catItems.length === 0) return;
 
             const catHeader = document.createElement("div");
@@ -410,25 +480,51 @@
             container.appendChild(catHeader);
 
             catItems.forEach(item => {
+                const aktif = item.active !== false;
                 const row = document.createElement("div");
-                row.className = `item-row ${item.active !== false ? '' : 'pasif'}`;
-                row.innerHTML = `
-                    <div class="item-left">
-                        <span class="item-name">${item.name}</span>
-                        <span class="item-sub">${item.subCat ? item.subCat + ' • ' : ''}${item.popular ? '⭐ Popülerde Gösteriliyor' : ''}</span>
-                    </div>
-                    <div class="item-right">
-                        <button class="icon-btn" title="Düzenle" onclick="urunModaliniAc(${item.index})">✏️</button>
-                        <input type="text" class="price-input" value="${item.price}" 
-                            onchange="fiyatGuncelle(${item.index}, this.value)">
-                        <span style="font-weight:600; color:#d81b60;">₺</span>
-                        <label class="switch">
-                            <input type="checkbox" ${item.active !== false ? 'checked' : ''} 
-                                onchange="durumGuncelle(${item.index}, this.checked)">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                `;
+                row.className = "item-row" + (aktif ? "" : " pasif");
+
+                const left = document.createElement("div");
+                left.className = "item-left";
+                const nameEl = document.createElement("span");
+                nameEl.className = "item-name";
+                nameEl.textContent = item.name;
+                const subEl = document.createElement("span");
+                subEl.className = "item-sub";
+                subEl.textContent = (item.subCat ? item.subCat + (item.popular ? ' • ' : '') : '') + (item.popular ? '⭐ Popülerde Gösteriliyor' : '');
+                left.append(nameEl, subEl);
+
+                const right = document.createElement("div");
+                right.className = "item-right";
+
+                const editBtn = document.createElement("button");
+                editBtn.className = "icon-btn";
+                editBtn.title = "Düzenle";
+                editBtn.textContent = "✏️";
+                editBtn.onclick = () => urunModaliniAc(item.id);
+
+                const priceInput = document.createElement("input");
+                priceInput.type = "text";
+                priceInput.className = "price-input";
+                priceInput.value = item.price ?? "";
+                priceInput.onchange = () => fiyatGuncelle(item.id, priceInput.value);
+
+                const tl = document.createElement("span");
+                tl.style.cssText = "font-weight:600; color:#d81b60;";
+                tl.textContent = "₺";
+
+                const sw = document.createElement("label");
+                sw.className = "switch";
+                const cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.checked = aktif;
+                cb.onchange = () => durumGuncelle(item.id, cb.checked);
+                const slider = document.createElement("span");
+                slider.className = "slider";
+                sw.append(cb, slider);
+
+                right.append(editBtn, priceInput, tl, sw);
+                row.append(left, right);
                 container.appendChild(row);
             });
         });
@@ -438,140 +534,138 @@
         if (globalMenuData) paneliCiz(globalMenuData);
     };
 
-    window.fiyatGuncelle = (index, yeniFiyat) => {
-        const bugun = new Date().toLocaleDateString('tr-TR');
-        update(ref(db, `menuData/items/${index}`), { price: yeniFiyat.trim() });
-        update(ref(db, `menuData`), { lastUpdated: bugun });
-        bildirimGoster("Fiyat güncellendi ✓");
-    };
+    // ---------- HIZLI GÜNCELLEMELER ----------
+    function fiyatGuncelle(id, yeniFiyat) {
+        const fiyat = String(yeniFiyat).trim();
+        if (!fiyat) { bildirimGoster("Fiyat boş olamaz"); paneliCiz(globalMenuData); return; }
+        itemsGuncelle(arr => {
+            const it = arr.find(i => i.id === id);
+            if (it) it.price = fiyat;
+        }).then(() => bildirimGoster("Fiyat güncellendi ✓")).catch(hata);
+    }
 
-    window.durumGuncelle = (index, aktifMi) => {
-        update(ref(db, `menuData/items/${index}`), { active: aktifMi });
-        bildirimGoster(aktifMi ? "Ürün açıldı ✓" : "Ürün gizlendi ✓");
-    };
+    function durumGuncelle(id, aktifMi) {
+        itemsGuncelle(arr => {
+            const it = arr.find(i => i.id === id);
+            if (it) it.active = aktifMi;
+        }).then(() => bildirimGoster(aktifMi ? "Ürün açıldı ✓" : "Ürün gizlendi ✓")).catch(hata);
+    }
 
     window.tarihGuncelle = () => {
-        const yeniTarih = document.getElementById("updateDateInput").value.trim();
-        update(ref(db, `menuData`), { lastUpdated: yeniTarih });
-        bildirimGoster("Tarih güncellendi ✓");
+        const yeniTarih = $("updateDateInput").value.trim();
+        update(ref(db, 'menuData'), { lastUpdated: yeniTarih })
+            .then(() => bildirimGoster("Tarih güncellendi ✓")).catch(hata);
     };
 
-    // --- YENİ ÜRÜN EKLEME & DÜZENLEME FONKSİYONLARI ---
+    // ---------- EKLE / DÜZENLE / SİL ----------
     window.altKategorileriKontrolEt = () => {
-        const cat = document.getElementById("formCat").value;
-        document.getElementById("subCatWrapper").style.display = (cat === "cat-soguk-icecekler") ? "block" : "none";
+        $("subCatWrapper").style.display = ($("formCat").value === "cat-soguk-icecekler") ? "block" : "none";
     };
 
-    window.urunModaliniAc = (index = null) => {
-        duzenlenenUrunIndex = index;
-        const modal = document.getElementById("itemModal");
-        const deleteBtn = document.getElementById("deleteItemBtn");
+    window.populerAlanlariniGoster = () => {
+        $("popularFields").style.display = $("formPopular").checked ? "block" : "none";
+    };
 
-        if (index !== null && globalMenuData && globalMenuData.items[index]) {
-            const item = globalMenuData.items[index];
-            document.getElementById("modalTitle").textContent = "Ürünü Düzenle";
-            document.getElementById("formCat").value = item.cat || "cat-spesiyal";
-            document.getElementById("formSubCat").value = item.subCat || "";
-            document.getElementById("formName").value = item.name || "";
-            document.getElementById("formDesc").value = item.desc || "";
-            document.getElementById("formPrice").value = item.price || "";
-            document.getElementById("formImage").value = item.image || "";
-            document.getElementById("formBadge").value = item.badge || item.popularBadge || "";
-            document.getElementById("formFeatured").checked = !!(item.featured || item.popularFeatured);
-            document.getElementById("formPopular").checked = !!item.popular;
-            deleteBtn.style.display = "block";
-        } else {
-            document.getElementById("modalTitle").textContent = "Yeni Ürün Ekle";
-            document.getElementById("formCat").value = "cat-spesiyal";
-            document.getElementById("formSubCat").value = "";
-            document.getElementById("formName").value = "";
-            document.getElementById("formDesc").value = "";
-            document.getElementById("formPrice").value = "";
-            document.getElementById("formImage").value = "";
-            document.getElementById("formBadge").value = "";
-            document.getElementById("formFeatured").checked = false;
-            document.getElementById("formPopular").checked = false;
-            deleteBtn.style.display = "none";
-        }
+    function urunModaliniAc(id = null) {
+        const item = id ? urunBul(id) : null;
+        duzenlenenUrunId = item ? id : null;
+
+        $("modalTitle").textContent = item ? "Ürünü Düzenle" : "Yeni Ürün Ekle";
+        $("formCat").value = item?.cat || "cat-spesiyal";
+        $("formSubCat").value = item?.subCat || "";
+        $("formName").value = item?.name || "";
+        $("formDesc").value = item?.desc || "";
+        $("formPrice").value = item?.price || "";
+        $("formImage").value = item?.image || "";
+        $("formBadge").value = item?.badge || "";
+        $("formFeatured").checked = !!item?.featured;
+        $("formPopular").checked = !!item?.popular;
+        $("formPopularBadge").value = item?.popularBadge || "";
+        $("formPopularFeatured").checked = item ? !!(item.popularFeatured ?? item.featured) : false;
+        $("formPopularOrder").value = item?.popularOrder && item.popularOrder !== 99 ? item.popularOrder : "";
+        $("deleteItemBtn").style.display = item ? "block" : "none";
 
         altKategorileriKontrolEt();
-        modal.style.display = "flex";
-    };
+        populerAlanlariniGoster();
+        $("itemModal").style.display = "flex";
+    }
+    window.urunModaliniAc = urunModaliniAc;
 
     window.urunModaliniKapat = () => {
-        document.getElementById("itemModal").style.display = "none";
-        duzenlenenUrunIndex = null;
+        $("itemModal").style.display = "none";
+        duzenlenenUrunId = null;
     };
 
     window.urunuKaydet = () => {
-        const name = document.getElementById("formName").value.trim();
-        const price = document.getElementById("formPrice").value.trim();
+        const name = $("formName").value.trim();
+        const price = $("formPrice").value.trim();
         if (!name || !price) {
             alert("Kanka ürün adı ve fiyatı zorunlu!");
             return;
         }
 
-        const cat = document.getElementById("formCat").value;
-        const subCat = (cat === "cat-soguk-icecekler") ? document.getElementById("formSubCat").value : "";
-        const desc = document.getElementById("formDesc").value.trim();
-        const image = document.getElementById("formImage").value.trim();
-        const badge = document.getElementById("formBadge").value.trim();
-        const featured = document.getElementById("formFeatured").checked;
-        const popular = document.getElementById("formPopular").checked;
+        const cat = $("formCat").value;
+        const popular = $("formPopular").checked;
+        const sira = parseInt($("formPopularOrder").value, 10);
 
-        const yeniUrun = {
-            id: name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Date.now().toString().slice(-3),
+        const formAlanlari = {
             cat,
-            subCat,
+            subCat: (cat === "cat-soguk-icecekler") ? $("formSubCat").value : "",
             name,
-            desc,
+            desc: $("formDesc").value.trim(),
             price,
-            image,
-            badge,
-            featured,
+            image: $("formImage").value.trim(),
+            badge: $("formBadge").value.trim(),
+            featured: $("formFeatured").checked,
             popular,
-            popularBadge: badge,
-            popularFeatured: featured,
-            active: true
+            popularBadge: popular ? $("formPopularBadge").value.trim() : "",
+            popularFeatured: popular ? $("formPopularFeatured").checked : false,
+            popularOrder: popular && sira > 0 ? sira : 99
         };
 
-        const items = [...(globalMenuData?.items || [])];
-
-        if (duzenlenenUrunIndex !== null) {
-            yeniUrun.id = items[duzenlenenUrunIndex].id;
-            yeniUrun.active = items[duzenlenenUrunIndex].active !== false;
-            yeniUrun.popularOrder = items[duzenlenenUrunIndex].popularOrder || 99;
-            items[duzenlenenUrunIndex] = yeniUrun;
-        } else {
-            items.push(yeniUrun);
-        }
-
-        const bugun = new Date().toLocaleDateString('tr-TR');
-        update(ref(db, 'menuData'), { items, lastUpdated: bugun }).then(() => {
+        const id = duzenlenenUrunId;
+        itemsGuncelle(arr => {
+            if (id) {
+                const idx = arr.findIndex(i => i.id === id);
+                if (idx === -1) return; // bu arada başkası silmiş
+                const eski = arr[idx];
+                const yeni = { ...eski, ...formAlanlari }; // id, active vb. korunur
+                if (eski.cat !== yeni.cat || (eski.subCat || '') !== (yeni.subCat || '')) {
+                    arr.splice(idx, 1);
+                    dogruYereEkle(arr, yeni);
+                } else {
+                    arr[idx] = yeni;
+                }
+            } else {
+                dogruYereEkle(arr, { id: slugYap(name), ...formAlanlari, active: true });
+            }
+        }).then(() => {
             urunModaliniKapat();
-            bildirimGoster(duzenlenenUrunIndex !== null ? "Ürün güncellendi ✓" : "Yeni ürün eklendi ✓");
-        });
+            bildirimGoster(id ? "Ürün güncellendi ✓" : "Yeni ürün eklendi ✓");
+        }).catch(hata);
     };
 
     window.urunuSil = () => {
-        if (duzenlenenUrunIndex === null) return;
-        const urunAdi = globalMenuData.items[duzenlenenUrunIndex].name;
-        if (!confirm(`"${urunAdi}" ürününü menüden tamamen silmek istediğine emin misin kanka?`)) return;
+        const id = duzenlenenUrunId;
+        const item = id ? urunBul(id) : null;
+        if (!item) return;
+        if (!confirm(`"${item.name}" ürününü menüden tamamen silmek istediğine emin misin kanka?`)) return;
 
-        const items = [...globalMenuData.items];
-        items.splice(duzenlenenUrunIndex, 1);
-
-        update(ref(db, 'menuData'), { items }).then(() => {
+        itemsGuncelle(arr => {
+            const idx = arr.findIndex(i => i.id === id);
+            if (idx !== -1) arr.splice(idx, 1);
+        }).then(() => {
             urunModaliniKapat();
             bildirimGoster("Ürün silindi 🗑️");
-        });
+        }).catch(hata);
     };
 
     function bildirimGoster(mesaj) {
-        const toast = document.getElementById("toast");
+        const toast = $("toast");
         toast.textContent = mesaj;
         toast.style.display = "block";
-        setTimeout(() => toast.style.display = "none", 2000);
+        clearTimeout(bildirimGoster._t);
+        bildirimGoster._t = setTimeout(() => toast.style.display = "none", 2000);
     }
 </script>
 </body>
