@@ -106,6 +106,7 @@
     .pc-item .bar-act { padding: 10px 12px; font-size: 0.85rem; }
     .pc-all { width: 100%; margin-top: 8px; }
     .other-hint { font-size: 0.75rem; color: #8fc3ff; margin-top: 4px; }
+    .bos-mesaj { font-size: 1.05rem; color: #ddd; padding: 26px 10px; line-height: 1.5; }
     .empty-msg { color: #666; text-align: center; padding: 18px 0; font-size: 0.9rem; }
     .sound-row { display: flex; justify-content: flex-end; margin-top: 10px; }
     .filter-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
@@ -733,7 +734,8 @@
       const t1 = el('div', 'sec-title', '⏳ Hazırlanacaklar');
       t1.appendChild(el('span', 'n', String(waiting.reduce((s, l) => s + l.it.qty, 0))));
       box.appendChild(t1);
-      if (!waiting.length) box.appendChild(el('div', 'empty-msg', 'Bekleyen sipariş yok 👌'));
+      if (!waiting.length) box.appendChild(el('div', 'empty-msg bos-mesaj', bosMesajSec()));
+      else bosMesaj = null;
       siparisGruplari(waiting).forEach(g => box.appendChild(prepCard(g)));
 
       const t2 = el('div', 'sec-title', '🔔 Hazır, masaya götürülecek');
@@ -795,6 +797,48 @@
       foot.appendChild(btn);
       card.appendChild(foot);
       return card;
+    }
+
+    // Siparişler bitince çıkan mesajlar. Liste boşaldığında rastgele biri seçilir,
+    // yeni sipariş gelip tekrar bitene kadar aynı kalır (ekran her yenilendiğinde değişmez).
+    const BOS_MESAJLAR = [
+      "Ellerine sağlık, yine şov yaptın ✨",
+      "Bu ekiple sırtımız yere gelmez, eline sağlık 👊",
+      "Arkadaki bulaşıklara bakmazsan şu an her şey çok güzel 🫧👀",
+      "Siparişler bitti, Umut'u bulaşığa gönderme zamanı 🧽🍽️",
+      "Sipariş bitti, Betül'ü arayın lavabodan insin 📞🚪",
+      "Nesiniz siz, MUÀ'nın 3 silahşörü mü? ⚔️🔥",
+      "Erşan bu sistemi boşuna mı yazdı, bakın ne güzel bitti işte hepsi 💻😎",
+      "Umut bulaşıktan çıktıysa hemen saklayın, yine iş kitlemesinler 🥷🤫",
+      "Sipariş yok, Umut'un iki dakka nefes almasına izin verin, çocuk eridi bitti 😮‍💨🫠",
+      "Siparişler bitti, Müdür Yardımcısı Erşan onayladı, 2 dakika serbestsiniz 🫡⏱️",
+      "Bitti valla! Umut kesin yine yapacak bi iş bulup arkaya kaçmıştır, çağırın otursun 🏃‍♂️🪑",
+      "Abdullah yokken Erşan'a yalakalık yapmak için tam zamanı, ortalık boş 😏👀",
+      "Müdür Yardımcısı Erşan'a söyleyin vardiya erken bitsin (şaka şaka, Abdullah duyarsa hepimizi kovar) 🤫😅",
+      "Sipariş bitti, Betül lavabodan inene kadar şu sessizliğin tadını çıkarın 😌🔇",
+      "Bekleyen ürün yok. Umut'u dinlendirin, akşam yoğunluğunda yine her işi ona kitleyeceğiz 🔋😈",
+      "Kaan Bey kameradan görse gururlanır, tek bir bekleyen sipariş yok 📹🥹",
+      "Umut'a söyleyin bulaşıktan çıksın, Kaan Bey kameradan izliyor, bari ön tarafta çalışıyor görünsün 🎥🧹",
+      "Siparişler bitti, Kaan Bey'den zam istemek için tam zamanı (şaka şaka, devam edin) 💸😂",
+      "Bitti valla! Kameraya gülümseyin, Kaan Bey izliyorsa şovumuzu görsün 📸😁",
+      "Erşan bu sistemi boşuna mı kurdu, Kaan Bey görse direkt maaşa zam yapar (inşallah) 🤲💰",
+      "Müdür Yardımcısı Erşan şu an gizli gizli \"ben ne sistem yaptım be\" diye gururlanıyor 😌💻",
+      "Kaan Bey kameradan bakıyorsa şu an kesin alkışlıyordur 👏📹",
+      "Şu ekranı böyle boş görmek, maaş gününden sonraki en güzel his 💸✨",
+      "Kaan Bey'e söyleyin bu ekibe nazar boncuğu lazım, tek bir bekleyen ürün yok 🧿🔥",
+      "Umut bu hızla giderse yakında dükkanı tek başına çevirecek, çocuğa bi dondurma ısmarlayın 🍦💪",
+      "Jülide'ye bi kahve çekin, bugün yine ortalığı toparladı ☕👑",
+      "Sipariş kalmadı, Abdullah'ın gözüne girmek için tam tezgah parlatma vakti ✨🫡",
+      "Şu huzuru bozacak ilk masaya şimdiden sabır diliyoruz 🙏😅"
+    ];
+    let bosMesaj = null, sonBosMesaj = null;
+    function bosMesajSec() {
+      if (!bosMesaj) {
+        const adaylar = BOS_MESAJLAR.filter(m => m !== sonBosMesaj);
+        bosMesaj = adaylar[Math.floor(Math.random() * adaylar.length)];
+        sonBosMesaj = bosMesaj;
+      }
+      return bosMesaj;
     }
 
     // Aynı masanın birkaç dakika içinde girilen ürünleri tek sipariş sayılır ve birlikte gösterilir.
