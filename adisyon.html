@@ -689,6 +689,51 @@
     });
 
     // ================= CANLI DİNLEME =================
+    let menuHatasi = '';
+    function menuyuIsle(d, kaydet) {
+      if (!d || !d.items) return;
+      try {
+        const cats = (Array.isArray(d.categories) ? d.categories : Object.values(d.categories || {})).filter(Boolean);
+        const titles = Object.fromEntries(cats.map(c => [c.id, c.title]));
+        const m = {};
+        const ms = {};
+        const mi = {};
+        cats.forEach(c => { if (c.id !== 'cat-en-cok-tercih-edilenler') m[c.title] = []; });
+        Object.values(d.items).forEach(it => {
+          if (!it || !it.name) return;
+          const ad = String(it.name).trim();
+          const station = it.station || stationFor(it.cat, ad);
+          ms[lower(ad)] = station;
+          if (it.active === false) return;
+          const cat = titles[it.cat] || 'Diğer';
+          const urun = { name: ad, price: parsePrice(it.price), station, cat: it.cat };
+          (m[cat] ||= []).push(urun);
+          mi[lower(ad)] = urun;
+        });
+        Object.keys(m).forEach(k => { if (!m[k].length) delete m[k]; });
+        if (!Object.keys(m).length) return;
+        menu = m;
+        menuStation = ms;
+        menuInfo = mi;
+        menuHatasi = '';
+        if (kaydet) { try { localStorage.setItem('mua_menu_cache', JSON.stringify(d)); } catch {} }
+        if (activeCategory !== SIK_SEKME && !menu[activeCategory]) activeCategory = SIK_SEKME;
+        renderAll();
+      } catch (e) {
+        console.error(e);
+        menuHatasi = 'Menü okunurken hata: ' + e.message;
+        renderAll();
+      }
+    }
+
+    function menuyuWebdenCek() {
+      if (typeof fetch !== 'function') return;
+      fetch(firebaseConfig.databaseURL + '/menuData.json', { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+        .then(d => menuyuIsle(d, true))
+        .catch(e => { if (!Object.keys(menu).length) { menuHatasi = e.message; renderAll(); } });
+    }
+
     function dinlemeyiBaslat() {
       unsubs.push(onValue(ref(db, '.info/connected'), (snap) => {
         $('connDot').classList.toggle('online', snap.val() === true);
@@ -710,32 +755,14 @@
         renderAll();
       }, () => { duzen = VARSAYILAN_DUZEN; }));
 
-      unsubs.push(onValue(ref(db, 'menuData'), (snap) => {
-        const d = snap.val();
-        if (!d || !d.items) return;
-        const cats = (Array.isArray(d.categories) ? d.categories : Object.values(d.categories || {})).filter(Boolean);
-        const titles = Object.fromEntries(cats.map(c => [c.id, c.title]));
-        const m = {};
-        const ms = {};
-        const mi = {};
-        cats.forEach(c => { if (c.id !== 'cat-en-cok-tercih-edilenler') m[c.title] = []; });
-        Object.values(d.items).forEach(it => {
-          if (!it || !it.name) return;
-          const station = it.station || stationFor(it.cat, it.name);
-          ms[lower(it.name.trim())] = station;
-          if (it.active === false) return;
-          const cat = titles[it.cat] || 'Diğer';
-          const urun = { name: it.name.trim(), price: parsePrice(it.price), station, cat: it.cat };
-          (m[cat] ||= []).push(urun);
-          mi[lower(urun.name)] = urun;
-        });
-        Object.keys(m).forEach(k => { if (!m[k].length) delete m[k]; });
-        menu = m;
-        menuStation = ms;
-        menuInfo = mi;
-        if (activeCategory !== SIK_SEKME && !menu[activeCategory]) activeCategory = SIK_SEKME;
-        renderAll();
-      }));
+      // Menü 3 yoldan yüklenir: (1) telefonda kayıtlı son menü – anında, (2) QR menünün kullandığı
+      // normal web isteği – hızlı, (3) Firebase canlı bağlantısı – değişiklikleri anında getirir.
+      // Telefonda kayıtlı son menüyü hemen göster
+      if (!Object.keys(menu).length) { try { const c = localStorage.getItem('mua_menu_cache'); if (c) menuyuIsle(JSON.parse(c), false); } catch {} }
+      unsubs.push(onValue(ref(db, 'menuData'), (snap) => menuyuIsle(snap.val(), true),
+        (err) => { menuHatasi = err.message; renderAll(); }));
+      menuyuWebdenCek();
+      setTimeout(() => { if (!Object.keys(menu).length) { menuHatasi = menuHatasi || 'Bağlantı yavaş ya da yok'; renderAll(); } }, 8000);
 
       unsubs.push(onValue(tablesRef, (snap) => {
         tablesData = snap.val() || {};
@@ -1306,7 +1333,17 @@
       ed.onclick = () => { sikDuzenle = !sikDuzenle; if (sikDuzenle && !searchQuery) activeCategory = SIK_SEKME; renderQuickMenu(); };
       tabs.appendChild(ed);
 
-      if (!Object.keys(menu).length) { box.appendChild(el('div', 'q-empty', 'Menü yükleniyor...')); return; }
+      if (!Object.keys(menu).length) {
+        const w = el('div', 'q-empty', menuHatasi ? `Menü alınamadı (${menuHatasi}).` : 'Menü yükleniyor...');
+        if (menuHatasi) {
+          const rb = el('button', 'chip-btn', '🔄 Tekrar dene');
+          rb.style.cssText = 'display:block; margin:10px auto 0;';
+          rb.onclick = () => { menuHatasi = ''; renderQuickMenu(); menuyuWebdenCek(); };
+          w.appendChild(rb);
+        }
+        box.appendChild(w);
+        return;
+      }
 
       const sikSet = new Set(sikListe.map(lower));
       if (sikDuzenle) {
