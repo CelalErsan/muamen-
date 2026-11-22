@@ -242,6 +242,23 @@
     .flash.yesil.on { animation-name: flashAnimG; }
     @keyframes flashAnimG { 0% { opacity: 1; border-width: 14px; background: rgba(76,175,80,0.18); } 100% { opacity: 0; border-width: 0; background: transparent; } }
 
+    /* Seçenek çipleri (Kupa/Karton, Soğuk/Ilık) */
+    .opt-chip { border: 1px solid #555; background: #2f2f2f; color: #eee; border-radius: 14px; padding: 4px 11px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+    .opt-chip.on { background: var(--gold); color: #111; border-color: var(--gold); }
+    .opt-strip { display: none; align-items: center; gap: 6px; flex-wrap: wrap; background: #262626; border: 1px dashed #555; border-radius: 10px; padding: 7px 9px; margin-bottom: 8px; flex-shrink: 0; font-size: 0.8rem; color: #ccc; }
+    .opt-strip.show { display: flex; }
+    .opt-strip .opt-chip { padding: 7px 14px; font-size: 0.85rem; }
+    /* Sık sekmesi düzenleme */
+    .cat-tab.sik { background: #3a2f12; color: var(--gold); }
+    .cat-tab.sik.active { background: var(--gold); color: #000; }
+    .cat-tab.edit { background: #333; color: #ccc; }
+    .cat-tab.edit.on { background: var(--pink); color: #fff; }
+    .sik-banner { grid-column: 1 / -1; background: rgba(216,27,96,0.15); border: 1px solid var(--pink); color: #f8bbd0; border-radius: 8px; padding: 8px 10px; font-size: 0.78rem; line-height: 1.4; }
+    .q-btn { position: relative; }
+    .q-btn.secili { border-color: var(--gold); background: #3a2f12; }
+    .q-btn .q-star { position: absolute; top: 3px; right: 5px; font-size: 0.8rem; color: var(--gold); }
+    .q-btn .q-move { position: absolute; top: 2px; left: 3px; background: #444; border: none; color: #fff; border-radius: 5px; font-size: 0.7rem; padding: 2px 5px; cursor: pointer; }
+
     /* Toast */
     .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 10px 14px; border-radius: 24px; font-size: 0.88rem; display: none; z-index: 300; box-shadow: 0 4px 16px rgba(0,0,0,.5); align-items: center; gap: 12px; white-space: nowrap; }
     .toast.show { display: flex; }
@@ -314,6 +331,7 @@
         </div>
 
         <div class="quick-cats" id="catTabs"></div>
+        <div class="opt-strip" id="optStrip"></div>
         <div class="quick-items" id="quickItems"></div>
 
         <div class="bottom-row">
@@ -422,6 +440,26 @@
     // Kategorisi kahve tarafında olsa bile dondurma barında yapılan ürünler (isimde geçmesi yeter)
     const DONDURMA_ISTISNALARI = ["sıcak çikolata"];
 
+    // Ürün seçenekleri: ürüne dokununca ürün HEMEN eklenir, altta isteğe bağlı çipler çıkar.
+    // Basmasan da olur, sıradaki ürüne geçebilirsin.
+    const SECENEK_KURALLARI = [
+      { // Sıcak içecekler ve kahveler (sıcak çikolata ve ekstra shot hariç)
+        uyar: (ad, cat) => cat === 'cat-sicak-icecekler' && !ad.includes('sıcak çikolata') && !ad.includes('ekstra shot'),
+        secenekler: ['Kupa', 'Karton']
+      },
+      { // Su
+        uyar: (ad) => /(^|\s)su$/.test(ad),
+        secenekler: ['Soğuk', 'Ilık']
+      }
+    ];
+
+    // Sık sekmesinin varsayılan listesi (masa ekranından düzenlenebilir, Firebase'e kaydedilir)
+    const VARSAYILAN_SIK = [
+      "Fincan Çay", "Demleme Çay", "Sıcak Çikolata", "Latte", "Americano", "Türk Kahvesi",
+      "Cappucino", "Filtre Kahve", "Ice Latte", "Ice Americano", "Cold Brew", "Uludağ Su"
+    ];
+    const SIK_SEKME = '⭐ Sık';
+
     const GECIKME_DK = 10;        // bu kadar dakikadır hazırlanmayı bekleyen ürün kırmızı yanar
     const GOTURME_GECIKME_DK = 4; // hazır olup bu kadar dakikadır masaya gitmeyen ürün kırmızı yanar
     const STATUS_TEXT = { bekliyor: "⏳ Hazırlanıyor", hazir: "🔔 Hazır", servis: "✓ Servis edildi" };
@@ -447,6 +485,10 @@
     let tablesData = {};
     let menu = {};             // { "Soğuk İçecekler": [{name, price, station}] }
     let menuStation = {};      // "latte" -> "kahve"
+    let menuInfo = {};         // "latte" -> {name, price, station, cat}
+    let sikListe = VARSAYILAN_SIK;
+    let sikDuzenle = false;
+    let sonEklenen = null;     // { t, key, name } - seçenek şeridi için"
     let activeTable = null;
     let modalMode = "siparis";
     let activeCategory = "";
@@ -652,6 +694,13 @@
         $('connDot').classList.toggle('online', snap.val() === true);
       }));
 
+      unsubs.push(onValue(ref(db, 'mua_adisyon_sik'), (snap) => {
+        const d = snap.val();
+        const l = d ? (Array.isArray(d) ? d : Object.values(d)).filter(Boolean) : null;
+        sikListe = l && l.length ? l : VARSAYILAN_SIK;
+        if (activeTable) renderQuickMenu();
+      }, () => {}));
+
       unsubs.push(onValue(ref(db, 'mua_adisyon_duzen'), (snap) => {
         const d = snap.val();
         const liste = d ? (Array.isArray(d) ? d : Object.values(d)).filter(z => z && z.baslik) : [];
@@ -668,6 +717,7 @@
         const titles = Object.fromEntries(cats.map(c => [c.id, c.title]));
         const m = {};
         const ms = {};
+        const mi = {};
         cats.forEach(c => { if (c.id !== 'cat-en-cok-tercih-edilenler') m[c.title] = []; });
         Object.values(d.items).forEach(it => {
           if (!it || !it.name) return;
@@ -675,12 +725,15 @@
           ms[lower(it.name.trim())] = station;
           if (it.active === false) return;
           const cat = titles[it.cat] || 'Diğer';
-          (m[cat] ||= []).push({ name: it.name.trim(), price: parsePrice(it.price), station });
+          const urun = { name: it.name.trim(), price: parsePrice(it.price), station, cat: it.cat };
+          (m[cat] ||= []).push(urun);
+          mi[lower(urun.name)] = urun;
         });
         Object.keys(m).forEach(k => { if (!m[k].length) delete m[k]; });
         menu = m;
         menuStation = ms;
-        if (!menu[activeCategory]) activeCategory = Object.keys(menu)[0] || '';
+        menuInfo = mi;
+        if (activeCategory !== SIK_SEKME && !menu[activeCategory]) activeCategory = SIK_SEKME;
         renderAll();
       }));
 
@@ -1120,6 +1173,9 @@
       paySel = {};
       searchQuery = '';
       $('searchInput').value = '';
+      activeCategory = SIK_SEKME;
+      sikDuzenle = false;
+      sonEklenen = null;
       $('modalTableName').textContent = `Masa: ${tName}`;
       $('tableModal').classList.add('active');
       renderModal();
@@ -1127,6 +1183,8 @@
 
     function closeModal() {
       activeTable = null;
+      sonEklenen = null;
+      sikDuzenle = false;
       $('tableModal').classList.remove('active');
     }
     $('closeModalBtn').addEventListener('click', closeModal);
@@ -1149,6 +1207,7 @@
 
       if (modalMode === 'siparis') { renderOrderList(entries); renderQuickMenu(); }
       else renderPayList(entries);
+      renderOptStrip();
     }
 
     function renderOrderList(entries) {
@@ -1179,7 +1238,10 @@
         };
         sub.appendChild(chip);
         if (it.paid) sub.appendChild(el('span', 'st-chip odendi', '💰 Ödendi'));
-        if (it.note) sub.appendChild(el('span', 'oi-note', it.note));
+        const grup = !it.paid && seceneklerFor(it.name);
+        if (grup) secenekCipleri(activeTable, key, it, grup).forEach(c => sub.appendChild(c));
+        const digerNot = grup ? notParcalari(it.note).filter(x => !grup.includes(x)).join(' · ') : it.note;
+        if (digerNot) sub.appendChild(el('span', 'oi-note', digerNot));
         sub.appendChild(el('span', 'oi-meta',
           `${it.station === 'kahve' ? '☕' : '🍨'} ${it.t ? saat(it.t) + ' (' + dkOnce(it.t) + (dakika(it.t) >= 1 ? ' önce' : '') + ')' : ''}${it.by ? ' · ' + it.by : ''}`));
         main.appendChild(sub);
@@ -1219,35 +1281,122 @@
     $('addCustomKahve').addEventListener('click', () => addCustom('kahve'));
     $('addCustomDondurma').addEventListener('click', () => addCustom('dondurma'));
 
+    function sikUrunleri() {
+      return sikListe.map(ad => menuInfo[lower(ad)]).filter(Boolean);
+    }
+
+    function sikKaydet(yeni) {
+      sikListe = yeni;
+      renderQuickMenu();
+      set(ref(db, 'mua_adisyon_sik'), yeni).catch(hata);
+    }
+
     function renderQuickMenu() {
       const tabs = $('catTabs');
       const box = $('quickItems');
       tabs.innerHTML = '';
       box.innerHTML = '';
-      const cats = Object.keys(menu);
+      const cats = [SIK_SEKME, ...Object.keys(menu)];
       cats.forEach(cat => {
-        const b = el('button', 'cat-tab' + (!searchQuery && cat === activeCategory ? ' active' : ''), cat);
+        const b = el('button', 'cat-tab' + (cat === SIK_SEKME ? ' sik' : '') + (!searchQuery && cat === activeCategory ? ' active' : ''), cat);
         b.onclick = () => { activeCategory = cat; searchQuery = ''; $('searchInput').value = ''; renderQuickMenu(); };
         tabs.appendChild(b);
       });
+      const ed = el('button', 'cat-tab edit' + (sikDuzenle ? ' on' : ''), sikDuzenle ? '✓ Bitti' : '✏️ Sık listesi');
+      ed.onclick = () => { sikDuzenle = !sikDuzenle; if (sikDuzenle && !searchQuery) activeCategory = SIK_SEKME; renderQuickMenu(); };
+      tabs.appendChild(ed);
 
-      if (!cats.length) { box.appendChild(el('div', 'q-empty', 'Menü yükleniyor...')); return; }
+      if (!Object.keys(menu).length) { box.appendChild(el('div', 'q-empty', 'Menü yükleniyor...')); return; }
+
+      const sikSet = new Set(sikListe.map(lower));
+      if (sikDuzenle) {
+        box.appendChild(el('div', 'sik-banner', activeCategory === SIK_SEKME && !searchQuery
+          ? 'Düzenleme: Sık listesinden çıkarmak için ürüne dokun, öne almak için ◀ bas. Eklemek için diğer sekmelere geç. Bitince "✓ Bitti".'
+          : 'Düzenleme: dokunduğun ürün Sık listesine eklenir ya da çıkarılır (★ = listede). Bitince "✓ Bitti".'));
+      }
 
       let products = [];
-      if (searchQuery) cats.forEach(c => menu[c].forEach(p => { if (lower(p.name).includes(searchQuery)) products.push(p); }));
+      if (searchQuery) Object.keys(menu).forEach(c => menu[c].forEach(p => { if (lower(p.name).includes(searchQuery)) products.push(p); }));
+      else if (activeCategory === SIK_SEKME) products = sikUrunleri();
       else products = menu[activeCategory] || [];
 
       if (!products.length) {
-        box.appendChild(el('div', 'q-empty', 'Menüde yok. Özel ürün olarak eklemek için +☕ veya +🍨 bas.'));
+        box.appendChild(el('div', 'q-empty', activeCategory === SIK_SEKME && !searchQuery
+          ? 'Sık listesi boş. "✏️ Sık listesi"ne basıp ürün ekle.'
+          : 'Menüde yok. Özel ürün olarak eklemek için +☕ veya +🍨 bas.'));
         return;
       }
-      products.forEach(p => {
-        const b = el('button', 'q-btn');
+
+      const sikSekmesinde = activeCategory === SIK_SEKME && !searchQuery;
+      products.forEach((p, idx) => {
+        const listede = sikSet.has(lower(p.name));
+        const b = el('button', 'q-btn' + (sikDuzenle && listede ? ' secili' : ''));
         b.appendChild(el('span', '', p.name));
         if (p.price > 0) b.appendChild(el('span', 'q-price', formatTL(p.price)));
-        b.onclick = () => addItem(p.name, p.price, p.station);
+
+        if (sikDuzenle) {
+          if (listede) b.appendChild(el('span', 'q-star', '★'));
+          if (sikSekmesinde && idx > 0) {
+            const mv = el('button', 'q-move', '◀');
+            mv.onclick = (e) => {
+              e.stopPropagation();
+              const l = [...sikListe];
+              const i = l.findIndex(x => lower(x) === lower(p.name));
+              if (i > 0) { [l[i - 1], l[i]] = [l[i], l[i - 1]]; sikKaydet(l); }
+            };
+            b.appendChild(mv);
+          }
+          b.onclick = () => sikKaydet(listede
+            ? sikListe.filter(x => lower(x) !== lower(p.name))
+            : [...sikListe, p.name]);
+        } else {
+          b.onclick = () => addItem(p.name, p.price, p.station);
+        }
         box.appendChild(b);
       });
+    }
+
+    // ---------- Seçenek çipleri ----------
+    function seceneklerFor(name) {
+      const ad = lower(name);
+      const info = menuInfo[ad];
+      const k = SECENEK_KURALLARI.find(r => r.uyar(ad, info ? info.cat : ''));
+      return k ? k.secenekler : null;
+    }
+
+    function notParcalari(note) { return String(note || '').split('·').map(x => x.trim()).filter(Boolean); }
+
+    // Seçeneği notta aç/kapat (aynı gruptaki diğerini kaldırır: Kupa seçilince Karton silinir)
+    function secenekSec(tName, key, secim, grup) {
+      itemTx(tName, key, (cur) => {
+        const parcalar = notParcalari(cur.note);
+        const vardi = parcalar.includes(secim);
+        const kalan = parcalar.filter(x => !grup.includes(x));
+        if (!vardi) kalan.unshift(secim);
+        cur.note = kalan.join(' · ').slice(0, 80);
+        return cur;
+      });
+    }
+
+    function secenekCipleri(tName, key, it, grup) {
+      const parcalar = notParcalari(it.note);
+      return grup.map(sec => {
+        const c = el('button', 'opt-chip' + (parcalar.includes(sec) ? ' on' : ''), sec);
+        c.onclick = (e) => { e.stopPropagation(); secenekSec(tName, key, sec, grup); };
+        return c;
+      });
+    }
+
+    function renderOptStrip() {
+      const strip = $('optStrip');
+      strip.innerHTML = '';
+      const it = sonEklenen && sonEklenen.t === activeTable ? toObject(tablesData[activeTable])[sonEklenen.key] : null;
+      const grup = it ? seceneklerFor(it.name) : null;
+      if (!it || !grup || statusOf(it) !== 'bekliyor' || modalMode !== 'siparis') { strip.classList.remove('show'); return; }
+      strip.appendChild(el('span', '', `${it.qty || 1}× ${it.name}:`));
+      secenekCipleri(activeTable, sonEklenen.key, it, grup).forEach(c => strip.appendChild(c));
+      strip.appendChild(el('span', '', '(isteğe bağlı)'));
+      strip.classList.add('show');
     }
 
     // ---------- Ödeme ----------
@@ -1335,6 +1484,8 @@
       const tableRef = child(tablesRef, activeTable);
       const newKey = push(tableRef).key;
       const by = me();
+      const masa = activeTable;
+      let hedefKey = null;
 
       runTransaction(tableRef, (cur) => {
         const t = toObject(cur);
@@ -1344,9 +1495,12 @@
           return it && !it.paid && !it.note && statusOf(it) === 'bekliyor' && lower(it.name) === lower(name)
             && (Date.now() - (it.t || 0)) <= GRUP_DK * 60000 && (it.by || '') === by;
         });
-        if (existingKey) t[existingKey].qty = (t[existingKey].qty || 1) + 1;
-        else t[newKey] = { name, qty: 1, price, station, status: 'bekliyor', note: '', by, t: Date.now(), paid: false };
+        if (existingKey) { t[existingKey].qty = (t[existingKey].qty || 1) + 1; hedefKey = existingKey; }
+        else { t[newKey] = { name, qty: 1, price, station, status: 'bekliyor', note: '', by, t: Date.now(), paid: false }; hedefKey = newKey; }
         return t;
+      }).then(() => {
+        sonEklenen = hedefKey && seceneklerFor(name) ? { t: masa, key: hedefKey, name } : null;
+        if (activeTable === masa) renderOptStrip();
       }).catch(hata);
     }
 
