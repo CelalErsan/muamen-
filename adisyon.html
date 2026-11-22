@@ -53,6 +53,12 @@
     /* ---------- Masalar ---------- */
     .zone-title { font-size: 0.9rem; color: #aaa; margin: 14px 0 8px; font-weight: 600; text-transform: uppercase; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; }
+    /* Kroki düzeni: her bölge kendi sütun sayısıyla */
+    .kroki { display: grid; gap: 6px; }
+    .kroki .table-btn, .kroki .pick-btn { min-height: 64px; padding: 6px 2px; min-width: 0; }
+    .kroki.dar .t-name { font-size: 0.95rem; }
+    .kroki.dar .t-info, .kroki.dar .t-price { font-size: 0.58rem; }
+    .kroki .bosluk { min-height: 1px; }
     .table-btn {
       background: var(--empty); border: 2px solid transparent; border-radius: 10px; padding: 8px 4px; color: var(--text);
       text-align: center; cursor: pointer; min-height: 74px; display: flex; flex-direction: column; justify-content: center; align-items: center; user-select: none;
@@ -225,6 +231,17 @@
     .pick-btn.dolu small { color: #ffc46b; }
     .pick-btn.kendisi { opacity: 0.3; pointer-events: none; }
 
+    /* Ayarlar / düzen editörü */
+    .sheet-row { background: var(--card); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+    .sheet-row h4 { font-size: 0.9rem; margin-bottom: 4px; }
+    .sheet-row p { font-size: 0.75rem; color: var(--muted); margin-bottom: 8px; line-height: 1.4; }
+    .sheet-row .btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .duzen-text { width: 100%; min-height: 230px; background: #111; color: #fff; border: 1px solid #444; border-radius: 10px; padding: 10px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.95rem; line-height: 1.6; }
+    .duzen-hata { color: #ff6e63; font-size: 0.82rem; margin: 6px 0; min-height: 1em; white-space: pre-line; }
+    .flash.yesil { border-color: var(--ready); }
+    .flash.yesil.on { animation-name: flashAnimG; }
+    @keyframes flashAnimG { 0% { opacity: 1; border-width: 14px; background: rgba(76,175,80,0.18); } 100% { opacity: 0; border-width: 0; background: transparent; } }
+
     /* Toast */
     .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 10px 14px; border-radius: 24px; font-size: 0.88rem; display: none; z-index: 300; box-shadow: 0 4px 16px rgba(0,0,0,.5); align-items: center; gap: 12px; white-space: nowrap; }
     .toast.show { display: flex; }
@@ -249,6 +266,7 @@
         <h1><span id="connDot" class="conn-dot"></span> MUÀ SİPARİŞ</h1>
         <div class="header-right">
           <button class="chip-btn" id="userBtn">👤 —</button>
+          <button class="chip-btn" id="settingsBtn">⚙️</button>
           <button class="chip-btn" id="logoutBtn">Çıkış</button>
         </div>
       </header>
@@ -330,13 +348,44 @@
     </div>
   </div>
 
+  <div class="picker" id="settingsSheet">
+    <div class="picker-box">
+      <div class="picker-head">
+        <h3>⚙️ Ayarlar (bu cihaz)</h3>
+        <button class="close-btn" id="settingsClose">Kapat ✕</button>
+      </div>
+      <div id="settingsBody"></div>
+    </div>
+  </div>
+
+  <div class="picker" id="layoutEditor">
+    <div class="picker-box">
+      <div class="picker-head">
+        <h3>🪑 Masa Düzeni</h3>
+        <button class="close-btn" id="layoutClose">Vazgeç ✕</button>
+      </div>
+      <p class="picker-hint" style="line-height:1.5">
+        <b># ile başlayan satır</b> bölge adıdır. Altındaki her satır, masaların yan yana dizilişidir.
+        Masaları <b>boşlukla</b> ayır. Boş yer bırakmak için <b>-</b> koy. Masa adında boşluk olmasın (ÜST1 gibi).
+      </p>
+      <textarea class="duzen-text" id="layoutText" spellcheck="false" autocapitalize="characters"></textarea>
+      <div class="duzen-hata" id="layoutError"></div>
+      <div class="zone-title">Önizleme</div>
+      <div id="layoutPreview"></div>
+      <div class="bottom-row" style="margin-top:14px">
+        <button class="gray-btn" id="layoutReset">Varsayılana dön</button>
+        <button class="green-btn" id="layoutSave">Kaydet (herkeste değişir)</button>
+      </div>
+    </div>
+  </div>
+
   <div class="flash" id="flash"></div>
   <div class="toast" id="toast"><span id="toastMsg"></span><button id="toastUndo" style="display:none">Geri Al</button></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getDatabase, ref, child, push, onValue, runTransaction, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getDatabase, ref, child, push, onValue, runTransaction, update, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
@@ -349,12 +398,21 @@
     };
 
     // ================= AYARLAR =================
-    const ZONES = [
-      { title: "Bahçe (B1 - B18)", prefix: "B", count: 18 },
-      { title: "Kış Bahçesi (K1 - K14)", prefix: "K", count: 14 },
-      { title: "İç Mekan (İ1 - İ4)", prefix: "İ", count: 4 },
-      { title: "Üst Kat", prefix: "ÜST ", count: 1 },
-      { title: "Paket / Kasa Önü", prefix: "P", count: 4 }
+    // Masa düzeni: Firebase'deki "mua_adisyon_duzen" kullanılır, yoksa bu varsayılan.
+    // Her satır masaların yan yana dizilişi, "-" boş yer.
+    const VARSAYILAN_DUZEN = [
+      { baslik: "Bahçe", satirlar: [
+        "B1 B2 B3 B4 B5 B6",
+        "B12 B11 B10 B9 B8 B7",
+        "B13 B14 B15 B16 B17 B18"] },
+      { baslik: "Kış Bahçesi", satirlar: [
+        "K3 K4 K11 K12",
+        "K2 K5 K10 K13",
+        "K1 K6 K9 K14",
+        "- K7 K8 -"] },
+      { baslik: "İç Mekan", satirlar: ["İ1 İ2 İ3 İ4"] },
+      { baslik: "Üst Kat", satirlar: ["ÜST1"] },
+      { baslik: "Paket / Kasa Önü", satirlar: ["P1 P2 P3 P4"] }
     ];
 
     // Bu kategorilerdeki ürünler DONDURMA barında hazırlanır, geri kalanı KAHVE barında.
@@ -375,7 +433,11 @@
     const db = getDatabase(app);
     const tablesRef = ref(db, 'mua_adisyon_masalar');
 
-    const ALL_TABLES = ZONES.flatMap(z => Array.from({ length: z.count }, (_, i) => `${z.prefix}${i + 1}`));
+    let duzen = VARSAYILAN_DUZEN;
+    const satirMasalari = (satir) => String(satir || '').trim().split(/\s+/).filter(Boolean);
+    function allTables() {
+      return duzen.flatMap(z => z.satirlar.flatMap(satirMasalari)).filter(t => t !== '-');
+    }
 
     const store = {
       get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -398,6 +460,9 @@
     // Ses seviyesi cihaz bazında: kapali | kisik | normal. Varsayılan kapalı (kafe hoparlörü olan cihazda çalmasın).
     let soundLevel = { "1": "normal", "0": "kapali" }[store.get("mua_sound")] || store.get("mua_sound") || "kapali";
     if (!["kapali", "kisik", "normal"].includes(soundLevel)) soundLevel = "kapali";
+    // "Hazır olunca" sesi: götüren kişinin telefonunda açılır. Varsayılan kapalı.
+    let hazirSoundLevel = store.get("mua_sound_hazir") || "kapali";
+    if (!["kapali", "kisik", "normal"].includes(hazirSoundLevel)) hazirSoundLevel = "kapali";
     let lastWaitingCount = { kahve: null, dondurma: null };
 
     const $ = (id) => document.getElementById(id);
@@ -470,7 +535,8 @@
     function openTableNames() {
       const names = Object.keys(tablesData).filter(t => tableEntries(t).length);
       return names.sort((a, b) => {
-        const ia = ALL_TABLES.indexOf(a), ib = ALL_TABLES.indexOf(b);
+        const all = allTables();
+        const ia = all.indexOf(a), ib = all.indexOf(b);
         return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
       });
     }
@@ -502,21 +568,34 @@
       toastTimer = setTimeout(() => $('toast').classList.remove('show'), undoFn ? 10000 : 2200);
     }
 
-    // Sesli uyarı (bar tableti için)
+    // Sesli uyarı. Yeni sipariş: iki kısa "bip". Hazır: yükselen "ding-dong".
     let audioCtx = null;
-    function beep() {
-      if (soundLevel === "kapali") return;
-      const vol = soundLevel === "kisik" ? 0.04 : 0.25;
+    function sesCal(seviye, notalar) {
+      if (seviye === "kapali") return;
+      const vol = seviye === "kisik" ? 0.04 : 0.25;
       try {
         audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-        [0, 0.18].forEach(off => {
+        notalar.forEach(([frek, off, sure]) => {
           const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-          o.frequency.value = 880; o.connect(g); g.connect(audioCtx.destination);
+          o.frequency.value = frek; o.connect(g); g.connect(audioCtx.destination);
           g.gain.setValueAtTime(vol, audioCtx.currentTime + off);
-          g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + off + 0.15);
-          o.start(audioCtx.currentTime + off); o.stop(audioCtx.currentTime + off + 0.16);
+          g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + off + sure);
+          o.start(audioCtx.currentTime + off); o.stop(audioCtx.currentTime + off + sure + 0.01);
         });
       } catch {}
+    }
+    function beep() { sesCal(soundLevel, [[880, 0, 0.15], [880, 0.18, 0.15]]); }
+    function hazirSesi() { sesCal(hazirSoundLevel, [[660, 0, 0.22], [990, 0.2, 0.35]]); }
+
+    let yerelHazirZamani = 0; // kendi bastığın "Hazır" için kendi cihazın ötmesin
+    let lastReadyCount = null;
+    function hazirUyarisi() {
+      const f = $('flash');
+      f.classList.add('yesil');
+      f.classList.remove('on'); void f.offsetWidth; f.classList.add('on');
+      setTimeout(() => f.classList.remove('yesil'), 2800);
+      if (hazirSoundLevel !== 'kapali') { try { navigator.vibrate && navigator.vibrate([100, 60, 100, 60, 300]); } catch {} }
+      hazirSesi();
     }
 
     // Sessiz uyarı: ekran kenarı turuncu yanıp söner, telefonda titrer, sekme başlığı değişir
@@ -572,6 +651,15 @@
       unsubs.push(onValue(ref(db, '.info/connected'), (snap) => {
         $('connDot').classList.toggle('online', snap.val() === true);
       }));
+
+      unsubs.push(onValue(ref(db, 'mua_adisyon_duzen'), (snap) => {
+        const d = snap.val();
+        const liste = d ? (Array.isArray(d) ? d : Object.values(d)).filter(z => z && z.baslik) : [];
+        duzen = liste.length
+          ? liste.map(z => ({ baslik: z.baslik, satirlar: (Array.isArray(z.satirlar) ? z.satirlar : Object.values(z.satirlar || {})).filter(Boolean) }))
+          : VARSAYILAN_DUZEN;
+        renderAll();
+      }, () => { duzen = VARSAYILAN_DUZEN; }));
 
       unsubs.push(onValue(ref(db, 'menuData'), (snap) => {
         const d = snap.val();
@@ -649,18 +737,22 @@
 
     function renderCounts() {
       const lines = allLines();
-      let toplam = 0, sesCal = false;
+      let toplam = 0, yeniVar = false;
       ['kahve', 'dondurma'].forEach(st => {
         const w = lines.filter(l => l.it.station === st && l.it.status === 'bekliyor')
           .reduce((s, l) => s + l.it.qty, 0);
         toplam += w;
         const izleniyor = currentView === 'bar' && (barFilter === 'hepsi' || barFilter === st);
-        if (lastWaitingCount[st] !== null && w > lastWaitingCount[st] && izleniyor) sesCal = true;
+        if (lastWaitingCount[st] !== null && w > lastWaitingCount[st] && izleniyor) yeniVar = true;
         lastWaitingCount[st] = w;
       });
       $('cnt-bar').textContent = toplam || '';
       baslikGuncelle(toplam);
-      if (sesCal) yeniSiparisUyarisi();
+      if (yeniVar) yeniSiparisUyarisi();
+
+      const hazirSay = lines.filter(l => l.it.status === 'hazir').reduce((s, l) => s + l.it.qty, 0);
+      if (lastReadyCount !== null && hazirSay > lastReadyCount && Date.now() - yerelHazirZamani > 2500) hazirUyarisi();
+      lastReadyCount = hazirSay;
       const openCount = openTableNames().length;
       $('cnt-kasa').textContent = openCount || '';
     }
@@ -672,40 +764,69 @@
     }
 
     // ---------- Masalar ----------
+    // Bir bölgeyi krokideki gibi çizer; hucre(t) her masa için buton döndürür
+    function krokiCiz(zone, hucre) {
+      const satirlar = zone.satirlar.map(r => Array.isArray(r) ? r : satirMasalari(r)).filter(r => r.length);
+      const kolon = Math.max(1, ...satirlar.map(r => r.length));
+      const grid = el('div', 'kroki' + (kolon >= 6 ? ' dar' : ''));
+      grid.style.gridTemplateColumns = `repeat(${kolon}, minmax(0, 1fr))`;
+      satirlar.forEach(r => {
+        for (let i = 0; i < kolon; i++) {
+          const t = r[i];
+          grid.appendChild(!t || t === '-' ? el('div', 'bosluk') : hucre(t));
+        }
+      });
+      return grid;
+    }
+
+    // Düzende olmayan ama içinde sipariş olan masalar (düzenden silinmiş / eski isim) kaybolmasın
+    function duzenDisiMasalar() {
+      const all = new Set(allTables());
+      return Object.keys(tablesData).filter(t => !all.has(t) && tableEntries(t).length);
+    }
+
+    function masaButonu(tName) {
+      const items = tableEntries(tName).map(([, it]) => it);
+      const unpaid = items.filter(it => !it.paid);
+      const waiting = items.filter(it => it.status === 'bekliyor').reduce((s, it) => s + it.qty, 0);
+      const ready = items.filter(it => it.status === 'hazir').reduce((s, it) => s + it.qty, 0);
+      const total = unpaid.reduce((s, it) => s + lineTotal(it), 0);
+
+      const btn = el('button', 'table-btn');
+      if (items.length) btn.classList.add(ready > 0 ? 'st-ready' : waiting > 0 ? 'st-waiting' : 'st-served');
+      btn.appendChild(el('span', 't-name', tName));
+      let info = 'Boş';
+      if (items.length) {
+        const parts = [];
+        const enEski = items.filter(it => it.status !== 'servis' && it.t).reduce((m, it) => Math.min(m, it.t), Infinity);
+        if (ready) parts.push(`🔔 ${ready} götür`);
+        if (waiting) parts.push(`⏳ ${waiting}`);
+        if (enEski !== Infinity && dakika(enEski) >= 1) parts.push(`${dakika(enEski)} dk`);
+        if (!parts.length) parts.push(`✓ ${unpaid.reduce((s, it) => s + it.qty, 0)} ürün`);
+        info = parts.join(' · ');
+      }
+      btn.appendChild(el('span', 't-info', info));
+      if (total > 0) btn.appendChild(el('span', 't-price', formatTL(total)));
+      btn.onclick = () => openModal(tName);
+      return btn;
+    }
+
     function renderZones() {
       const container = $('zones-container');
       container.innerHTML = '';
-      ZONES.forEach(zone => {
-        container.appendChild(el('div', 'zone-title', zone.title));
-        const grid = el('div', 'grid');
-        for (let i = 1; i <= zone.count; i++) {
-          const tName = `${zone.prefix}${i}`;
-          const items = tableEntries(tName).map(([, it]) => it);
-          const unpaid = items.filter(it => !it.paid);
-          const waiting = items.filter(it => it.status === 'bekliyor').reduce((s, it) => s + it.qty, 0);
-          const ready = items.filter(it => it.status === 'hazir').reduce((s, it) => s + it.qty, 0);
-          const total = unpaid.reduce((s, it) => s + lineTotal(it), 0);
-
-          const btn = el('button', 'table-btn');
-          if (items.length) btn.classList.add(ready > 0 ? 'st-ready' : waiting > 0 ? 'st-waiting' : 'st-served');
-          btn.appendChild(el('span', 't-name', tName));
-          let info = 'Boş';
-          if (items.length) {
-            const parts = [];
-            const enEski = items.filter(it => it.status !== 'servis' && it.t).reduce((m, it) => Math.min(m, it.t), Infinity);
-            if (ready) parts.push(`🔔 ${ready} götür`);
-            if (waiting) parts.push(`⏳ ${waiting}`);
-            if (enEski !== Infinity && dakika(enEski) >= 1) parts.push(`${dakika(enEski)} dk`);
-            if (!parts.length) parts.push(`✓ ${unpaid.reduce((s, it) => s + it.qty, 0)} ürün`);
-            info = parts.join(' · ');
-          }
-          btn.appendChild(el('span', 't-info', info));
-          if (total > 0) btn.appendChild(el('span', 't-price', formatTL(total)));
-          btn.onclick = () => openModal(tName);
-          grid.appendChild(btn);
-        }
-        container.appendChild(grid);
+      duzen.forEach(zone => {
+        container.appendChild(el('div', 'zone-title', zone.baslik));
+        container.appendChild(krokiCiz(zone, masaButonu));
       });
+      const disari = duzenDisiMasalar();
+      if (disari.length) {
+        container.appendChild(el('div', 'zone-title', '⚠️ Düzende olmayan açık masalar'));
+        container.appendChild(krokiCiz({ satirlar: [disari] }, masaButonu));
+      }
+      const ed = el('button', 'chip-btn', '✏️ Masa ekle / çıkar / diziliş');
+      ed.style.cssText = 'margin-top:16px; width:100%; padding:10px;';
+      ed.onclick = duzenEditorunuAc;
+      container.appendChild(ed);
     }
 
     // ---------- Bar ekranı ----------
@@ -751,12 +872,10 @@
       readyTables.forEach(t => box.appendChild(deliverCard(t)));
 
       const sr = el('div', 'sound-row');
-      sr.appendChild(el('span', '', 'Bu cihazda yeni sipariş sesi:'));
-      [['kapali', '🔕 Kapalı'], ['kisik', '🔈 Kısık'], ['normal', '🔔 Normal']].forEach(([k, label]) => {
-        const b = el('button', 'chip-btn' + (soundLevel === k ? ' on' : ''), label);
-        b.onclick = () => { soundLevel = k; store.set("mua_sound", k); beep(); renderView(); };
-        sr.appendChild(b);
-      });
+      const etiket = { kapali: 'kapalı', kisik: 'kısık', normal: 'normal' };
+      const sb = el('button', 'chip-btn', `⚙️ Ses: yeni sipariş ${etiket[soundLevel]} · hazır ${etiket[hazirSoundLevel]}`);
+      sb.onclick = ayarlariAc;
+      sr.appendChild(sb);
       box.appendChild(sr);
     }
 
@@ -1239,6 +1358,7 @@
     }
 
     function setStatus(tName, key, status) {
+      if (status === 'hazir') yerelHazirZamani = Date.now();
       itemTx(tName, key, (cur) => {
         cur.status = status;
         cur.served = status === 'servis';
@@ -1357,19 +1477,16 @@
       $('pickerTitle').textContent = `${activeTable} hangi masaya taşınsın?`;
       const box = $('pickerZones');
       box.innerHTML = '';
-      ZONES.forEach(zone => {
-        box.appendChild(el('div', 'zone-title', zone.title));
-        const grid = el('div', 'grid');
-        for (let i = 1; i <= zone.count; i++) {
-          const t = `${zone.prefix}${i}`;
+      duzen.forEach(zone => {
+        box.appendChild(el('div', 'zone-title', zone.baslik));
+        box.appendChild(krokiCiz(zone, (t) => {
           const items = tableEntries(t).map(([, it]) => it).filter(it => !it.paid);
           const b = el('button', 'pick-btn' + (items.length ? ' dolu' : '') + (t === activeTable ? ' kendisi' : ''));
           b.appendChild(el('b', '', t));
-          b.appendChild(el('small', '', items.length ? `DOLU · ${items.reduce((s, it) => s + it.qty, 0)} ürün` : 'boş'));
+          b.appendChild(el('small', '', items.length ? `DOLU · ${items.reduce((s, it) => s + it.qty, 0)}` : 'boş'));
           b.onclick = () => masaTasi(tasinacakMasa, t);
-          grid.appendChild(b);
-        }
-        box.appendChild(grid);
+          return b;
+        }));
       });
       $('movePicker').classList.add('active');
     });
@@ -1410,6 +1527,141 @@
         });
       }).catch(hata);
     }
+
+    // ================= AYARLAR =================
+    $('settingsBtn').addEventListener('click', ayarlariAc);
+    $('settingsClose').addEventListener('click', () => $('settingsSheet').classList.remove('active'));
+
+    function ayarlariAc() {
+      const body = $('settingsBody');
+      body.innerHTML = '';
+      const seviyeSecici = (aktif, kaydet, dene) => {
+        const w = el('div', 'btns');
+        [['kapali', '🔕 Kapalı'], ['kisik', '🔈 Kısık'], ['normal', '🔔 Normal']].forEach(([k, label]) => {
+          const b = el('button', 'chip-btn' + (aktif === k ? ' on' : ''), label);
+          b.onclick = () => { kaydet(k); dene(); ayarlariAc(); renderView(); };
+          w.appendChild(b);
+        });
+        return w;
+      };
+
+      const r0 = el('div', 'sheet-row');
+      r0.append(el('h4', '', '👤 Adın'), el('p', '', 'Bu cihazdan girilen siparişlerde görünür.'));
+      const nb = el('button', 'chip-btn', me() || 'İsim seç');
+      nb.onclick = () => { isimSor(false); ayarlariAc(); };
+      r0.appendChild(nb);
+      body.appendChild(r0);
+
+      const r1 = el('div', 'sheet-row');
+      r1.append(el('h4', '', '🧑‍🍳 Yeni sipariş gelince (iki kısa bip)'),
+        el('p', '', 'Hazırlık ekranı açıkken çalar. Bardaki cihaz için.'));
+      r1.appendChild(seviyeSecici(soundLevel, k => { soundLevel = k; store.set("mua_sound", k); }, beep));
+      body.appendChild(r1);
+
+      const r2 = el('div', 'sheet-row');
+      r2.append(el('h4', '', '🔔 Ürün hazır olunca (ding-dong)'),
+        el('p', '', 'Hangi ekranda olursan ol çalar, telefon titrer ve ekran yeşil yanar. Siparişi götüren kişinin telefonu için. Kendi bastığın "Hazır" için senin cihazın ötmez.'));
+      r2.appendChild(seviyeSecici(hazirSoundLevel, k => { hazirSoundLevel = k; store.set("mua_sound_hazir", k); }, hazirSesi));
+      body.appendChild(r2);
+
+      const r3 = el('div', 'sheet-row');
+      r3.append(el('h4', '', '🪑 Masa düzeni'), el('p', '', 'Masa ekle, çıkar ya da dizilişi değiştir. Herkesin ekranında değişir.'));
+      const lb = el('button', 'chip-btn', '✏️ Düzeni aç');
+      lb.onclick = () => { $('settingsSheet').classList.remove('active'); duzenEditorunuAc(); };
+      r3.appendChild(lb);
+      body.appendChild(r3);
+
+      $('settingsSheet').classList.add('active');
+    }
+
+    // ================= MASA DÜZENİ EDİTÖRÜ =================
+    function duzenMetni(d) {
+      return d.map(z => `# ${z.baslik}\n` + z.satirlar.join('\n')).join('\n\n');
+    }
+
+    function duzenCozumle(metin) {
+      const zones = [];
+      const hatalar = [];
+      metin.split('\n').forEach((ham, i) => {
+        const satir = ham.trim();
+        if (!satir) return;
+        if (satir.startsWith('#')) {
+          const baslik = satir.replace(/^#+/, '').trim();
+          if (!baslik) hatalar.push(`${i + 1}. satır: bölge adı boş`);
+          zones.push({ baslik: baslik || 'Bölge', satirlar: [] });
+          return;
+        }
+        if (!zones.length) { hatalar.push(`${i + 1}. satır: önce "# Bölge adı" yazmalısın`); return; }
+        const masalar = satirMasalari(satir.toLocaleUpperCase('tr-TR'));
+        masalar.forEach(m => { if (m !== '-' && /[.#$\[\]\/]/.test(m)) hatalar.push(`"${m}": masa adında . # $ [ ] / olamaz`); });
+        zones[zones.length - 1].satirlar.push(masalar.join(' '));
+      });
+      const bos = zones.filter(z => !z.satirlar.length);
+      bos.forEach(z => hatalar.push(`"${z.baslik}" bölgesinde masa yok`));
+      const sayac = {};
+      zones.forEach(z => z.satirlar.forEach(r => satirMasalari(r).forEach(m => { if (m !== '-') sayac[m] = (sayac[m] || 0) + 1; })));
+      Object.entries(sayac).filter(([, n]) => n > 1).forEach(([m]) => hatalar.push(`"${m}" iki kere yazılmış`));
+      if (!zones.length) hatalar.push('En az bir bölge olmalı');
+      return { zones, hatalar, masalar: Object.keys(sayac) };
+    }
+
+    function duzenOnizle() {
+      const { zones, hatalar } = duzenCozumle($('layoutText').value);
+      const box = $('layoutPreview');
+      box.innerHTML = '';
+      zones.forEach(z => {
+        box.appendChild(el('div', 'zone-title', z.baslik));
+        box.appendChild(krokiCiz(z, t => { const b = el('button', 'pick-btn'); b.appendChild(el('b', '', t)); return b; }));
+      });
+      $('layoutError').textContent = hatalar.join('\n');
+      $('layoutSave').disabled = hatalar.length > 0;
+    }
+
+    function duzenEditorunuAc() {
+      $('layoutText').value = duzenMetni(duzen);
+      duzenOnizle();
+      $('layoutEditor').classList.add('active');
+    }
+    $('layoutText').addEventListener('input', duzenOnizle);
+    $('layoutClose').addEventListener('click', () => $('layoutEditor').classList.remove('active'));
+    $('layoutReset').addEventListener('click', () => { $('layoutText').value = duzenMetni(VARSAYILAN_DUZEN); duzenOnizle(); });
+
+    $('layoutSave').addEventListener('click', () => {
+      const { zones, hatalar, masalar } = duzenCozumle($('layoutText').value);
+      if (hatalar.length) return;
+      const yeni = new Set(masalar);
+      const doluCikan = openTableNames().filter(t => !yeni.has(t));
+      if (doluCikan.length && !confirm(`Çıkardığın şu masalarda açık sipariş var: ${doluCikan.join(', ')}\n\nSiparişler kaybolmaz, "Düzende olmayan açık masalar" bölümünde görünmeye devam eder. Kaydedilsin mi?`)) return;
+      set(ref(db, 'mua_adisyon_duzen'), zones).then(() => {
+        $('layoutEditor').classList.remove('active');
+        toast('Masa düzeni kaydedildi ✓');
+      }).catch(hata);
+    });
+
+    // ================= TELEFONDA GERİ TUŞU =================
+    // Geri tuşu siteden çıkmasın: önce açık pencereyi kapatır, sonra Masalar'a döner,
+    // Masalar'dayken 2 saniye içinde iki kez basılırsa çıkar.
+    let geriKorumaVar = false, sonGeri = 0;
+    function geriKorumaKur() { history.pushState({ mua: Date.now() }, ''); geriKorumaVar = true; }
+    // Tarayıcılar kullanıcı dokunmadan eklenen geçmiş kaydını atlayabiliyor; ilk dokunuşta kuruyoruz
+    document.addEventListener('pointerdown', () => { if (!geriKorumaVar) geriKorumaKur(); }, { capture: true });
+
+    window.addEventListener('popstate', () => {
+      geriKorumaVar = false;
+      const acik = ['layoutEditor', 'settingsSheet', 'movePicker'].find(id => $(id).classList.contains('active'));
+      if (acik) {
+        $(acik).classList.remove('active');
+      } else if ($('tableModal').classList.contains('active')) {
+        closeModal();
+      } else if (auth.currentUser && currentView !== 'masalar') {
+        showView('masalar');
+      } else {
+        if (Date.now() - sonGeri < 2000) { history.back(); return; }
+        sonGeri = Date.now();
+        toast('Çıkmak için tekrar geri bas');
+      }
+      geriKorumaKur();
+    });
   </script>
 </body>
 </html>
