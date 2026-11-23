@@ -2,160 +2,160 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUÀ Gelatieri d'Italia - Hoşgeldiniz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MUÀ Gelatieri d'Italia · Gaziantep</title>
+    <meta name="description" content="MUÀ Gelatieri d'Italia Gaziantep: İtalyan dondurması ve kahve. Menümüzü inceleyin.">
+    <meta name="theme-color" content="#1c140f">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; }
-        body, html {
-            height: 100%; margin: 0; font-family: 'Fraunces', serif;
-            background-color: #1c140f; overflow: hidden; position: relative;
+        :root {
+            --mua: #d81b60;
+            --espresso: #1c140f;
+            --krem: #f6efe9;
         }
-        .slayt-arkaplan {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 0; overflow: hidden; background-color: #1c140f;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { min-height: 100%; }
+        body {
+            font-family: 'Fraunces', Georgia, serif;
+            background: var(--espresso);
+            color: #fff;
+            -webkit-font-smoothing: antialiased;
         }
+
+        /* Arka planda dükkândan fotoğraflar, yavaşça geçiş yapar */
+        .slaytlar { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: var(--espresso); }
         .slayt {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out;
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0; transform: scale(1.04);
+            transition: opacity 1.6s ease, transform 7s ease-out;
         }
-        .slayt.aktif { opacity: 1; }
-        .karartma {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.65); z-index: 1;
+        .slayt.aktif { opacity: 1; transform: scale(1); }
+        /* Fotoğraf üstte görünür kalsın, yazıların olduğu alt kısım koyulaşsın */
+        .perde {
+            position: fixed; inset: 0; z-index: 1;
+            background:
+                linear-gradient(180deg, rgba(28,20,15,0.35) 0%, rgba(28,20,15,0.15) 30%, rgba(28,20,15,0.78) 62%, rgba(28,20,15,0.96) 100%);
         }
-        .icerik {
-            position: relative; height: 100%; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; text-align: center;
-            padding: 0 20px; z-index: 2;
+
+        .sahne {
+            position: relative; z-index: 2;
+            min-height: 100vh; min-height: 100svh;
+            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+            text-align: center;
+            padding: 48px 24px calc(28px + env(safe-area-inset-bottom));
         }
-        .logo { width: 170px; margin-bottom: 20px; }
-        .baslik {
-            color: #ffffff; font-size: 18px; margin-bottom: 30px; 
-            letter-spacing: 2px; text-transform: uppercase;
+        .logo { width: 150px; height: auto; margin-bottom: 14px; }
+        .alt-baslik {
+            font-style: italic; font-weight: 400; font-size: 1.12rem; line-height: 1.4;
+            color: var(--krem); opacity: 0.9; margin-bottom: 34px;
         }
-        .kampanya-kutusu {
-            position: relative; border: 1px solid #d81b60; border-radius: 12px;
-            padding: 22px 24px 16px 24px; margin-bottom: 35px; background-color: transparent;
+
+        .butonlar { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 10px; }
+        .btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            height: 54px; border-radius: 14px; text-decoration: none;
+            font-family: inherit; font-size: 1.02rem; font-weight: 500; letter-spacing: 0.01em;
+            transition: transform 0.15s ease, background-color 0.2s ease;
         }
-        .kutu-rozet {
-            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-            background-color: #d81b60; color: #ffffff; font-family: sans-serif;
-            font-size: 11px; font-weight: 900; padding: 4px 16px; border-radius: 20px;
-            text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        .btn svg { width: 19px; height: 19px; flex-shrink: 0; }
+        .btn:active { transform: scale(0.98); }
+        .btn-ana { background: var(--mua); color: #fff; font-weight: 600; font-size: 1.1rem; height: 58px; box-shadow: 0 10px 30px rgba(216,27,96,0.35); }
+        .btn-ikincil { background: rgba(255,255,255,0.09); color: #fff; border: 1px solid rgba(255,255,255,0.22); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+        .btn-ikincil:active { background: rgba(255,255,255,0.18); }
+        .btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+        .alt-not { margin-top: 26px; font-size: 0.78rem; font-style: italic; color: var(--krem); opacity: 0.55; }
+
+        /* ---------- Sayfa geçişi ---------- */
+        /* Destekleyen tarayıcılarda sayfalar arası yumuşak geçiş; logo bir sayfadan diğerine kayar */
+        @view-transition { navigation: auto; }
+        .logo { view-transition-name: mua-logo; }
+        ::view-transition-old(root) { animation: 320ms cubic-bezier(.4,0,.2,1) both sayfaCik; }
+        ::view-transition-new(root) { animation: 420ms cubic-bezier(.2,0,0,1) 60ms both sayfaGir; }
+        ::view-transition-group(mua-logo) { animation-duration: 520ms; animation-timing-function: cubic-bezier(.2,0,0,1); }
+        @keyframes sayfaCik { to { opacity: 0; transform: scale(0.97); } }
+        @keyframes sayfaGir { from { opacity: 0; transform: translateY(14px); } }
+
+        /* Desteklemeyen tarayıcılar için: basınca sahne solarak çıkar */
+        .sahne, .perde { transition: opacity 0.28s ease, transform 0.28s ease; }
+        body.cikiyor .sahne { opacity: 0; transform: translateY(-8px); }
+        body.cikiyor .perde { opacity: 1; }
+
+        /* Açılışta içerik bir kez yumuşakça belirir */
+        .logo, .alt-baslik, .butonlar, .alt-not { animation: belir 0.7s cubic-bezier(.2,0,0,1) both; }
+        .alt-baslik { animation-delay: 0.08s; }
+        .butonlar { animation-delay: 0.16s; }
+        .alt-not { animation-delay: 0.24s; }
+        @keyframes belir { from { opacity: 0; transform: translateY(12px); } }
+
+        @media (prefers-reduced-motion: reduce) {
+            .slayt { transition: opacity 0.4s ease; transform: none; }
+            .slayt.aktif { transform: none; }
+            .logo, .alt-baslik, .butonlar, .alt-not { animation: none; }
+            ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
         }
-        .kampanya-saat {
-            display: block; color: #f4c9d8; font-size: 13px; margin-bottom: 8px;
-            letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold;
-        }
-        .kampanya-metin {
-            display: block; color: #ffffff; font-size: 17px;
-            line-height: 1.5; letter-spacing: 0.5px;
-        }
-        .kampanya-vurgu { color: #d81b60; font-weight: bold; font-size: 19px; }
-        .button-container {
-            display: flex; flex-direction: column; gap: 15px;
-            width: 85%; max-width: 300px;
-        }
-        .btn-menu {
-            text-decoration: none; color: #ffffff; background-color: #d81b60;
-            padding: 16px 20px; font-size: 18px; font-weight: bold;
-            border-radius: 30px; border: 2px solid #d81b60;
-            transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(216, 27, 96, 0.5);
-        }
-        .btn-menu:active {
-            background-color: transparent; color: #d81b60; transform: scale(0.95);
-        }
-        .btn-alerjen, .btn-google {
-            text-decoration: none; color: #ffffff; background-color: rgba(255, 255, 255, 0.1);
-            padding: 14px 20px; font-size: 16px; font-weight: bold; border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.5); transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-        .btn-alerjen:active, .btn-google:active {
-            background-color: rgba(255, 255, 255, 0.3); transform: scale(0.95);
+        @media (min-height: 760px) {
+            .logo { width: 170px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="slayt-arkaplan" id="slaytKutusu">
-        <img class="slayt" src="img/kapak1.jpg" alt="">
-        <img class="slayt" src="img/kapak2.jpg" alt="">
-        <img class="slayt" src="img/kapak3.jpg" alt="">
+    <div class="slaytlar" aria-hidden="true">
+        <img class="slayt aktif" src="img/kapak1.jpg" alt="" fetchpriority="high">
+        <img class="slayt" src="img/kapak2.jpg" alt="" loading="lazy">
+        <img class="slayt" src="img/kapak3.jpg" alt="" loading="lazy">
     </div>
+    <div class="perde"></div>
 
-    <div class="karartma"></div>
+    <main class="sahne">
+        <img src="img/logo_white.png" alt="MUÀ Gelatieri d'Italia" class="logo" width="500" height="171">
+        <p class="alt-baslik">İtalyan dondurması ve kahve</p>
 
-    <div class="icerik">
-        <img src="img/logo_white.png" alt="MUA Logo" class="logo">
-        <div class="baslik">İtalyan Dondurması & Kahve</div>
+        <nav class="butonlar" aria-label="Bağlantılar">
+            <a href="menu.html" class="btn btn-ana">Menüyü incele</a>
+            <a href="https://files.qrcodeg.com/pdfs/33f7a7c8-cb1e-422a-babe-a4f20c13a902.pdf" class="btn btn-ikincil" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+                Alerjen bilgileri
+            </a>
+            <a href="https://maps.app.goo.gl/4FReX32oHHrcBzXw6?g_st=ipc" class="btn btn-ikincil" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
+                Bizi Google'da değerlendirin
+            </a>
+        </nav>
 
-        <!-- KAMPANYA KUTUSU -->
-        <div class="kampanya-kutusu" id="kampanyaKutusu">
-            <div class="kutu-rozet" id="kampanyaRozet">🎁 Fırsat</div>
-            <span class="kampanya-saat" id="kampanyaSaat">🕒Hafta İçi 10:00 - 18:00 Arası</span>
-            <span class="kampanya-metin" id="kampanyaMetin">
-                <span class="kampanya-vurgu">2 Top</span> Dondurma Alana<br>
-                Limonata veya Kahve İkram!
-            </span>
-        </div>
-
-        <div class="button-container">
-            <a href="menu.html" class="btn-menu">Menüyü İncele</a>
-            <a href="https://files.qrcodeg.com/pdfs/33f7a7c8-cb1e-422a-babe-a4f20c13a902.pdf" class="btn-alerjen" target="_blank">Alerjen Bilgileri</a>
-            <a href="https://maps.app.goo.gl/4FReX32oHHrcBzXw6?g_st=ipc" class="btn-google" target="_blank">⭐ Bizi Değerlendirin</a>
-        </div>
-    </div>
+        <p class="alt-not">Gaziantep</p>
+    </main>
 
     <script>
-        const slaytlar = document.querySelectorAll('.slayt');
-        let index = 0;
-
-        function slaytDegistir() {
-            slaytlar.forEach(img => img.classList.remove('aktif'));
-            slaytlar[index].classList.add('aktif');
-            index = (index + 1) % slaytlar.length;
+        // Sayfalar arası geçişi desteklemeyen tarayıcılarda: menü linkine basınca önce solarak çık, sonra git
+        var gecisDestegi = 'onpageswap' in window;
+        var hareketAz = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!gecisDestegi && !hareketAz) {
+            document.querySelectorAll('a[href="menu.html"]').forEach(function (a) {
+                a.addEventListener('click', function (e) {
+                    if (e.metaKey || e.ctrlKey) return;
+                    e.preventDefault();
+                    document.body.classList.add('cikiyor');
+                    setTimeout(function () { location.href = a.href; }, 260);
+                });
+            });
         }
+        // Geri tuşuyla bu sayfaya dönülünce solmuş halde kalmasın
+        window.addEventListener('pageshow', function () { document.body.classList.remove('cikiyor'); });
 
-        if (slaytlar.length > 0) {
-            slaytDegistir(); 
-            setInterval(slaytDegistir, 5000); 
+        // Fotoğraflar 5 saniyede bir yumuşakça değişir
+        var slaytlar = document.querySelectorAll('.slayt');
+        var sira = 0;
+        if (slaytlar.length > 1) {
+            setInterval(function () {
+                slaytlar[sira].classList.remove('aktif');
+                sira = (sira + 1) % slaytlar.length;
+                slaytlar[sira].classList.add('aktif');
+            }, 5000);
         }
-    </script>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyD-3Y4maIdQLL9bipnbbwVhg8wg462pg7k",
-            authDomain: "mua-qr-menu.firebaseapp.com",
-            databaseURL: "https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "mua-qr-menu",
-            storageBucket: "mua-qr-menu.firebasestorage.app",
-            messagingSenderId: "813387212404",
-            appId: "1:813387212404:web:e91c88891cabfb70de5321"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        onValue(ref(db, 'menuData/campaign'), (snapshot) => {
-            const camp = snapshot.val();
-            if (!camp) return;
-            const kutu = document.getElementById("kampanyaKutusu");
-            if (camp.active === false) {
-                kutu.style.display = "none";
-            } else {
-                kutu.style.display = "block";
-                if (camp.hours) document.getElementById("kampanyaSaat").textContent = camp.hours;
-                if (camp.text) document.getElementById("kampanyaMetin").innerHTML = camp.text;
-            }
-        });
     </script>
 </body>
 </html>
