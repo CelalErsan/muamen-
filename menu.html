@@ -3,129 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Menü · MUÀ Gelatieri d'Italia</title>
+    <title>Menü – MUÀ Gelatieri d'Italia</title>
     <meta name="description" content="MUÀ Gelatieri d'Italia Gaziantep menüsü: dondurmalar, kahveler, soğuk içecekler ve tatlılar.">
-    <meta name="theme-color" content="#f4f2ef">
+    <meta name="theme-color" content="#FAFAFA">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* Logo ve dükkândan: mermer beyazı, mürekkep, logodaki dudak fuşyası */
         :root {
-            --zemin: #f4f2ef;
-            --kagit: #ffffff;
-            --espresso: #2c1e16;
-            --kahve: #8a7566;
-            --cizgi: #e9e1da;
-            --nokta: #cdbfb3;
-            --mua: #d81b60;
-            --mua-acik: #fcf0f4;
+            --mermer: #FAFAFA;
+            --murekkep: #241B1F;
+            --gri: #77706F;
+            --damar: #E8E5E3;
+            --fusya: #D80058;
+            --fusya-acik: #FDE8F0;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Fraunces', Georgia, serif;
-            background: var(--zemin);
-            color: var(--espresso);
+            font-family: 'Jost', -apple-system, "Segoe UI", sans-serif;
+            background: var(--mermer); color: var(--murekkep);
             -webkit-font-smoothing: antialiased;
             padding-bottom: env(safe-area-inset-bottom);
         }
         button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
-        :focus-visible { outline: 2px solid var(--mua); outline-offset: 2px; }
+        :focus-visible { outline: 2px solid var(--fusya); outline-offset: 2px; }
 
         /* ---------- Başlık ---------- */
-        .ust { text-align: center; padding: 34px 20px 22px; }
-        .ust a { display: inline-block; }
-        .ust img { width: 132px; height: auto; display: block; filter: brightness(0) saturate(100%) invert(12%) sepia(18%) saturate(1200%) hue-rotate(340deg) brightness(92%); }
-        .ust p { margin-top: 10px; font-style: italic; font-size: 0.98rem; color: var(--kahve); }
+        .ust { padding: 30px 20px 18px; display: flex; justify-content: center; }
+        .ust a { display: block; }
+        .ust img { display: block; width: 128px; height: auto; filter: brightness(0) saturate(100%) invert(9%) sepia(12%) saturate(1400%) hue-rotate(290deg); }
 
-        /* ---------- Kategori menüsü ---------- */
+        /* ---------- Kategori şeridi ---------- */
         .kategoriler {
             position: sticky; top: 0; z-index: 50;
-            background: rgba(244,242,239,0.92);
-            -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--cizgi);
+            background: rgba(250,250,250,0.94);
+            -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
         }
-        .kategoriler-ic {
-            display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px;
-            scrollbar-width: none; max-width: 640px; margin: 0 auto;
-        }
+        .kategoriler.golgeli { box-shadow: 0 1px 0 var(--damar); }
+        .kategoriler-ic { display: flex; gap: 4px; overflow-x: auto; padding: 10px 16px; scrollbar-width: none; max-width: 640px; margin: 0 auto; }
         .kategoriler-ic::-webkit-scrollbar { display: none; }
         .kat-btn {
-            flex: 0 0 auto; white-space: nowrap;
-            font-size: 0.93rem; font-weight: 500; color: var(--kahve);
-            padding: 7px 13px; border-radius: 20px;
-            transition: background-color 0.2s ease, color 0.2s ease;
+            flex: 0 0 auto; white-space: nowrap; font-size: 0.95rem; font-weight: 400; color: var(--gri);
+            padding: 7px 14px; border-radius: 999px; transition: background-color 0.25s ease, color 0.25s ease;
         }
-        .kat-btn.aktif { background: var(--espresso); color: #fff; }
+        .kat-btn.aktif { background: var(--fusya); color: #fff; font-weight: 500; }
 
         /* ---------- Menü ---------- */
-        .menu { max-width: 640px; margin: 0 auto; padding: 0 14px; }
-        .bolum { scroll-margin-top: 64px; padding-top: 34px; }
-        .bolum h2 {
-            font-size: 1.75rem; font-weight: 500; font-style: italic; letter-spacing: -0.01em;
-            margin: 0 6px 12px; color: var(--espresso);
-        }
-        .kagit {
-            background: var(--kagit); border-radius: 18px;
-            padding: 6px 18px;
-            box-shadow: 0 1px 2px rgba(44,30,22,0.04), 0 6px 20px rgba(44,30,22,0.04);
-        }
-        .alt-kategori {
-            font-style: italic; font-size: 0.95rem; font-weight: 500; color: var(--mua);
-            padding: 16px 0 2px;
-        }
-        .alt-kategori:first-child { padding-top: 12px; }
+        .menu { max-width: 640px; margin: 0 auto; padding: 0 20px; }
+        .bolum { scroll-margin-top: 58px; padding: 30px 0 6px; }
+        .bolum h2 { font-size: 2.1rem; font-weight: 300; letter-spacing: -0.015em; line-height: 1.1; margin-bottom: 6px; }
+        .alt-kategori { font-size: 0.98rem; font-weight: 500; color: var(--fusya); margin: 22px 0 2px; }
 
-        .urun { padding: 14px 0; border-bottom: 1px solid var(--cizgi); }
-        .urun:last-child { border-bottom: none; }
-        .satir { display: flex; align-items: baseline; gap: 8px; }
-        .urun-ad { font-size: 1.06rem; font-weight: 600; line-height: 1.3; }
-        /* Basılı menülerdeki gibi ad ile fiyat arasında noktalı çizgi */
-        .nokta { flex: 1; min-width: 16px; border-bottom: 1.5px dotted var(--nokta); transform: translateY(-4px); }
-        .fiyat { font-size: 1.04rem; font-weight: 600; white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
-        .aciklama { margin-top: 4px; font-size: 0.87rem; font-style: italic; color: var(--kahve); line-height: 1.45; padding-right: 40px; }
-        .rozet { display: inline-block; font-size: 0.78rem; font-weight: 600; font-style: italic; color: var(--mua); margin-bottom: 3px; }
-
-        .urun.one-cikan { background: var(--mua-acik); margin: 6px -10px; padding: 14px 10px; border-radius: 12px; border-bottom: none; }
-        .urun.one-cikan + .urun { border-top: none; }
-
+        .urun { display: grid; grid-template-columns: 1fr auto 34px; column-gap: 12px; align-items: start; padding: 13px 0; }
+        .urun-metin { min-width: 0; }
+        .urun-ad { font-size: 1.08rem; font-weight: 500; line-height: 1.3; }
+        .aciklama { margin-top: 3px; font-size: 0.9rem; font-weight: 400; color: var(--gri); line-height: 1.45; max-width: 46ch; }
+        .rozet-satir { grid-column: 1 / -1; margin-bottom: 5px; }
+        .rozet { display: inline-block; font-size: 0.78rem; font-weight: 500; color: var(--fusya); background: var(--fusya-acik); padding: 1px 8px; border-radius: 999px; }
+        .fiyat { font-size: 1.05rem; font-weight: 500; white-space: nowrap; font-variant-numeric: tabular-nums; line-height: 1.3; }
         .foto-btn {
-            display: inline-flex; align-items: center; gap: 5px; margin-top: 8px;
-            font-size: 0.8rem; font-style: italic; color: var(--mua);
-            padding: 4px 10px 4px 8px; border-radius: 14px; background: var(--mua-acik);
+            width: 34px; height: 34px; border-radius: 50%; margin-top: -4px;
+            display: inline-flex; align-items: center; justify-content: center;
+            color: var(--fusya); background: var(--fusya-acik); transition: transform 0.15s ease;
         }
-        .one-cikan .foto-btn { background: #fff; }
-        .foto-btn svg { width: 15px; height: 15px; }
+        .foto-btn:active { transform: scale(0.92); }
+        .foto-btn svg { width: 17px; height: 17px; }
 
-        .durum { text-align: center; color: var(--kahve); font-style: italic; padding: 60px 20px; }
+        /* Kendi kategorisinde öne çıkan ürün: adı fuşya */
+        .urun.one-cikan .urun-ad { color: var(--fusya); }
+
+        /* ---------- Fuşya blok: en çok tercih edilenler (dükkândaki pembe bardak duvarı gibi) ---------- */
+        .bolum.populer {
+            background: var(--fusya); color: #fff;
+            margin: 14px -20px 10px; padding: 30px 20px 18px;
+        }
+        .bolum.populer h2 { color: #fff; }
+        .bolum.populer .aciklama { color: rgba(255,255,255,0.78); }
+        .bolum.populer .rozet { background: #fff; color: var(--fusya); }
+        .bolum.populer .urun.one-cikan .urun-ad { color: #fff; }
+        .bolum.populer .foto-btn { background: rgba(255,255,255,0.18); color: #fff; }
+        @media (min-width: 680px) { .bolum.populer { border-radius: 22px; margin-left: 0; margin-right: 0; } }
+
+        .durum { text-align: center; color: var(--gri); padding: 70px 20px; font-size: 1rem; }
 
         /* ---------- Alt bilgi ---------- */
-        .alt {
-            max-width: 640px; margin: 48px auto 0; padding: 26px 20px 40px;
-            text-align: center; border-top: 1px solid var(--cizgi);
-        }
-        .alt .marka { font-size: 1.3rem; font-style: italic; font-weight: 500; margin-bottom: 8px; }
-        .alt p { font-size: 0.82rem; color: var(--kahve); margin: 3px 0; }
-        .alt-linkler { display: flex; justify-content: center; gap: 18px; margin-top: 16px; }
-        .alt-linkler a { font-size: 0.88rem; color: var(--espresso); text-decoration: underline; text-decoration-color: var(--nokta); text-underline-offset: 4px; }
+        .alt { max-width: 640px; margin: 40px auto 0; padding: 28px 20px 44px; text-align: center; }
+        .alt p { font-size: 0.86rem; color: var(--gri); margin: 3px 0; }
+        .alt-linkler { display: flex; justify-content: center; gap: 22px; margin-top: 16px; }
+        .alt-linkler a { font-size: 0.92rem; color: var(--murekkep); text-decoration: underline; text-decoration-color: var(--damar); text-decoration-thickness: 2px; text-underline-offset: 5px; }
 
         /* ---------- Fotoğraf penceresi ---------- */
         .foto-pencere {
-            position: fixed; inset: 0; z-index: 1000;
-            background: rgba(28,20,15,0.92);
-            justify-content: center; align-items: center; padding: 24px;
+            position: fixed; inset: 0; z-index: 1000; background: rgba(36,27,31,0.92);
+            display: flex; justify-content: center; align-items: center; padding: 24px;
+            visibility: hidden; opacity: 0; transition: opacity 0.25s ease, visibility 0s linear 0.25s;
         }
-        .foto-kutu { position: relative; max-width: 520px; width: 100%; }
-        .foto-kutu img { width: 100%; max-height: 78vh; object-fit: contain; border-radius: 14px; opacity: 0; transition: opacity 0.25s ease; display: block; }
+        .foto-pencere.acik { visibility: visible; opacity: 1; transition: opacity 0.25s ease; }
+        .foto-kutu { position: relative; max-width: 520px; width: 100%; transform: scale(0.94); transition: transform 0.32s cubic-bezier(.2,0,0,1); }
+        .foto-pencere.acik .foto-kutu { transform: none; }
+        .foto-kutu img { display: block; width: 100%; max-height: 76vh; object-fit: contain; border-radius: 16px; opacity: 0; transition: opacity 0.25s ease; }
         .foto-kutu img.yuklendi { opacity: 1; }
-        .foto-baslik { color: #fff; text-align: center; font-style: italic; font-size: 1.05rem; margin-top: 12px; }
-        .foto-kapat {
-            position: absolute; top: -48px; right: 0; width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(255,255,255,0.12); color: #fff; display: flex; align-items: center; justify-content: center;
-        }
+        .foto-baslik { color: #fff; text-align: center; font-size: 1.1rem; font-weight: 400; margin-top: 12px; }
+        .foto-kapat { position: absolute; top: -50px; right: 0; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.14); color: #fff; display: flex; align-items: center; justify-content: center; }
         .foto-kapat svg { width: 20px; height: 20px; }
 
-        /* ---------- Hareket ---------- */
+        /* ---------- Sayfa geçişi: logo ana sayfadan buraya kayar ---------- */
         @view-transition { navigation: auto; }
         .ust img { view-transition-name: mua-logo; }
         ::view-transition-old(root) { animation: 320ms cubic-bezier(.4,0,.2,1) both sayfaCik; }
@@ -133,31 +117,12 @@
         ::view-transition-group(mua-logo) { animation-duration: 520ms; animation-timing-function: cubic-bezier(.2,0,0,1); }
         @keyframes sayfaCik { to { opacity: 0; transform: scale(0.97); } }
         @keyframes sayfaGir { from { opacity: 0; transform: translateY(14px); } }
-
-        /* Geçişi desteklemeyen tarayıcılarda sayfa açılırken solarak gelir */
         body.giris { animation: sayfaGir 0.42s cubic-bezier(.2,0,0,1) both; }
-
-        /* Menü verisi gelince içerik tek seferde yukarı süzülerek belirir */
-        .menu.hazir .bolum { animation: belir 0.55s cubic-bezier(.2,0,0,1) both; }
-        .menu.hazir .bolum:nth-child(2) { animation-delay: 0.06s; }
-        .menu.hazir .bolum:nth-child(n+3) { animation-delay: 0.12s; }
-        .kategoriler-ic.hazir { animation: belir 0.45s cubic-bezier(.2,0,0,1) both; }
-        @keyframes belir { from { opacity: 0; transform: translateY(16px); } }
-
-        /* Fotoğraf penceresi büyüyerek açılır, küçülerek kapanır */
-        .foto-pencere { display: flex; visibility: hidden; opacity: 0; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
-        .foto-pencere.acik { visibility: visible; opacity: 1; transition: opacity 0.25s ease; }
-        .foto-kutu { transform: scale(0.92) translateY(10px); transition: transform 0.32s cubic-bezier(.2,0,0,1); }
-        .foto-pencere.acik .foto-kutu { transform: none; }
-
-        .kat-btn { transition: background-color 0.25s ease, color 0.25s ease; }
-        .foto-btn { transition: transform 0.15s ease; }
-        .foto-btn:active { transform: scale(0.96); }
 
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
-            body.giris, .menu.hazir .bolum, .kategoriler-ic.hazir { animation: none; }
-            .foto-kutu, .foto-pencere { transition: none; }
+            body.giris { animation: none; }
+            .foto-kutu, .foto-pencere, .kat-btn { transition: none; }
             ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
         }
     </style>
@@ -167,19 +132,17 @@
 
     <header class="ust">
         <a href="index.html" aria-label="Ana sayfa"><img src="img/logo_white.png" alt="MUÀ Gelatieri d'Italia" width="500" height="171"></a>
-        <p>Menü</p>
     </header>
 
-    <nav class="kategoriler" aria-label="Kategoriler">
+    <nav class="kategoriler" id="kategorilerNav" aria-label="Kategoriler">
         <div class="kategoriler-ic" id="kategoriler"></div>
     </nav>
 
     <main class="menu" id="menu">
-        <p class="durum" id="durum">Menü yükleniyor…</p>
+        <p class="durum">Menü yükleniyor…</p>
     </main>
 
     <footer class="alt">
-        <div class="marka">MUÀ</div>
         <p>Tüm fiyatlarımıza KDV dahildir.</p>
         <p id="guncelleme"></p>
         <div class="alt-linkler">
@@ -218,23 +181,26 @@
             var rozet = populerde ? (item.popularBadge || item.badge) : item.badge;
 
             var d = el('div', 'urun' + (oneCikan ? ' one-cikan' : ''));
-            if (rozet) d.appendChild(el('span', 'rozet', rozet));
-
-            var satir = el('div', 'satir');
-            satir.appendChild(el('span', 'urun-ad', item.name || ''));
-            satir.appendChild(el('span', 'nokta'));
-            satir.appendChild(el('span', 'fiyat', fiyatYaz(item.price)));
-            d.appendChild(satir);
-
-            if (item.desc) d.appendChild(el('p', 'aciklama', item.desc));
+            var metin = el('div', 'urun-metin');
+            if (rozet) {
+                var rz = el('div', 'rozet-satir');
+                rz.appendChild(el('span', 'rozet', String(rozet).replace(/^★\s*/, '')));
+                d.appendChild(rz); // rozet kendi satırında, fiyat ürün adıyla aynı hizada kalsın
+            }
+            metin.appendChild(el('div', 'urun-ad', item.name || ''));
+            if (item.desc) metin.appendChild(el('p', 'aciklama', item.desc));
+            d.appendChild(metin);
+            d.appendChild(el('div', 'fiyat', fiyatYaz(item.price)));
 
             if (gorselVar(item)) {
                 var b = el('button', 'foto-btn');
                 b.type = 'button';
+                b.setAttribute('aria-label', (item.name || '') + ' fotoğrafı');
                 b.innerHTML = KAMERA;
-                b.appendChild(document.createTextNode('Fotoğrafı gör'));
                 b.addEventListener('click', function () { fotoAc(item.image, item.name); });
                 d.appendChild(b);
+            } else {
+                d.appendChild(el('span'));
             }
             return d;
         }
@@ -244,7 +210,7 @@
             var nav = document.getElementById('kategoriler');
             if (!data || !data.items) {
                 menu.innerHTML = '';
-                menu.appendChild(el('p', 'durum', 'Menü şu an görüntülenemiyor. Lütfen kasadan yardım isteyin.'));
+                menu.appendChild(el('p', 'durum', 'Menü şu an görüntülenemiyor. Kasadan yardım isteyebilirsiniz.'));
                 return;
             }
             if (data.lastUpdated) document.getElementById('guncelleme').textContent = 'Fiyat güncelleme tarihi: ' + data.lastUpdated;
@@ -254,7 +220,8 @@
             var urunler = liste(data.items).filter(function (i) { return i.active !== false; });
 
             liste(data.categories).forEach(function (cat) {
-                var catUrun = cat.id === POPULER
+                var populer = cat.id === POPULER;
+                var catUrun = populer
                     ? urunler.filter(function (i) { return i.popular; }).sort(function (a, b) { return (a.popularOrder || 99) - (b.popularOrder || 99); })
                     : urunler.filter(function (i) { return i.cat === cat.id; });
                 if (!catUrun.length) return;
@@ -268,28 +235,24 @@
                 });
                 nav.appendChild(btn);
 
-                var bolum = el('section', 'bolum');
+                var bolum = el('section', 'bolum' + (populer ? ' populer' : ''));
                 bolum.id = cat.id;
                 bolum.appendChild(el('h2', '', cat.title));
-                var kagit = el('div', 'kagit');
                 var sonAlt = null;
                 catUrun.forEach(function (item) {
-                    if (cat.id !== POPULER && item.subCat && item.subCat !== sonAlt) {
-                        kagit.appendChild(el('div', 'alt-kategori', item.subCat));
+                    if (!populer && item.subCat && item.subCat !== sonAlt) {
+                        bolum.appendChild(el('div', 'alt-kategori', item.subCat));
                         sonAlt = item.subCat;
                     }
-                    kagit.appendChild(urunSatiri(item, cat.id === POPULER));
+                    bolum.appendChild(urunSatiri(item, populer));
                 });
-                bolum.appendChild(kagit);
                 menu.appendChild(bolum);
             });
 
-            menu.classList.add('hazir');
-            nav.classList.add('hazir');
             kategoriTakibi();
         }
 
-        // Sayfa kaydırıldıkça üstteki kategori menüsünde o an görünen kategori işaretlenir
+        // Kaydırırken o an görünen kategori üst şeritte işaretlenir
         function kategoriTakibi() {
             var butonlar = document.querySelectorAll('.kat-btn');
             if (butonlar.length) butonlar[0].classList.add('aktif');
@@ -303,9 +266,13 @@
                         if (aktif) b.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                     });
                 });
-            }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+            }, { rootMargin: '-70px 0px -70% 0px', threshold: 0 });
             document.querySelectorAll('.bolum').forEach(function (s) { gozcu.observe(s); });
         }
+
+        // Şerit sayfanın üstüne yapışınca altına ince bir çizgi gelir
+        var navEl = document.getElementById('kategorilerNav');
+        window.addEventListener('scroll', function () { navEl.classList.toggle('golgeli', navEl.getBoundingClientRect().top <= 0 && window.scrollY > 60); }, { passive: true });
 
         fetch(DB_URL + '?t=' + Date.now())
             .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
@@ -316,11 +283,10 @@
                 menu.appendChild(el('p', 'durum', 'Menü yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.'));
             });
 
-        // ---------- Fotoğraf penceresi (telefonda geri tuşu pencereyi kapatır) ----------
+        // ---------- Fotoğraf penceresi (telefonda geri tuşu kapatır) ----------
         var pencere = document.getElementById('fotoPencere');
         var resim = document.getElementById('fotoResim');
         var gecmisteAcik = false;
-
         function fotoAc(url, ad) {
             resim.classList.remove('yuklendi');
             resim.onload = function () { resim.classList.add('yuklendi'); };
@@ -339,9 +305,7 @@
         document.getElementById('fotoKapat').addEventListener('click', fotoKapat);
         pencere.addEventListener('click', function (e) { if (e.target === pencere) fotoKapat(); });
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && pencere.classList.contains('acik')) fotoKapat(); });
-        window.addEventListener('popstate', function () {
-            if (gecmisteAcik) { gecmisteAcik = false; pencere.classList.remove('acik'); }
-        });
+        window.addEventListener('popstate', function () { if (gecmisteAcik) { gecmisteAcik = false; pencere.classList.remove('acik'); } });
     </script>
 </body>
 </html>
