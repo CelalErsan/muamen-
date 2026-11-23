@@ -2,305 +2,346 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUÀ Gelatieri d'Italia - QR Menü</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Menü · MUÀ Gelatieri d'Italia</title>
+    <meta name="description" content="MUÀ Gelatieri d'Italia Gaziantep menüsü: dondurmalar, kahveler, soğuk içecekler ve tatlılar.">
+    <meta name="theme-color" content="#f4f2ef">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --zemin: #f4f2ef;
+            --kagit: #ffffff;
+            --espresso: #2c1e16;
+            --kahve: #8a7566;
+            --cizgi: #e9e1da;
+            --nokta: #cdbfb3;
+            --mua: #d81b60;
+            --mua-acik: #fcf0f4;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Fraunces', serif;
-            background-color: #F5F5F7; 
-            margin: 0;
-            padding: 0 15px 20px 15px;
-            color: #4a3b32;
-            position: relative; 
-            min-height: 100vh;
-            z-index: 1;
+            font-family: 'Fraunces', Georgia, serif;
+            background: var(--zemin);
+            color: var(--espresso);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: env(safe-area-inset-bottom);
         }
-        .site-header { text-align: center; padding: 32px 15px 20px 15px; }
-        .site-header-logo {
-            display: inline-block; max-width: 150px; width: 55%; height: auto; filter: brightness(0);
+        button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+        :focus-visible { outline: 2px solid var(--mua); outline-offset: 2px; }
+
+        /* ---------- Başlık ---------- */
+        .ust { text-align: center; padding: 34px 20px 22px; }
+        .ust a { display: inline-block; }
+        .ust img { width: 132px; height: auto; display: block; filter: brightness(0) saturate(100%) invert(12%) sepia(18%) saturate(1200%) hue-rotate(340deg) brightness(92%); }
+        .ust p { margin-top: 10px; font-style: italic; font-size: 0.98rem; color: var(--kahve); }
+
+        /* ---------- Kategori menüsü ---------- */
+        .kategoriler {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(244,242,239,0.92);
+            -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--cizgi);
         }
-        .site-header-rule { width: 46px; height: 1px; background: #d81b60; margin: 16px auto 0 auto; }
-        .category-nav {
-            position: sticky; top: 0; z-index: 500;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            margin: 0 -15px; padding: 14px 0 12px 0;
-            border-bottom: 1px solid #f0e2d8;
-            box-shadow: 0 4px 12px rgba(44, 30, 22, 0.04);
+        .kategoriler-ic {
+            display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px;
+            scrollbar-width: none; max-width: 640px; margin: 0 auto;
         }
-        .category-nav-scroll {
-            display: flex; gap: 18px; overflow-x: auto; padding: 0 15px;
-            scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none;
+        .kategoriler-ic::-webkit-scrollbar { display: none; }
+        .kat-btn {
+            flex: 0 0 auto; white-space: nowrap;
+            font-size: 0.93rem; font-weight: 500; color: var(--kahve);
+            padding: 7px 13px; border-radius: 20px;
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
-        .category-nav-scroll::-webkit-scrollbar { display: none; }
-        .category-nav-btn {
-            flex: 0 0 auto; font-family: 'Fraunces', serif; font-size: 11.5px; font-weight: 600;
-            letter-spacing: 0.8px; text-transform: uppercase; color: #a8907c;
-            background: transparent; border: none; border-bottom: 2px solid transparent;
-            padding: 6px 4px 10px 4px; cursor: pointer; white-space: nowrap;
-            transition: color 0.25s ease, border-color 0.25s ease;
+        .kat-btn.aktif { background: var(--espresso); color: #fff; }
+
+        /* ---------- Menü ---------- */
+        .menu { max-width: 640px; margin: 0 auto; padding: 0 14px; }
+        .bolum { scroll-margin-top: 64px; padding-top: 34px; }
+        .bolum h2 {
+            font-size: 1.75rem; font-weight: 500; font-style: italic; letter-spacing: -0.01em;
+            margin: 0 6px 12px; color: var(--espresso);
         }
-        .category-nav-btn:active { opacity: 0.7; }
-        .category-nav-btn.active { color: #2c1e16; border-bottom-color: #d81b60; }
-        h2 {
-            scroll-margin-top: 78px; font-family: 'Fraunces', serif; font-weight: 600;
-            font-style: italic; text-align: center; font-size: 27px; letter-spacing: 0.5px;
-            color: #2c1e16; margin-top: 52px; margin-bottom: 28px; padding-bottom: 12px;
-            border-bottom: 1px solid #e6d6ca;
+        .kagit {
+            background: var(--kagit); border-radius: 18px;
+            padding: 6px 18px;
+            box-shadow: 0 1px 2px rgba(44,30,22,0.04), 0 6px 20px rgba(44,30,22,0.04);
         }
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: url('img/logo_white.png'); background-position: center;
-            background-repeat: no-repeat; background-size: 50%; opacity: 0.08; z-index: -1; filter: brightness(0);
+        .alt-kategori {
+            font-style: italic; font-size: 0.95rem; font-weight: 500; color: var(--mua);
+            padding: 16px 0 2px;
         }
-        .menu-container { max-width: 500px; margin: 0 auto; }
-        .menu-item {
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255, 255, 255, 0.9); padding: 18px 20px; border-radius: 10px;
-            margin-bottom: 12px; box-shadow: 0 3px 12px rgba(44, 30, 22, 0.05);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        .alt-kategori:first-child { padding-top: 12px; }
+
+        .urun { padding: 14px 0; border-bottom: 1px solid var(--cizgi); }
+        .urun:last-child { border-bottom: none; }
+        .satir { display: flex; align-items: baseline; gap: 8px; }
+        .urun-ad { font-size: 1.06rem; font-weight: 600; line-height: 1.3; }
+        /* Basılı menülerdeki gibi ad ile fiyat arasında noktalı çizgi */
+        .nokta { flex: 1; min-width: 16px; border-bottom: 1.5px dotted var(--nokta); transform: translateY(-4px); }
+        .fiyat { font-size: 1.04rem; font-weight: 600; white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
+        .aciklama { margin-top: 4px; font-size: 0.87rem; font-style: italic; color: var(--kahve); line-height: 1.45; padding-right: 40px; }
+        .rozet { display: inline-block; font-size: 0.78rem; font-weight: 600; font-style: italic; color: var(--mua); margin-bottom: 3px; }
+
+        .urun.one-cikan { background: var(--mua-acik); margin: 6px -10px; padding: 14px 10px; border-radius: 12px; border-bottom: none; }
+        .urun.one-cikan + .urun { border-top: none; }
+
+        .foto-btn {
+            display: inline-flex; align-items: center; gap: 5px; margin-top: 8px;
+            font-size: 0.8rem; font-style: italic; color: var(--mua);
+            padding: 4px 10px 4px 8px; border-radius: 14px; background: var(--mua-acik);
         }
-        .item-desc { font-size: 12.5px; color: #a8907c; margin-top: 1px; font-style: italic; line-height: 1.4; }        
-        .menu-item:active { transform: scale(0.985); box-shadow: 0 2px 6px rgba(44, 30, 22, 0.06); }
-        .item-info { display: flex; flex-direction: column; gap: 5px; }
-        .item-name { font-size: 16.5px; font-weight: 600; letter-spacing: 0.1px; color: #2c1e16; }
-        .sub-category-label {
-            font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
-            color: #c48ba0; margin: 22px 4px 12px 4px;
+        .one-cikan .foto-btn { background: #fff; }
+        .foto-btn svg { width: 15px; height: 15px; }
+
+        .durum { text-align: center; color: var(--kahve); font-style: italic; padding: 60px 20px; }
+
+        /* ---------- Alt bilgi ---------- */
+        .alt {
+            max-width: 640px; margin: 48px auto 0; padding: 26px 20px 40px;
+            text-align: center; border-top: 1px solid var(--cizgi);
         }
-        .sub-category-label--first { margin-top: 4px; }
-        .chef-badge {
-            display: inline-flex; align-items: center; gap: 4px; width: fit-content;
-            font-size: 10.5px; font-weight: 600; letter-spacing: 0.3px; color: #ffffff;
-            background: linear-gradient(135deg, #d81b60, #f06292); padding: 3px 9px;
-            border-radius: 10px; margin-bottom: 2px;
+        .alt .marka { font-size: 1.3rem; font-style: italic; font-weight: 500; margin-bottom: 8px; }
+        .alt p { font-size: 0.82rem; color: var(--kahve); margin: 3px 0; }
+        .alt-linkler { display: flex; justify-content: center; gap: 18px; margin-top: 16px; }
+        .alt-linkler a { font-size: 0.88rem; color: var(--espresso); text-decoration: underline; text-decoration-color: var(--nokta); text-underline-offset: 4px; }
+
+        /* ---------- Fotoğraf penceresi ---------- */
+        .foto-pencere {
+            position: fixed; inset: 0; z-index: 1000;
+            background: rgba(28,20,15,0.92);
+            justify-content: center; align-items: center; padding: 24px;
         }
-        .menu-item--featured {
-            border: 1px solid #f4c9d8;
-            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(252,240,244,0.9));
+        .foto-kutu { position: relative; max-width: 520px; width: 100%; }
+        .foto-kutu img { width: 100%; max-height: 78vh; object-fit: contain; border-radius: 14px; opacity: 0; transition: opacity 0.25s ease; display: block; }
+        .foto-kutu img.yuklendi { opacity: 1; }
+        .foto-baslik { color: #fff; text-align: center; font-style: italic; font-size: 1.05rem; margin-top: 12px; }
+        .foto-kapat {
+            position: absolute; top: -48px; right: 0; width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.12); color: #fff; display: flex; align-items: center; justify-content: center;
         }
-        .item-price { font-size: 14.5px; font-weight: 700; letter-spacing: 0.2px; color: #d81b60; }
-        .eye-icon {
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; box-sizing: content-box; width: 24px; height: 24px; padding: 10px;
-            background: #fcf0f4; border-radius: 50%; fill: #d81b60;
-            transition: background-color 0.25s ease, fill 0.25s ease;
+        .foto-kapat svg { width: 20px; height: 20px; }
+
+        /* ---------- Hareket ---------- */
+        @view-transition { navigation: auto; }
+        .ust img { view-transition-name: mua-logo; }
+        ::view-transition-old(root) { animation: 320ms cubic-bezier(.4,0,.2,1) both sayfaCik; }
+        ::view-transition-new(root) { animation: 420ms cubic-bezier(.2,0,0,1) 60ms both sayfaGir; }
+        ::view-transition-group(mua-logo) { animation-duration: 520ms; animation-timing-function: cubic-bezier(.2,0,0,1); }
+        @keyframes sayfaCik { to { opacity: 0; transform: scale(0.97); } }
+        @keyframes sayfaGir { from { opacity: 0; transform: translateY(14px); } }
+
+        /* Geçişi desteklemeyen tarayıcılarda sayfa açılırken solarak gelir */
+        body.giris { animation: sayfaGir 0.42s cubic-bezier(.2,0,0,1) both; }
+
+        /* Menü verisi gelince içerik tek seferde yukarı süzülerek belirir */
+        .menu.hazir .bolum { animation: belir 0.55s cubic-bezier(.2,0,0,1) both; }
+        .menu.hazir .bolum:nth-child(2) { animation-delay: 0.06s; }
+        .menu.hazir .bolum:nth-child(n+3) { animation-delay: 0.12s; }
+        .kategoriler-ic.hazir { animation: belir 0.45s cubic-bezier(.2,0,0,1) both; }
+        @keyframes belir { from { opacity: 0; transform: translateY(16px); } }
+
+        /* Fotoğraf penceresi büyüyerek açılır, küçülerek kapanır */
+        .foto-pencere { display: flex; visibility: hidden; opacity: 0; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+        .foto-pencere.acik { visibility: visible; opacity: 1; transition: opacity 0.25s ease; }
+        .foto-kutu { transform: scale(0.92) translateY(10px); transition: transform 0.32s cubic-bezier(.2,0,0,1); }
+        .foto-pencere.acik .foto-kutu { transform: none; }
+
+        .kat-btn { transition: background-color 0.25s ease, color 0.25s ease; }
+        .foto-btn { transition: transform 0.15s ease; }
+        .foto-btn:active { transform: scale(0.96); }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            body.giris, .menu.hazir .bolum, .kategoriler-ic.hazir { animation: none; }
+            .foto-kutu, .foto-pencere { transition: none; }
+            ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
         }
-        .eye-icon.gorsel-yok { visibility: hidden; }
-        .eye-icon:hover { background: #d81b60; fill: white; }
-        .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(28, 20, 15, 0.9); justify-content: center; align-items: center;
-        }
-        .modal-content { position: relative; max-width: 90%; max-height: 80%; animation: zoomIn 0.3s ease; }
-        @keyframes zoomIn { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
-        .modal-content img {
-            width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            opacity: 0; transition: opacity 0.25s ease;
-        }
-        .modal-content img.yuklendi { opacity: 1; }
-        .close-btn { position: absolute; top: -40px; right: 0; color: white; font-size: 32px; cursor: pointer; }
-        .site-footer {
-            max-width: 500px; margin: 50px auto 10px auto; text-align: center;
-            padding-top: 24px; border-top: 1px solid #e6d6ca;
-        }
-        .site-footer-brand { font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: #2c1e16; margin-bottom: 8px; }
-        .site-footer-note { font-size: 11px; letter-spacing: 0.3px; color: #a8907c; margin: 4px 0; }
     </style>
 </head>
 <body>
+    <script>if (!('onpagereveal' in window)) document.body.classList.add('giris');</script>
 
-    <header class="site-header">
-        <a href="index.html">
-            <img class="site-header-logo" src="img/logo_white.png" alt="MUÀ Gelatieri d'Italia">
-        </a>
-        <div class="site-header-rule"></div>
+    <header class="ust">
+        <a href="index.html" aria-label="Ana sayfa"><img src="img/logo_white.png" alt="MUÀ Gelatieri d'Italia" width="500" height="171"></a>
+        <p>Menü</p>
     </header>
 
-    <nav class="category-nav">
-        <div class="category-nav-scroll" id="navScroll"></div>
+    <nav class="kategoriler" aria-label="Kategoriler">
+        <div class="kategoriler-ic" id="kategoriler"></div>
     </nav>
 
-    <div class="menu-container" id="menuContainer">
-        <p id="loadingMsg" style="text-align: center; color: #d81b60; margin-top: 60px; font-weight: 600;">Menü Hazırlanıyor...</p>
-    </div>
+    <main class="menu" id="menu">
+        <p class="durum" id="durum">Menü yükleniyor…</p>
+    </main>
 
-    <footer class="site-footer">
-        <div class="site-footer-brand">MUÀ</div>
-        <p class="site-footer-note">Tüm fiyatlarımıza KDV dahildir.</p>
-        <p class="site-footer-note" id="lastUpdatedText">Fiyat değişiklik tarihi: 09.11.2026</p>
+    <footer class="alt">
+        <div class="marka">MUÀ</div>
+        <p>Tüm fiyatlarımıza KDV dahildir.</p>
+        <p id="guncelleme"></p>
+        <div class="alt-linkler">
+            <a href="index.html">Ana sayfa</a>
+            <a href="https://files.qrcodeg.com/pdfs/33f7a7c8-cb1e-422a-babe-a4f20c13a902.pdf" target="_blank" rel="noopener">Alerjen bilgileri</a>
+        </div>
     </footer>
 
-    <div id="imageModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <img id="modalImage" src="" alt="Ürün Görseli">
+    <div class="foto-pencere" id="fotoPencere" role="dialog" aria-modal="true" aria-label="Ürün fotoğrafı">
+        <div class="foto-kutu">
+            <button class="foto-kapat" id="fotoKapat" aria-label="Kapat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+            <img id="fotoResim" alt="">
+            <div class="foto-baslik" id="fotoBaslik"></div>
         </div>
     </div>
 
     <script>
-        window.onerror = function(msg, url, line) {
-            var el = document.getElementById("menuContainer");
-            if (el) el.innerHTML = '<p style="text-align:center; padding:30px; color:red;">Kod Hatası: ' + msg + ' (Satır: ' + line + ')</p>';
-        };
-
         var DB_URL = "https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app/menuData.json";
-        var EYE_SVG_PATH = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
+        var POPULER = "cat-en-cok-tercih-edilenler";
+        var KAMERA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 
-        function urunKartiOlustur(item, isPopularSection) {
-            var featured = isPopularSection ? (item.popularFeatured !== undefined ? item.popularFeatured : item.featured) : item.featured;
-            var badge = isPopularSection ? (item.popularBadge || item.badge) : item.badge;
-            var gorselVar = item.image && String(item.image).trim() !== "" && item.image !== "RESİM_LİNKİ";
-            var fiyati = String(item.price || "").indexOf(",") !== -1 ? item.price : (item.price + ",00");
+        function el(tag, cls, text) {
+            var e = document.createElement(tag);
+            if (cls) e.className = cls;
+            if (text !== undefined && text !== null) e.textContent = text;
+            return e;
+        }
+        function liste(x) { return !x ? [] : (Array.isArray(x) ? x : Object.values(x)).filter(Boolean); }
+        function fiyatYaz(p) { var s = String(p == null ? '' : p).trim(); return s ? s + ' ₺' : ''; }
+        function gorselVar(item) { return item.image && String(item.image).trim() && item.image !== "RESİM_LİNKİ"; }
 
-            return '<div class="menu-item ' + (featured ? 'menu-item--featured' : '') + '">' +
-                '<div class="item-info">' +
-                    (badge ? '<span class="chef-badge">' + badge + '</span>' : '') +
-                    '<span class="item-name">' + (item.name || '') + '</span>' +
-                    (item.desc ? '<span class="item-desc">' + item.desc + '</span>' : '') +
-                    '<span class="item-price">' + fiyati + ' ₺</span>' +
-                '</div>' +
-                '<svg class="eye-icon ' + (gorselVar ? '' : 'gorsel-yok') + '" data-image="' + (gorselVar ? item.image : '') + '" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">' + EYE_SVG_PATH + '</svg>' +
-            '</div>';
+        function urunSatiri(item, populerde) {
+            var oneCikan = populerde ? (item.popularFeatured !== undefined ? item.popularFeatured : item.featured) : item.featured;
+            var rozet = populerde ? (item.popularBadge || item.badge) : item.badge;
+
+            var d = el('div', 'urun' + (oneCikan ? ' one-cikan' : ''));
+            if (rozet) d.appendChild(el('span', 'rozet', rozet));
+
+            var satir = el('div', 'satir');
+            satir.appendChild(el('span', 'urun-ad', item.name || ''));
+            satir.appendChild(el('span', 'nokta'));
+            satir.appendChild(el('span', 'fiyat', fiyatYaz(item.price)));
+            d.appendChild(satir);
+
+            if (item.desc) d.appendChild(el('p', 'aciklama', item.desc));
+
+            if (gorselVar(item)) {
+                var b = el('button', 'foto-btn');
+                b.type = 'button';
+                b.innerHTML = KAMERA;
+                b.appendChild(document.createTextNode('Fotoğrafı gör'));
+                b.addEventListener('click', function () { fotoAc(item.image, item.name); });
+                d.appendChild(b);
+            }
+            return d;
         }
 
-        function ekranaCiz(data) {
-            var menuContainer = document.getElementById("menuContainer");
-            var navScroll = document.getElementById("navScroll");
-
+        function ciz(data) {
+            var menu = document.getElementById('menu');
+            var nav = document.getElementById('kategoriler');
             if (!data || !data.items) {
-                menuContainer.innerHTML = '<p style="text-align:center; padding:40px; color:#d81b60;">Veritabanı boş görünüyor. Lütfen admin.html sayfasına girip menüyü aktarın.</p>';
+                menu.innerHTML = '';
+                menu.appendChild(el('p', 'durum', 'Menü şu an görüntülenemiyor. Lütfen kasadan yardım isteyin.'));
                 return;
             }
+            if (data.lastUpdated) document.getElementById('guncelleme').textContent = 'Fiyat güncelleme tarihi: ' + data.lastUpdated;
 
-            if (data.lastUpdated) {
-                document.getElementById("lastUpdatedText").textContent = "Fiyat değişiklik tarihi: " + data.lastUpdated;
-            }
+            menu.innerHTML = '';
+            nav.innerHTML = '';
+            var urunler = liste(data.items).filter(function (i) { return i.active !== false; });
 
-            navScroll.innerHTML = "";
-            menuContainer.innerHTML = "";
+            liste(data.categories).forEach(function (cat) {
+                var catUrun = cat.id === POPULER
+                    ? urunler.filter(function (i) { return i.popular; }).sort(function (a, b) { return (a.popularOrder || 99) - (b.popularOrder || 99); })
+                    : urunler.filter(function (i) { return i.cat === cat.id; });
+                if (!catUrun.length) return;
 
-            var itemsArray = Array.isArray(data.items) ? data.items : Object.values(data.items);
-            var categoriesArray = Array.isArray(data.categories) ? data.categories : Object.values(data.categories || {});
-            var aktifUrunler = itemsArray.filter(function(i) { return i && i.active !== false; });
-
-            categoriesArray.forEach(function(cat) {
-                if (!cat) return;
-                var catUrunleri = [];
-                if (cat.id === "cat-en-cok-tercih-edilenler") {
-                    catUrunleri = aktifUrunler.filter(function(i) { return i.popular; }).sort(function(a, b) { return (a.popularOrder || 99) - (b.popularOrder || 99); });
-                } else {
-                    catUrunleri = aktifUrunler.filter(function(i) { return i.cat === cat.id; });
-                }
-
-                if (catUrunleri.length === 0) return;
-
-                var btn = document.createElement("button");
-                btn.className = "category-nav-btn";
-                btn.setAttribute("data-target", "#" + cat.id);
-                btn.textContent = cat.title;
-                btn.addEventListener("click", function() {
-                    var el = document.getElementById(cat.id);
-                    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                var btn = el('button', 'kat-btn', cat.title);
+                btn.type = 'button';
+                btn.dataset.hedef = cat.id;
+                btn.addEventListener('click', function () {
+                    var h = document.getElementById(cat.id);
+                    if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 });
-                navScroll.appendChild(btn);
+                nav.appendChild(btn);
 
-                var h2 = document.createElement("h2");
-                h2.id = cat.id;
-                h2.textContent = cat.title;
-                menuContainer.appendChild(h2);
-
-                var sonAltKategori = null;
-                var ilkAltKategoriMi = true;
-
-                catUrunleri.forEach(function(item) {
-                    if (cat.id !== "cat-en-cok-tercih-edilenler" && item.subCat && item.subCat !== sonAltKategori) {
-                        var subDiv = document.createElement("div");
-                        subDiv.className = "sub-category-label" + (ilkAltKategoriMi ? " sub-category-label--first" : "");
-                        subDiv.textContent = item.subCat;
-                        menuContainer.appendChild(subDiv);
-                        sonAltKategori = item.subCat;
-                        ilkAltKategoriMi = false;
+                var bolum = el('section', 'bolum');
+                bolum.id = cat.id;
+                bolum.appendChild(el('h2', '', cat.title));
+                var kagit = el('div', 'kagit');
+                var sonAlt = null;
+                catUrun.forEach(function (item) {
+                    if (cat.id !== POPULER && item.subCat && item.subCat !== sonAlt) {
+                        kagit.appendChild(el('div', 'alt-kategori', item.subCat));
+                        sonAlt = item.subCat;
                     }
-                    menuContainer.insertAdjacentHTML("beforeend", urunKartiOlustur(item, cat.id === "cat-en-cok-tercih-edilenler"));
+                    kagit.appendChild(urunSatiri(item, cat.id === POPULER));
                 });
+                bolum.appendChild(kagit);
+                menu.appendChild(bolum);
             });
 
-            etkilesimleriBagla();
+            menu.classList.add('hazir');
+            nav.classList.add('hazir');
+            kategoriTakibi();
         }
 
-        fetch(DB_URL + "?t=" + new Date().getTime())
-            .then(function(res) {
-                if (!res.ok) throw new Error("HTTP " + res.status + " (Rules izni kapalı olabilir)");
-                return res.json();
-            })
-            .then(function(data) {
-                ekranaCiz(data);
-            })
-            .catch(function(err) {
-                document.getElementById("menuContainer").innerHTML = '<p style="text-align:center; padding:30px; color:#d81b60; font-weight:bold;">Bağlantı Hatası: ' + err.message + '</p>';
-            });
-
-        var modal = document.getElementById("imageModal");
-        var modalImg = document.getElementById("modalImage");
-        var modalGecmisteAcik = false;
-
-        function modaliAc(url) {
-            if (!url) return;
-            modalImg.classList.remove("yuklendi");
-            modal.style.display = "flex";
-            modalImg.onload = function() { modalImg.classList.add("yuklendi"); };
-            modalImg.src = url;
-            if (modalImg.complete) modalImg.classList.add("yuklendi");
-            history.pushState({ modal: true }, "");
-            modalGecmisteAcik = true;
-        }
-
-        function modaliKapat(geriGitmeliMi) {
-            modal.style.display = "none";
-            if (geriGitmeliMi && modalGecmisteAcik) {
-                modalGecmisteAcik = false;
-                history.back();
-            }
-        }
-
-        document.querySelector(".close-btn").addEventListener("click", function() { modaliKapat(true); });
-        modal.addEventListener("click", function(e) { if (e.target === modal) modaliKapat(true); });
-        window.addEventListener("popstate", function() {
-            if (modalGecmisteAcik) { modalGecmisteAcik = false; modal.style.display = "none"; }
-        });
-
-        function etkilesimleriBagla() {
-            document.querySelectorAll(".eye-icon:not(.gorsel-yok)").forEach(function(icon) {
-                icon.addEventListener("click", function() { modaliAc(this.getAttribute("data-image")); });
-            });
-
-            var navButtons = document.querySelectorAll(".category-nav-btn");
-            var sectionHeaders = document.querySelectorAll(".menu-container h2[id]");
-
-            if (navButtons.length) navButtons[0].classList.add("active");
-
-            if ("IntersectionObserver" in window) {
-                var spyObserver = new IntersectionObserver(function(entries) {
-                    entries.forEach(function(entry) {
-                        if (entry.isIntersecting) {
-                            navButtons.forEach(function(btn) {
-                                var isActive = btn.getAttribute("data-target") === "#" + entry.target.id;
-                                btn.classList.toggle("active", isActive);
-                                if (isActive) btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-                            });
-                        }
+        // Sayfa kaydırıldıkça üstteki kategori menüsünde o an görünen kategori işaretlenir
+        function kategoriTakibi() {
+            var butonlar = document.querySelectorAll('.kat-btn');
+            if (butonlar.length) butonlar[0].classList.add('aktif');
+            if (!('IntersectionObserver' in window)) return;
+            var gozcu = new IntersectionObserver(function (girdiler) {
+                girdiler.forEach(function (g) {
+                    if (!g.isIntersecting) return;
+                    butonlar.forEach(function (b) {
+                        var aktif = b.dataset.hedef === g.target.id;
+                        b.classList.toggle('aktif', aktif);
+                        if (aktif) b.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                     });
-                }, { rootMargin: "-90px 0px -75% 0px", threshold: 0 });
-
-                sectionHeaders.forEach(function(header) { spyObserver.observe(header); });
-            }
+                });
+            }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+            document.querySelectorAll('.bolum').forEach(function (s) { gozcu.observe(s); });
         }
+
+        fetch(DB_URL + '?t=' + Date.now())
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(ciz)
+            .catch(function () {
+                var menu = document.getElementById('menu');
+                menu.innerHTML = '';
+                menu.appendChild(el('p', 'durum', 'Menü yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.'));
+            });
+
+        // ---------- Fotoğraf penceresi (telefonda geri tuşu pencereyi kapatır) ----------
+        var pencere = document.getElementById('fotoPencere');
+        var resim = document.getElementById('fotoResim');
+        var gecmisteAcik = false;
+
+        function fotoAc(url, ad) {
+            resim.classList.remove('yuklendi');
+            resim.onload = function () { resim.classList.add('yuklendi'); };
+            resim.src = url;
+            resim.alt = ad || '';
+            document.getElementById('fotoBaslik').textContent = ad || '';
+            pencere.classList.add('acik');
+            if (resim.complete) resim.classList.add('yuklendi');
+            history.pushState({ foto: true }, '');
+            gecmisteAcik = true;
+        }
+        function fotoKapat() {
+            pencere.classList.remove('acik');
+            if (gecmisteAcik) { gecmisteAcik = false; history.back(); }
+        }
+        document.getElementById('fotoKapat').addEventListener('click', fotoKapat);
+        pencere.addEventListener('click', function (e) { if (e.target === pencere) fotoKapat(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && pencere.classList.contains('acik')) fotoKapat(); });
+        window.addEventListener('popstate', function () {
+            if (gecmisteAcik) { gecmisteAcik = false; pencere.classList.remove('acik'); }
+        });
     </script>
 </body>
 </html>
