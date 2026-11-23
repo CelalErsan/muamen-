@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Menü – MUÀ Gelatieri d'Italia</title>
     <meta name="description" content="MUÀ Gelatieri d'Italia Gaziantep menüsü: dondurmalar, kahveler, soğuk içecekler ve tatlılar.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%23D80058%27/%3E%3Ctext x=%2732%27 y=%2744%27 font-family=%27Arial,sans-serif%27 font-size=%2734%27 fill=%27white%27 text-anchor=%27middle%27%3EM%3C/text%3E%3C/svg%3E">
     <meta name="theme-color" content="#FAFAFA">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -252,6 +253,12 @@
             kategoriTakibi();
         }
 
+        function seritKaydir(b) {
+            var kap = document.getElementById('kategoriler');
+            var hedef = b.offsetLeft - kap.offsetLeft - (kap.clientWidth - b.offsetWidth) / 2;
+            kap.scrollTo({ left: Math.max(0, hedef), behavior: 'smooth' });
+        }
+
         // Kaydırırken o an görünen kategori üst şeritte işaretlenir
         function kategoriTakibi() {
             var butonlar = document.querySelectorAll('.kat-btn');
@@ -263,7 +270,8 @@
                     butonlar.forEach(function (b) {
                         var aktif = b.dataset.hedef === g.target.id;
                         b.classList.toggle('aktif', aktif);
-                        if (aktif) b.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                        // Sadece şeridi yatay kaydır (scrollIntoView bazı iPhone'larda sayfayı da zıplatıyor)
+                        if (aktif) seritKaydir(b);
                     });
                 });
             }, { rootMargin: '-70px 0px -70% 0px', threshold: 0 });
