@@ -147,6 +147,24 @@
     .conn-banner.sari { display: block; background: var(--sari-bg); color: var(--sari-fg); }
     .conn-banner.kirmizi { display: block; background: var(--tehlike-acik); color: var(--tehlike); }
 
+    /* Garson çağrıları: en üstte, her ekranda görünür */
+    .cagri-alani { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+    .cagri-alani:empty { display: none; }
+    .cagri { display: flex; align-items: center; gap: 10px; background: var(--mua); color: #fff; border-radius: var(--r); padding: 8px 8px 8px 12px; box-shadow: var(--golge); animation: cagriGir 0.3s cubic-bezier(.2,0,0,1); }
+    .cagri .ik { width: 20px; height: 20px; }
+    .cagri-metin { flex: 1; min-width: 0; font-size: 0.9rem; font-weight: 600; line-height: 1.3; }
+    .cagri-metin b { font-size: 1.05rem; font-weight: 800; margin-right: 4px; }
+    .cagri-metin small { display: block; font-size: 0.74rem; font-weight: 500; opacity: 0.85; }
+    .cagri button { background: #fff; color: var(--mua); border: none; height: 38px; padding: 0 14px; border-radius: 8px; font-weight: 800; font-size: 0.84rem; white-space: nowrap; }
+    @keyframes cagriGir { from { opacity: 0; transform: translateY(-6px); } }
+    .table-btn.cagiriyor { box-shadow: 0 0 0 3px var(--mua), var(--golge); animation: cagriNabiz 1s ease-in-out infinite; }
+    .table-btn .t-cagri { position: absolute; top: 8px; right: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--mua); color: #fff; display: inline-flex; align-items: center; justify-content: center; }
+    .table-btn .t-cagri .ik { width: 9px; height: 9px; }
+    .kroki.dar .table-btn.cagiriyor .t-name { padding-right: 8px; }
+    @keyframes cagriNabiz { 50% { box-shadow: 0 0 0 6px var(--mua), var(--golge); } }
+    .flash.pembe { border-color: var(--mua); }
+    @media (prefers-reduced-motion: reduce) { .table-btn.cagiriyor, .cagri { animation: none; } }
+
     .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 3px; margin-bottom: 10px; background: var(--segment); border-radius: 11px; }
     .tab { background: transparent; border: none; color: var(--kahve); height: 40px; border-radius: 8px; font-size: 0.86rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
     .tab.active { background: var(--kart); color: var(--espresso); box-shadow: var(--golge); }
@@ -412,7 +430,7 @@
   <div id="appSection" style="display:none;">
     <div class="topbar">
       <header>
-        <h1><span class="brand-pill"><img src="img/logo_white.png" alt="MUÀ"></span> Sipariş <span id="connDot" class="conn-dot" title="Bağlantı durumu"></span></h1>
+        <h1><span class="brand-pill"><img src="img/logo_beyaz.png" alt="MUÀ" onerror="this.onerror=null;this.src='img/logo_white.png'"></span> Sipariş <span id="connDot" class="conn-dot" title="Bağlantı durumu"></span></h1>
         <div class="header-right">
           <button class="chip-btn" id="userBtn"><i class="ik" data-ik="user"></i><span id="userName">—</span></button>
           <button class="chip-btn icon-only" id="settingsBtn" aria-label="Ayarlar"><i class="ik" data-ik="ayar"></i></button>
@@ -425,6 +443,7 @@
         <button class="tab" data-view="kasa"><i class="ik" data-ik="fis"></i>Kasa<span class="cnt" id="cnt-kasa" style="background:var(--mua)"></span></button>
       </nav>
       <div class="conn-banner" id="connBanner"></div>
+      <div class="cagri-alani" id="cagriAlani" aria-live="assertive"></div>
     </div>
 
     <section class="view" id="view-masalar">
@@ -643,6 +662,9 @@
     // "Hazır olunca" sesi: götüren kişinin telefonunda açılır. Varsayılan kapalı.
     let hazirSoundLevel = store.get("mua_sound_hazir") || "kapali";
     if (!["kapali", "kisik", "normal"].includes(hazirSoundLevel)) hazirSoundLevel = "kapali";
+    // Garson çağrısı sesi: varsayılan kısık (müşteri bekliyor; ekran yanıp söner, telefon titrer)
+    let cagriSoundLevel = store.get("mua_sound_cagri") || "kisik";
+    if (!["kapali", "kisik", "normal"].includes(cagriSoundLevel)) cagriSoundLevel = "kisik";
     let lastWaitingCount = { kahve: null, dondurma: null };
 
     const $ = (id) => document.getElementById(id);
@@ -657,7 +679,8 @@
       x: '<path d="M18 6L6 18M6 6l12 12"/>',
       arti: '<path d="M12 5v14M5 12h14"/>',
       tasi: '<path d="M7 7h13l-3-3M17 17H4l3 3"/>',
-      cop: '<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>'
+      cop: '<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>',
+      zil: '<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>'
     };
     function ikon(ad) {
       const s = document.createElement('i');
@@ -784,6 +807,7 @@
     }
     function beep() { sesCal(soundLevel, [[880, 0, 0.15], [880, 0.18, 0.15]]); }
     function hazirSesi() { sesCal(hazirSoundLevel, [[660, 0, 0.22], [990, 0.2, 0.35]]); }
+    function cagriSesi() { sesCal(cagriSoundLevel, [[1046, 0, 0.12], [1318, 0.14, 0.12], [1046, 0.28, 0.12], [1318, 0.42, 0.2]]); }
 
     let yerelHazirZamani = 0; // kendi bastığın "Hazır" için kendi cihazın ötmesin
     let lastReadyCount = null;
@@ -945,6 +969,12 @@
       setTimeout(() => { if (!Object.keys(menu).length) { menuHatasi = menuHatasi || 'Bağlantı yavaş ya da yok'; renderAll(); } }, 8000);
 
       masaVerisiGeldi = false;
+      cagriVerisiGeldi = false;
+      unsubs.push(onValue(ref(db, 'mua_cagrilar'), (snap) => {
+        cagrilar = snap.val() || {};
+        cagrilariIsle();
+      }, () => {}));
+
       unsubs.push(onValue(tablesRef, (snap) => {
         tablesData = snap.val() || {};
         masaVerisiGeldi = true;
@@ -954,7 +984,7 @@
 
     // Bekleme sürelerini canlı tut
     setInterval(() => {
-      if (auth.currentUser && currentView !== 'masalar') renderView();
+      if (auth.currentUser) { renderCagrilar(); if (currentView !== 'masalar' || Object.keys(cagrilar).length) renderView(); }
       if (activeTable) renderModal();
     }, 30000);
 
@@ -992,6 +1022,7 @@
     }
 
     function renderAll() {
+      renderCagrilar();
       renderCounts();
       renderView();
       if (activeTable) renderModal();
@@ -1064,6 +1095,12 @@
 
       const btn = el('button', 'table-btn');
       if (items.length) btn.classList.add(ready > 0 ? 'st-ready' : waiting > 0 ? 'st-waiting' : 'st-served');
+      if (aktifCagri(tName)) {
+        btn.classList.add('cagiriyor');
+        const c = el('span', 't-cagri');
+        c.appendChild(ikon('zil'));
+        btn.appendChild(c);
+      }
       btn.appendChild(el('span', 't-name', tName));
       // Kısa iki satır: 1) en acil durum  2) en eski bekleyenin süresi
       if (!items.length) {
@@ -1950,6 +1987,62 @@
     $('settingsBtn').addEventListener('click', ayarlariAc);
     $('settingsClose').addEventListener('click', () => $('settingsSheet').classList.remove('active'));
 
+    // ================= GARSON ÇAĞRILARI =================
+    // Müşteri menüde "Garson çağır"a basınca mua_cagrilar/<masa> = { t: zaman } yazılır.
+    // 20 dakikadan eski çağrılar gösterilmez. "Gidiyorum" çağrıyı siler (herkesin ekranından kalkar).
+    const CAGRI_OMRU_DK = 20;
+    let cagrilar = {};
+    let cagriVerisiGeldi = false;
+    let goruldu = {}; // masa -> bu cihazın uyardığı son çağrı zamanı
+
+    function aktifCagri(t) {
+      const c = cagrilar[t];
+      return c && c.t && (Date.now() - c.t) < CAGRI_OMRU_DK * 60000 ? c : null;
+    }
+
+    function cagrilariIsle() {
+      let yeni = false;
+      Object.entries(cagrilar).forEach(([t, c]) => {
+        if (!aktifCagri(t)) return;
+        // İlk yüklemede zaten var olan çağrılar için ses çalma, sadece göster
+        if (cagriVerisiGeldi && goruldu[t] !== c.t) yeni = true;
+        goruldu[t] = c.t;
+      });
+      cagriVerisiGeldi = true;
+      renderAll();
+      if (yeni) {
+        const f = $('flash');
+        f.classList.add('pembe');
+        f.classList.remove('on'); void f.offsetWidth; f.classList.add('on');
+        setTimeout(() => f.classList.remove('pembe'), 2800);
+        try { navigator.vibrate && navigator.vibrate([300, 120, 300, 120, 300]); } catch {}
+        cagriSesi();
+      }
+    }
+
+    function renderCagrilar() {
+      const alan = $('cagriAlani');
+      if (!alan) return;
+      alan.innerHTML = '';
+      Object.keys(cagrilar)
+        .filter(aktifCagri)
+        .sort((a, b) => cagrilar[a].t - cagrilar[b].t)
+        .forEach(t => {
+          const c = cagrilar[t];
+          const kart = el('div', 'cagri');
+          kart.appendChild(ikon('zil'));
+          const m = el('div', 'cagri-metin');
+          m.appendChild(el('b', '', t));
+          m.appendChild(document.createTextNode('garson çağırıyor'));
+          m.appendChild(el('small', '', `${saat(c.t)}, ${dkOnce(c.t)}${dakika(c.t) >= 1 ? ' önce' : ''}`));
+          kart.appendChild(m);
+          const b = el('button', '', 'Gidiyorum');
+          b.onclick = () => set(ref(db, `mua_cagrilar/${t}`), null).catch(hata);
+          kart.appendChild(b);
+          alan.appendChild(kart);
+        });
+    }
+
     // ---------- Tema ----------
     function temaSecimi() { return store.get('mua_tema') || 'otomatik'; }
     const karanlikSorgu = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : null;
@@ -2004,6 +2097,12 @@
         el('p', '', 'Hangi ekranda olursan ol çalar, telefon titrer ve ekran yeşil yanar. Siparişi götüren kişinin telefonu için. Kendi bastığın "Hazır" için senin cihazın ötmez.'));
       r2.appendChild(seviyeSecici(hazirSoundLevel, k => { hazirSoundLevel = k; store.set("mua_sound_hazir", k); }, hazirSesi));
       body.appendChild(r2);
+
+      const rc = el('div', 'sheet-row');
+      rc.append(el('h4', '', 'Garson çağrısı sesi'),
+        el('p', '', 'Müşteri masadaki QR ile menüden "Garson çağır"a basınca çalar. Ses kapalı olsa da ekran pembe yanar ve telefon titrer.'));
+      rc.appendChild(seviyeSecici(cagriSoundLevel, k => { cagriSoundLevel = k; store.set("mua_sound_cagri", k); }, cagriSesi));
+      body.appendChild(rc);
 
       const r3 = el('div', 'sheet-row');
       r3.append(el('h4', '', 'Masa düzeni'), el('p', '', 'Masa ekle, çıkar ya da dizilişi değiştir. Herkesin ekranında değişir.'));

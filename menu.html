@@ -110,6 +110,22 @@
         .foto-kapat { position: absolute; top: -50px; right: 0; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.14); color: #fff; display: flex; align-items: center; justify-content: center; }
         .foto-kapat svg { width: 20px; height: 20px; }
 
+        /* ---------- Garson çağır (sadece masadaki QR ile açılınca) ---------- */
+        body.masali { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+        .cagir {
+            position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+            z-index: 60; width: min(360px, calc(100% - 32px)); height: 58px; border-radius: 999px;
+            display: none; align-items: center; justify-content: center; gap: 10px;
+            background: var(--murekkep); color: #fff; font-size: 1.05rem; font-weight: 500;
+            box-shadow: 0 10px 30px rgba(36,27,31,0.28); transition: background-color 0.3s ease, transform 0.15s ease;
+        }
+        body.masali .cagir { display: flex; }
+        .cagir:active { transform: translateX(-50%) scale(0.98); }
+        .cagir svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .cagir .masa-etiket { font-size: 0.82rem; font-weight: 400; opacity: 0.7; padding-left: 10px; margin-left: 2px; border-left: 1px solid rgba(255,255,255,0.3); }
+        .cagir.gonderildi { background: var(--fusya); }
+        .cagir:disabled { cursor: default; }
+
         /* ---------- Sayfa geçişi: logo ana sayfadan buraya kayar ---------- */
         @view-transition { navigation: auto; }
         .ust img { view-transition-name: mua-logo; }
@@ -151,6 +167,12 @@
             <a href="https://files.qrcodeg.com/pdfs/33f7a7c8-cb1e-422a-babe-a4f20c13a902.pdf" target="_blank" rel="noopener">Alerjen bilgileri</a>
         </div>
     </footer>
+
+    <button class="cagir" id="cagirBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+        <span id="cagirYazi">Garson çağır</span>
+        <span class="masa-etiket" id="cagirMasa"></span>
+    </button>
 
     <div class="foto-pencere" id="fotoPencere" role="dialog" aria-modal="true" aria-label="Ürün fotoğrafı">
         <div class="foto-kutu">
@@ -290,6 +312,70 @@
                 menu.innerHTML = '';
                 menu.appendChild(el('p', 'durum', 'Menü yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.'));
             });
+
+        // ---------- Garson çağır ----------
+        // Masadaki QR "menu.html?masa=B5" açar. Masa bilgisi oturum boyunca saklanır (ana sayfaya gidip dönse de kalır).
+        var CAGRI_URL = "https://mua-qr-menu-default-rtdb.europe-west1.firebasedatabase.app/mua_cagrilar/";
+        var BEKLEME_SN = 60;
+        var masa = null;
+        try {
+            var q = new URLSearchParams(location.search).get('masa');
+            if (q) sessionStorage.setItem('mua_masa', q);
+            masa = q || sessionStorage.getItem('mua_masa');
+        } catch (e) {}
+        if (masa) masa = masa.trim().toLocaleUpperCase('tr-TR');
+        if (masa && !/^[A-ZÇĞİÖŞÜ]{1,3}[0-9]{1,2}$/.test(masa)) masa = null;
+
+        var cagirBtn = document.getElementById('cagirBtn');
+        var cagirYazi = document.getElementById('cagirYazi');
+        var sayac = null;
+
+        function cagrildi(kalanSn) {
+            cagirBtn.disabled = true;
+            cagirBtn.classList.add('gonderildi');
+            clearInterval(sayac);
+            var bitis = Date.now() + kalanSn * 1000;
+            cagirYazi.textContent = 'Garsonumuz geliyor';
+            sayac = setInterval(function () {
+                if (Date.now() >= bitis) {
+                    clearInterval(sayac);
+                    cagirBtn.disabled = false;
+                    cagirBtn.classList.remove('gonderildi');
+                    cagirYazi.textContent = 'Garson çağır';
+                }
+            }, 1000);
+        }
+
+        if (masa) {
+            document.body.classList.add('masali');
+            document.getElementById('cagirMasa').textContent = 'Masa ' + masa;
+            // Bu telefondan az önce çağrıldıysa bekleme süresini sürdür
+            try {
+                var son = +sessionStorage.getItem('mua_cagri_' + masa) || 0;
+                var gecen = (Date.now() - son) / 1000;
+                if (gecen < BEKLEME_SN) cagrildi(BEKLEME_SN - gecen);
+            } catch (e) {}
+
+            cagirBtn.addEventListener('click', function () {
+                if (cagirBtn.disabled) return;
+                cagirBtn.disabled = true;
+                cagirYazi.textContent = 'Gönderiliyor…';
+                fetch(CAGRI_URL + encodeURIComponent(masa) + '.json', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ t: { '.sv': 'timestamp' } })
+                }).then(function (r) {
+                    // 401: bu masa son 1 dakikada zaten çağırmış; garson zaten haberdar
+                    if (!r.ok && r.status !== 401) throw new Error('HTTP ' + r.status);
+                    try { sessionStorage.setItem('mua_cagri_' + masa, String(Date.now())); } catch (e) {}
+                    cagrildi(BEKLEME_SN);
+                }).catch(function () {
+                    cagirBtn.disabled = false;
+                    cagirYazi.textContent = 'Gönderilemedi, tekrar deneyin';
+                    setTimeout(function () { if (!cagirBtn.disabled) cagirYazi.textContent = 'Garson çağır'; }, 3000);
+                });
+            });
+        }
 
         // ---------- Fotoğraf penceresi (telefonda geri tuşu kapatır) ----------
         var pencere = document.getElementById('fotoPencere');
